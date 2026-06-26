@@ -85,29 +85,6 @@ function extractJsonObject(rawText) {
     return null;
 }
 
-function extractOutputText(result) {
-    if (typeof result.output_text === "string" && result.output_text.trim()) {
-        return result.output_text.trim();
-    }
-
-    if (!Array.isArray(result.output)) return "";
-
-    const collected = [];
-    result.output.forEach(item => {
-        if (!item || !Array.isArray(item.content)) return;
-        item.content.forEach(contentItem => {
-            if (!contentItem) return;
-            if (typeof contentItem.text === "string" && contentItem.text.trim()) {
-                collected.push(contentItem.text.trim());
-            } else if (contentItem.type === "output_text" && typeof contentItem.text === "string" && contentItem.text.trim()) {
-                collected.push(contentItem.text.trim());
-            }
-        });
-    });
-
-    return collected.join("\n").trim();
-}
-
 exports.handler = async function handler(event) {
     if (event.httpMethod !== "POST") {
         return jsonResponse(405, { error: "Method not allowed" });
@@ -145,7 +122,7 @@ exports.handler = async function handler(event) {
             });
         }
 
-        const outputText = extractOutputText(result);
+        const outputText = typeof result.output_text === "string" ? result.output_text.trim() : "";
         if (!outputText) {
             return jsonResponse(500, { error: "OpenAI response did not include text output." });
         }
