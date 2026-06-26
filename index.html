@@ -2307,7 +2307,7 @@
                             <p>학년·학기별 과목 목록을 확인하고 수정하면 설계 화면 선택지에 바로 반영됩니다.</p>
                         </div>
                         <div class="admin-auth-row">
-                            <div class="admin-storage-badge">브라우저 로컬 저장</div>
+                            <div class="admin-storage-badge">Netlify 서버 저장</div>
                             <button type="button" id="admin-home-btn" class="admin-action-btn secondary">홈으로</button>
                         </div>
                     </div>
@@ -2322,32 +2322,6 @@
 
                 <section class="admin-section-card surface-card">
                     <div id="admin-groups" class="admin-groups"></div>
-                </section>
-
-                <section class="admin-account-grid">
-                    <section class="admin-section-card admin-account-card surface-card">
-                        <h3>관리자 계정 설정</h3>
-                        <p>현재 브라우저에서 사용하는 관리자 로그인 정보를 변경합니다.</p>
-                        <div class="admin-login-fields">
-                            <label class="admin-login-label">
-                                새 관리자 아이디
-                                <input id="admin-credentials-id" type="text" class="admin-login-input" autocomplete="off">
-                            </label>
-                            <label class="admin-login-label">
-                                새 비밀번호
-                                <input id="admin-credentials-password" type="password" class="admin-login-input" autocomplete="new-password">
-                            </label>
-                            <label class="admin-login-label">
-                                비밀번호 확인
-                                <input id="admin-credentials-password-confirm" type="password" class="admin-login-input" autocomplete="new-password">
-                            </label>
-                        </div>
-                        <div class="admin-account-actions">
-                            <button type="button" id="admin-credentials-save-btn" class="admin-action-btn">계정 저장</button>
-                            <button type="button" id="admin-credentials-reset-btn" class="admin-action-btn secondary">기본 계정 복원</button>
-                        </div>
-                        <div id="admin-credentials-status" class="admin-account-status"></div>
-                    </section>
                 </section>
                 </div>
             </div>
@@ -2391,12 +2365,11 @@
         const requiredCourses1_1 = ["국어1", "수학1", "영어1", "통합사회1", "통합과학1", "한국사1", "진로와 직업", "체육", "음악", "미술"];
         const courseCategoryOrder = ['수학', '과학', '사회', '국어', '영어', '제2외국어', '정보', '기타'];
         const selectionFilterCategories = ['전체', '과학', '사회', '수학', '영어', '정보', '제2외국어'];
-        const ADMIN_STORAGE_KEY = 'kmla-course-data-v1';
         const ADMIN_AUTH_STORAGE_KEY = 'kmla-admin-auth-v1';
-        const ADMIN_CREDENTIALS_STORAGE_KEY = 'kmla-admin-credentials-v1';
+        const ADMIN_SESSION_ID_STORAGE_KEY = 'kmla-admin-session-id-v1';
+        const ADMIN_SESSION_PASSWORD_STORAGE_KEY = 'kmla-admin-session-password-v1';
         const USER_PROGRESS_STORAGE_KEY = 'kmla-user-progress-v1';
         const SAVED_PLANS_STORAGE_KEY = 'kmla-saved-plans-v1';
-        const DEFAULT_ADMIN_CREDENTIALS = { id: 'admin', password: 'kmla-admin' };
         const originalCourseData = JSON.parse(JSON.stringify(courseData));
         const adminSemesterConfigs = [
             { key: '1-1', label: '1학년 1학기', groups: ['1-1-1', '1-1-2', '1-1-3'] },
@@ -2413,7 +2386,7 @@
         const userData = { careerGoal: "", selections: {}, majorKey: "general", isFinished: false };
         let curriculumChart = null;
         let isAdminAuthenticated = false;
-        let adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
+        let adminCredentials = { id: '', password: '' };
         let savedPlans = [];
         let selectedComparePlanIds = [];
 
@@ -2966,13 +2939,6 @@
             el.textContent = message;
         }
 
-        function setAdminCredentialsStatus(message, isError = false) {
-            const el = document.getElementById('admin-credentials-status');
-            if (!el) return;
-            el.textContent = message;
-            el.style.color = isError ? '#fca5a5' : '#93c5fd';
-        }
-
         function updateAdminAuthUI() {
             const loginPanel = document.getElementById('admin-login-panel');
             const consolePanel = document.getElementById('admin-console');
@@ -3002,111 +2968,68 @@
 
         function loadAdminAuth() {
             isAdminAuthenticated = sessionStorage.getItem(ADMIN_AUTH_STORAGE_KEY) === 'true';
+            adminCredentials = {
+                id: sessionStorage.getItem(ADMIN_SESSION_ID_STORAGE_KEY) || '',
+                password: sessionStorage.getItem(ADMIN_SESSION_PASSWORD_STORAGE_KEY) || ''
+            };
         }
 
-        function loadAdminCredentials() {
-            const saved = localStorage.getItem(ADMIN_CREDENTIALS_STORAGE_KEY);
-            if (!saved) {
-                adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
-                return;
-            }
-
-            try {
-                const parsed = JSON.parse(saved);
-                if (parsed && typeof parsed.id === 'string' && typeof parsed.password === 'string' && parsed.id.trim() && parsed.password) {
-                    adminCredentials = {
-                        id: parsed.id.trim(),
-                        password: parsed.password
-                    };
-                    return;
-                }
-            } catch (error) {
-                console.error('Failed to load admin credentials:', error);
-            }
-
-            adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
-            localStorage.removeItem(ADMIN_CREDENTIALS_STORAGE_KEY);
-        }
-
-        function fillAdminCredentialsForm() {
-            const idInput = document.getElementById('admin-credentials-id');
-            const pwInput = document.getElementById('admin-credentials-password');
-            const confirmInput = document.getElementById('admin-credentials-password-confirm');
-            if (!idInput || !pwInput || !confirmInput) return;
-
-            idInput.value = adminCredentials.id;
-            pwInput.value = '';
-            confirmInput.value = '';
-        }
-
-        function attemptAdminLogin() {
+        async function attemptAdminLogin() {
             const idInput = document.getElementById('admin-login-id');
             const passwordInput = document.getElementById('admin-login-password');
             const id = idInput.value.trim();
             const password = passwordInput.value;
 
-            if (id === adminCredentials.id && password === adminCredentials.password) {
-                isAdminAuthenticated = true;
-                sessionStorage.setItem(ADMIN_AUTH_STORAGE_KEY, 'true');
-                passwordInput.value = '';
-                setAdminLoginMessage('');
-                updateAdminAuthUI();
+            if (!id || !password) {
+                setAdminLoginMessage('아이디와 비밀번호를 모두 입력해야 합니다.');
                 return;
             }
 
-            isAdminAuthenticated = false;
-            sessionStorage.removeItem(ADMIN_AUTH_STORAGE_KEY);
-            setAdminLoginMessage('아이디 또는 비밀번호가 올바르지 않습니다.');
+            try {
+                const response = await fetch('/.netlify/functions/admin-auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        adminId: id,
+                        adminPassword: password
+                    })
+                });
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result?.error || `HTTP ${response.status}`);
+                }
+
+                isAdminAuthenticated = true;
+                sessionStorage.setItem(ADMIN_AUTH_STORAGE_KEY, 'true');
+                sessionStorage.setItem(ADMIN_SESSION_ID_STORAGE_KEY, id);
+                sessionStorage.setItem(ADMIN_SESSION_PASSWORD_STORAGE_KEY, password);
+                adminCredentials = { id, password };
+                idInput.value = id;
+                passwordInput.value = '';
+                setAdminLoginMessage('');
+                updateAdminAuthUI();
+            } catch (error) {
+                isAdminAuthenticated = false;
+                adminCredentials = { id: '', password: '' };
+                sessionStorage.removeItem(ADMIN_AUTH_STORAGE_KEY);
+                sessionStorage.removeItem(ADMIN_SESSION_ID_STORAGE_KEY);
+                sessionStorage.removeItem(ADMIN_SESSION_PASSWORD_STORAGE_KEY);
+                setAdminLoginMessage(error.message || '아이디 또는 비밀번호가 올바르지 않습니다.');
+            }
         }
 
         function logoutAdmin() {
             isAdminAuthenticated = false;
+            adminCredentials = { id: '', password: '' };
             sessionStorage.removeItem(ADMIN_AUTH_STORAGE_KEY);
+            sessionStorage.removeItem(ADMIN_SESSION_ID_STORAGE_KEY);
+            sessionStorage.removeItem(ADMIN_SESSION_PASSWORD_STORAGE_KEY);
             document.getElementById('admin-login-id').value = '';
             document.getElementById('admin-login-password').value = '';
             setAdminLoginMessage('');
             updateAdminAuthUI();
             showPage('home-page');
-        }
-
-        function saveAdminCredentials() {
-            const idInput = document.getElementById('admin-credentials-id');
-            const pwInput = document.getElementById('admin-credentials-password');
-            const confirmInput = document.getElementById('admin-credentials-password-confirm');
-            const nextId = idInput.value.trim();
-            const nextPassword = pwInput.value;
-            const confirmPassword = confirmInput.value;
-
-            if (!nextId) {
-                setAdminCredentialsStatus('관리자 아이디를 입력해야 합니다.', true);
-                return;
-            }
-
-            if (!nextPassword) {
-                setAdminCredentialsStatus('새 비밀번호를 입력해야 합니다.', true);
-                return;
-            }
-
-            if (nextPassword !== confirmPassword) {
-                setAdminCredentialsStatus('비밀번호 확인이 일치하지 않습니다.', true);
-                return;
-            }
-
-            adminCredentials = { id: nextId, password: nextPassword };
-            localStorage.setItem(ADMIN_CREDENTIALS_STORAGE_KEY, JSON.stringify(adminCredentials));
-            fillAdminCredentialsForm();
-            document.getElementById('admin-login-id').value = nextId;
-            setAdminCredentialsStatus('관리자 계정을 저장했습니다.');
-            setAdminLoginMessage('');
-        }
-
-        function resetAdminCredentials() {
-            adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
-            localStorage.removeItem(ADMIN_CREDENTIALS_STORAGE_KEY);
-            fillAdminCredentialsForm();
-            document.getElementById('admin-login-id').value = adminCredentials.id;
-            setAdminCredentialsStatus('기본 관리자 계정으로 복원했습니다.');
-            setAdminLoginMessage('');
         }
 
         function setAdminStatus(message, isError = false) {
@@ -3130,28 +3053,46 @@
             };
         }
 
-        function persistAdminOverrides() {
+        async function saveCourseDataToServer() {
             const payload = {};
             Object.keys(originalCourseData).forEach(key => {
-                payload[key] = [...courseData[key]];
+                payload[key] = Array.isArray(courseData[key]) ? [...courseData[key]] : [];
             });
-            localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(payload));
+
+            const response = await fetch('/.netlify/functions/course-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    adminId: adminCredentials.id,
+                    adminPassword: adminCredentials.password,
+                    courseData: payload
+                })
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result?.error || `HTTP ${response.status}`);
+            }
         }
 
-        function loadAdminOverrides() {
-            const saved = localStorage.getItem(ADMIN_STORAGE_KEY);
-            if (!saved) return;
-
+        async function loadAdminOverrides() {
             try {
-                const parsed = JSON.parse(saved);
+                const response = await fetch('/.netlify/functions/course-data');
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result?.error || `HTTP ${response.status}`);
+                }
+
+                const nextCourseData = result?.courseData;
+                if (!nextCourseData || typeof nextCourseData !== 'object') return;
+
                 Object.keys(originalCourseData).forEach(key => {
-                    if (Array.isArray(parsed[key])) {
-                        courseData[key] = parsed[key].map(course => String(course).trim()).filter(Boolean);
+                    if (Array.isArray(nextCourseData[key])) {
+                        courseData[key] = nextCourseData[key].map(course => String(course).trim()).filter(Boolean);
                     }
                 });
             } catch (error) {
-                console.error('Failed to load admin course overrides:', error);
-                localStorage.removeItem(ADMIN_STORAGE_KEY);
+                console.error('Failed to load server course overrides:', error);
             }
         }
 
@@ -3220,47 +3161,59 @@
             updateAdminCounts();
         }
 
-        function saveAdminSemester() {
+        async function saveAdminSemester() {
             const semesterSelect = document.getElementById('admin-semester-select');
             const semesterConfig = getAdminSemesterConfig(semesterSelect.value);
             const textareas = document.querySelectorAll('#admin-page .admin-textarea');
 
-            textareas.forEach(textarea => {
-                const nextCourses = [...new Set(
-                    textarea.value
-                        .split('\n')
-                        .map(course => course.trim())
-                        .filter(Boolean)
-                )];
-                courseData[textarea.dataset.groupKey] = nextCourses;
-            });
+            try {
+                textareas.forEach(textarea => {
+                    const nextCourses = [...new Set(
+                        textarea.value
+                            .split('\n')
+                            .map(course => course.trim())
+                            .filter(Boolean)
+                    )];
+                    courseData[textarea.dataset.groupKey] = nextCourses;
+                });
 
-            persistAdminOverrides();
-            refreshAllSelectOptions();
-            renderAdminPage();
-            setAdminStatus(`${semesterConfig.label} 과목 목록을 저장했습니다.`);
+                await saveCourseDataToServer();
+                refreshAllSelectOptions();
+                renderAdminPage();
+                setAdminStatus(`${semesterConfig.label} 과목 목록을 저장했습니다.`);
+            } catch (error) {
+                setAdminStatus(`저장 중 오류가 발생했습니다: ${error.message}`, true);
+            }
         }
 
-        function resetAdminSemester() {
+        async function resetAdminSemester() {
             const semesterSelect = document.getElementById('admin-semester-select');
             const semesterConfig = getAdminSemesterConfig(semesterSelect.value);
-            semesterConfig.groups.forEach(groupKey => {
-                courseData[groupKey] = [...originalCourseData[groupKey]];
-            });
-            persistAdminOverrides();
-            refreshAllSelectOptions();
-            renderAdminPage();
-            setAdminStatus(`${semesterConfig.label} 과목 목록을 원본으로 복원했습니다.`);
+            try {
+                semesterConfig.groups.forEach(groupKey => {
+                    courseData[groupKey] = [...originalCourseData[groupKey]];
+                });
+                await saveCourseDataToServer();
+                refreshAllSelectOptions();
+                renderAdminPage();
+                setAdminStatus(`${semesterConfig.label} 과목 목록을 원본으로 복원했습니다.`);
+            } catch (error) {
+                setAdminStatus(`복원 중 오류가 발생했습니다: ${error.message}`, true);
+            }
         }
 
-        function resetAllAdminData() {
-            Object.keys(originalCourseData).forEach(groupKey => {
-                courseData[groupKey] = [...originalCourseData[groupKey]];
-            });
-            localStorage.removeItem(ADMIN_STORAGE_KEY);
-            refreshAllSelectOptions();
-            renderAdminPage();
-            setAdminStatus('전체 학기 과목 목록을 원본으로 복원했습니다.');
+        async function resetAllAdminData() {
+            try {
+                Object.keys(originalCourseData).forEach(groupKey => {
+                    courseData[groupKey] = [...originalCourseData[groupKey]];
+                });
+                await saveCourseDataToServer();
+                refreshAllSelectOptions();
+                renderAdminPage();
+                setAdminStatus('전체 학기 과목 목록을 원본으로 복원했습니다.');
+            } catch (error) {
+                setAdminStatus(`전체 초기화 중 오류가 발생했습니다: ${error.message}`, true);
+            }
         }
 
         function computeFitStats(majorKey) {
@@ -3927,6 +3880,11 @@
 
                 const semesterKey = getSemesterKeyForStep(step);
                 userData.selections[semesterKey] = selectionsInStep.map(select => select.value);
+                const sequenceConflict = findSequentialSelectionConflict(userData.selections);
+                if (sequenceConflict) {
+                    setValidationMessage(`"${sequenceConflict.courseName}"을(를) 선택하려면 먼저 "${sequenceConflict.prerequisiteCandidates[0]}"을(를) 선택해야 합니다.`);
+                    return;
+                }
             }
 
             clearValidationMessage();
@@ -3955,6 +3913,11 @@
                 return;
             }
             userData.selections['3-2'] = selectionsInStep.map(select => select.value);
+            const sequenceConflict = findSequentialSelectionConflict(userData.selections);
+            if (sequenceConflict) {
+                setValidationMessage(`"${sequenceConflict.courseName}"을(를) 선택하려면 먼저 "${sequenceConflict.prerequisiteCandidates[0]}"을(를) 선택해야 합니다.`);
+                return;
+            }
 
             clearValidationMessage();
             userData.isFinished = true;
@@ -4194,6 +4157,59 @@
             attachSelectionEnhancements(select.closest('.selection-group'), select);
             renderSelectOptions(select);
         }
+
+        function getPrerequisiteCourseCandidates(courseName) {
+            const raw = String(courseName || '').trim();
+            const candidates = new Set();
+
+            const digitMatch = raw.match(/^(.*?)(\s?)2$/);
+            if (digitMatch) {
+                const prefix = digitMatch[1];
+                const space = digitMatch[2];
+                candidates.add(`${prefix}${space}1`);
+                candidates.add(space ? `${prefix}1` : `${prefix} 1`);
+            }
+
+            const romanMatch = raw.match(/^(.*?)(\s?)Ⅱ$/);
+            if (romanMatch) {
+                const prefix = romanMatch[1];
+                const space = romanMatch[2];
+                candidates.add(`${prefix}${space}Ⅰ`);
+                candidates.add(space ? `${prefix}Ⅰ` : `${prefix} Ⅰ`);
+            }
+
+            return [...candidates].filter(Boolean);
+        }
+
+        function isSequentialSecondCourse(courseName) {
+            return getPrerequisiteCourseCandidates(courseName).length > 0;
+        }
+
+        function hasRequiredFirstCourse(courseName, selectedCourses) {
+            const prerequisiteCandidates = getPrerequisiteCourseCandidates(courseName);
+            if (!prerequisiteCandidates.length) return true;
+            return prerequisiteCandidates.some(candidate => selectedCourses.has(candidate));
+        }
+
+        function findSequentialSelectionConflict(selections) {
+            const selectedCourses = new Set([
+                ...requiredCourses1_1,
+                ...Object.values(selections || {}).flat()
+            ]);
+
+            for (const courses of Object.values(selections || {})) {
+                for (const courseName of courses || []) {
+                    if (!hasRequiredFirstCourse(courseName, selectedCourses)) {
+                        return {
+                            courseName,
+                            prerequisiteCandidates: getPrerequisiteCourseCandidates(courseName)
+                        };
+                    }
+                }
+            }
+
+            return null;
+        }
         
         function updateAllDisabledStates() {
             // 1. Get all currently selected courses from ALL steps.
@@ -4201,6 +4217,7 @@
             Object.values(userData.selections).forEach(courses => {
                 courses.forEach(course => allSelectedCourses.add(course));
             });
+            requiredCourses1_1.forEach(course => allSelectedCourses.add(course));
 
             // 2. Iterate through ALL <select> elements in the builder
             document.querySelectorAll('#builder-page .choice-select').forEach(select => {
@@ -4211,7 +4228,10 @@
                     if (courseName === "") return; // Skip placeholder
 
                     // 3. A course is disabled if it's in the selected set, BUT it's not the one currently selected in THIS dropdown.
-                    if (allSelectedCourses.has(courseName) && courseName !== currentSelection) {
+                    const isDuplicateElsewhere = allSelectedCourses.has(courseName) && courseName !== currentSelection;
+                    const isBlockedByPrerequisite = isSequentialSecondCourse(courseName) && !hasRequiredFirstCourse(courseName, allSelectedCourses) && courseName !== currentSelection;
+
+                    if (isDuplicateElsewhere || isBlockedByPrerequisite) {
                         option.disabled = true;
                     } else {
                         option.disabled = false;
@@ -4343,7 +4363,7 @@
             }
 
             // 1. 시스템 프롬프트를 백엔드 함수로 전송합니다.
-            const systemPrompt = "당신은 민족사관고등학교(KMLA)의 교육과정과 대학 입시 전략에 매우 정통한 최고의 진로 진학 컨설턴트입니다. 학생이 선택한 과목들을 바탕으로, 학생의 진로 희망에 맞춰 교육과정의 강점, 보완점, 그리고 종합적인 총평을 한국어로 체계적으로 분석해주세요. 답변은 반드시 제공된 JSON 스키마에 따라야 합니다. 분석은 긍정적이고 격려하는 어조로 작성해주세요. 중요: '보완 및 제언' 항목에서는 교외 봉사활동, 병원 인턴, 캠프 활동 등 대학 입시에 반영될 수 없는 활동은 절대 제안해서는 안 됩니다. 모든 제안은 학교생활기록부에 기재 가능한 교내 활동(예: 교내 봉사활동)에 한정되어야 합니다.";
+            const systemPrompt = "당신은 민족사관고등학교(KMLA)의 교육과정에 정통한 교육과정 분석가입니다. 학생이 선택한 과목들과 학생의 희망 분야 사이의 관련성만 분석해야 합니다. 강점은 이미 수강한 과목이 희망 분야와 어떻게 연결되는지 중심으로 설명하세요. 보완 및 제언은 아직 수강하지 않았거나 부족한 과목 영역, 또는 향후 선택하면 좋은 과목 방향만 제시하세요. 동아리, 봉사, 캠프, 인턴, 독서활동, 탐구활동, 대회, 비교과 활동, 생활기록부 활동 등 과목 선택과 직접 관련 없는 내용은 절대 언급하지 마세요. 답변은 반드시 제공된 JSON 스키마만 따르고, 모든 문장은 한국어로 간결하고 구체적으로 작성하세요.";
             
             // 2. API 키를 삭제하고 Netlify 백엔드 함수 주소를 사용합니다.
             const apiUrl = "/.netlify/functions/analyze";
@@ -4391,11 +4411,10 @@
         }
         
         // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            loadAdminOverrides();
+        document.addEventListener('DOMContentLoaded', async () => {
             loadAdminAuth();
-            loadAdminCredentials();
             loadSavedPlans();
+            await loadAdminOverrides();
 
              // Add a single, global event listener for handling selections
             document.getElementById('builder-page').addEventListener('change', (e) => {
@@ -4438,8 +4457,6 @@
             });
             document.getElementById('curriculum-import-input').addEventListener('change', importCurriculumData);
             document.getElementById('admin-home-btn').addEventListener('click', () => showPage('home-page'));
-            document.getElementById('admin-credentials-save-btn').addEventListener('click', saveAdminCredentials);
-            document.getElementById('admin-credentials-reset-btn').addEventListener('click', resetAdminCredentials);
             document.getElementById('admin-save-btn').addEventListener('click', saveAdminSemester);
             document.getElementById('admin-reset-semester-btn').addEventListener('click', resetAdminSemester);
             document.getElementById('admin-reset-all-btn').addEventListener('click', resetAllAdminData);
@@ -4496,7 +4513,6 @@
 
             document.getElementById('major-selector').addEventListener('change', updateAnalysis);
             renderAdminPage();
-            fillAdminCredentialsForm();
             document.getElementById('admin-login-id').value = adminCredentials.id;
             updateAdminAuthUI();
             updateHeaderAdminState();
