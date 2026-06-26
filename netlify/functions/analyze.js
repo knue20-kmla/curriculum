@@ -40,8 +40,11 @@ function buildInput(goal, selections) {
         "2. markdown 코드블록을 절대 사용하지 않습니다.",
         "3. 설명문, 서론, 결론을 절대 덧붙이지 않습니다.",
         "4. JSON 키는 strengths, recommendations, summary 세 개만 사용합니다.",
-        "5. strengths와 recommendations는 각각 2~5개의 한국어 문자열 배열이어야 합니다.",
-        "6. summary는 2~4문장의 한국어 문자열이어야 합니다.",
+        "5. 분석은 반드시 선택 과목과 희망 분야의 관련성만 다룹니다.",
+        "6. 동아리, 봉사, 캠프, 인턴, 독서, 탐구활동, 대회, 비교과 활동은 절대 언급하지 않습니다.",
+        "7. strengths와 recommendations는 각각 2~5개의 한국어 문자열 배열이어야 합니다.",
+        "8. recommendations는 앞으로 선택하면 좋은 과목 또는 부족한 과목 영역만 다룹니다.",
+        "9. summary는 2~4문장의 한국어 문자열이어야 합니다.",
         "",
         "정확한 출력 형식 예시:",
         '{',
@@ -85,6 +88,29 @@ function extractJsonObject(rawText) {
     return null;
 }
 
+function extractOutputText(result) {
+    if (typeof result.output_text === "string" && result.output_text.trim()) {
+        return result.output_text.trim();
+    }
+
+    if (!Array.isArray(result.output)) return "";
+
+    const collected = [];
+    result.output.forEach(item => {
+        if (!item || !Array.isArray(item.content)) return;
+        item.content.forEach(contentItem => {
+            if (!contentItem) return;
+            if (typeof contentItem.text === "string" && contentItem.text.trim()) {
+                collected.push(contentItem.text.trim());
+            } else if (contentItem.type === "output_text" && typeof contentItem.text === "string" && contentItem.text.trim()) {
+                collected.push(contentItem.text.trim());
+            }
+        });
+    });
+
+    return collected.join("\n").trim();
+}
+
 exports.handler = async function handler(event) {
     if (event.httpMethod !== "POST") {
         return jsonResponse(405, { error: "Method not allowed" });
@@ -122,7 +148,7 @@ exports.handler = async function handler(event) {
             });
         }
 
-        const outputText = typeof result.output_text === "string" ? result.output_text.trim() : "";
+        const outputText = extractOutputText(result);
         if (!outputText) {
             return jsonResponse(500, { error: "OpenAI response did not include text output." });
         }
