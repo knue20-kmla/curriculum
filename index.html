@@ -1,0 +1,4516 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KMLA 모바일 교육과정 설계</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap');
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-strong: #1d4ed8;
+            --background-color: #eef4ff;
+            --card-background: #ffffff;
+            --surface-color: rgba(255, 255, 255, 0.88);
+            --text-color: #0f172a;
+            --muted-color: #475569;
+            --border-color: rgba(148, 163, 184, 0.24);
+            --tab-bar-height: 76px;
+            --shadow-soft: 0 20px 45px rgba(15, 23, 42, 0.08);
+            --shadow-card: 0 10px 30px rgba(37, 99, 235, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(96, 165, 250, 0.26), transparent 34%),
+                linear-gradient(180deg, #f8fbff 0%, var(--background-color) 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 960px;
+            margin: 0 auto;
+            background-color: rgba(255,255,255,0.82);
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            min-height: 72px;
+            background-color: rgba(255,255,255,0.78);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            z-index: 10;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(18px);
+        }
+
+        .app-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-header-logo {
+            height: 36px;
+            width: 36px;
+            object-fit: contain;
+        }
+
+        .app-header-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .app-header-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .app-header-subtitle {
+            font-size: 0.76rem;
+            color: var(--muted-color);
+        }
+
+        .app-header-badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-strong);
+            font-size: 0.76rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .header-admin-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.04);
+            color: var(--text-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .header-admin-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .header-admin-btn.active {
+            background: #0f172a;
+            border-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        .app-main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: calc(var(--tab-bar-height) + 18px);
+        }
+
+        .app-page {
+            display: none;
+        }
+
+        .app-page.active {
+            display: block;
+        }
+
+        .app-tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 960px;
+            margin: 0 auto;
+            height: var(--tab-bar-height);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+            transition: color 0.2s, background-color 0.2s;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 10px 14px;
+            border-radius: 12px;
+        }
+
+        .tab-item svg {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 4px;
+        }
+
+        .tab-item.active {
+            color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        .content-padding {
+             padding: 24px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: var(--muted-color);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .step {
+            padding: 24px;
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .surface-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero-panel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 28px 28px;
+        }
+
+        .hero-panel::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.54));
+        }
+
+        #home-page .header-image {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+        }
+
+        #home-page .intro-card {
+            background-color: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(255,255,255,0.66);
+            border-radius: 24px;
+            padding: 24px;
+            margin: -96px 20px 0;
+            position: relative;
+            z-index: 1;
+            box-shadow: var(--shadow-soft);
+        }
+
+        #home-page .intro-card h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            text-align: left;
+            margin: 0;
+        }
+
+        #home-page .intro-card p {
+            text-align: left;
+            color: var(--muted-color);
+            font-size: 0.98rem;
+            margin-top: 12px;
+            margin-bottom: 0;
+        }
+
+        .intro-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .meta-pill {
+            background: #f8fbff;
+            border: 1px solid rgba(37, 99, 235, 0.12);
+            border-radius: 16px;
+            padding: 12px;
+        }
+
+        .meta-pill strong {
+            display: block;
+            font-size: 1rem;
+            color: var(--primary-strong);
+        }
+
+        .meta-pill span {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted-color);
+            font-size: 0.8rem;
+        }
+
+        .start-button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.26);
+            transition: all 0.2s;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        .feature-section-bg {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-section-bg::before {
+            content: '';
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            width: 70%;
+            height: 70%;
+            transform: translate(-50%, -50%);
+            background-image: url('https://i.imgur.com/Mo4ogKc.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.08;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .feature-section-bg > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .emphasized-title {
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .builder-shell {
+            padding: 20px;
+        }
+
+        .builder-overview {
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+
+        .builder-topline {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .builder-title {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+
+        .builder-caption {
+            margin: 6px 0 0;
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+
+        .builder-step-chip {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-strong);
+            font-weight: 700;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .progress-rail {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            background: #dbeafe;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--primary-color), #60a5fa);
+            transition: width 0.25s ease;
+        }
+
+        .builder-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .builder-stat {
+            background: rgba(255,255,255,0.88);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        .builder-stat-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--muted-color);
+        }
+
+        .builder-stat-value {
+            display: block;
+            margin-top: 6px;
+            font-weight: 700;
+            color: var(--text-color);
+            font-size: 0.92rem;
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.92);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .step-intro {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .step-kicker {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-strong);
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        .step-description {
+            margin: 0;
+            color: var(--muted-color);
+            font-size: 0.92rem;
+        }
+
+        .selection-group {
+            background-color: rgba(248, 250, 252, 0.92);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+        }
+
+        .selection-header {
+            padding: 0.4rem 0.8rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.9em;
+            display: block;
+        }
+
+        .selection-header-1 { background-color: #fee2e2; color: #b91c1c; }
+        .selection-header-2 { background-color: #fef3c7; color: #b45309; }
+        .selection-header-3 { background-color: #dcfce7; color: #166534; }
+        .selection-header-4 { background-color: #dbeafe; color: #1e40af; }
+        .selection-header-5 { background-color: #ede9fe; color: #5b21b6; }
+        .selection-header-6 { background-color: #fce7f3; color: #9d174d; }
+        .selection-header-7 { background-color: #e2e8f0; color: #334155; }
+        .selection-header-8 { background-color: #f1f1f1; color: #111827; }
+
+        .selection-tools {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .selection-search {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            border-radius: 12px;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 0.88rem;
+        }
+
+        .selection-filter-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .selection-filter-btn {
+            border: 1px solid rgba(191, 219, 254, 0.95);
+            background: #ffffff;
+            color: #334155;
+            padding: 7px 10px;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .selection-filter-btn.active {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: rgba(147, 197, 253, 0.95);
+        }
+
+        .choice-select {
+            width: 100%;
+            padding: 14px 40px 14px 14px;
+            border: 1px solid rgba(148, 163, 184, 0.32);
+            border-radius: 12px;
+            background-color: #ffffff;
+            font-size: 0.95em;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232563eb%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20128c3.6%203.6%207.8%205.4%2013%205.4s9.4-1.8%2013-5.4l128-128c3.6-3.6%205.4-7.8%205.4-13%200-5-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 10px;
+        }
+
+        .choice-select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .choice-select option:disabled {
+            color: #ccc;
+        }
+
+        .required-course-box {
+            padding: 0.85rem 1rem;
+            background-color: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 14px;
+        }
+
+        .required-course-text {
+            font-size: 0.8rem;
+            color: #475569;
+            text-align: left;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .required-course-label {
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 0.85rem;
+            margin-right: 4px;
+        }
+
+        .choice-button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .choice-button-grid button {
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            background: #f8fafc;
+            color: var(--text-color);
+            padding: 12px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+            color: white;
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: #e9eef5;
+            color: #334155;
+        }
+
+        .btn-example-active {
+            background: linear-gradient(135deg, #059669, #34d399);
+            color: white;
+        }
+
+        .validation-message {
+            display: none;
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #fff7ed;
+            border: 1px solid #fdba74;
+            color: #9a3412;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .validation-message.visible {
+            display: block;
+        }
+
+        #result-page h2,
+        #result-page h3,
+        #result-page h4 {
+            border: none;
+            text-align: left;
+            margin-top: 0;
+        }
+
+        .results-shell {
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        #result-page.active.results-shell {
+            display: flex;
+        }
+
+        .results-hero {
+            padding: 22px;
+            position: sticky;
+            top: 84px;
+            z-index: 8;
+        }
+
+        .results-hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .results-export-tools {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .results-flow-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .results-export-btn {
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            background: #ffffff;
+            color: #0f172a;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .results-flow-btn {
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            background: #ffffff;
+            color: #0f172a;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .results-flow-btn.primary {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: rgba(191, 219, 254, 0.95);
+        }
+
+        .results-flow-btn.warning {
+            background: #fff7ed;
+            color: #b45309;
+            border-color: rgba(253, 230, 138, 0.95);
+        }
+
+        .results-export-status {
+            margin-top: 10px;
+            min-height: 22px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .results-hero h2 {
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .results-hero p {
+            margin: 10px 0 0;
+            color: var(--muted-color);
+        }
+
+        .results-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .metric-card {
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.88);
+            padding: 14px;
+        }
+
+        .metric-card span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--muted-color);
+        }
+
+        .metric-card strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        .results-overview-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 16px;
+        }
+
+        .saved-plans-card {
+            display: grid;
+            gap: 14px;
+        }
+
+        .saved-plan-create {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .saved-plan-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.32);
+            background: #ffffff;
+            color: #0f172a;
+            font: inherit;
+        }
+
+        .saved-plan-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .saved-plan-item {
+            display: grid;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: #f8fafc;
+        }
+
+        .saved-plan-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .saved-plan-title {
+            margin: 0;
+            color: #0f172a;
+            font-size: 0.96rem;
+            font-weight: 700;
+        }
+
+        .saved-plan-meta {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .saved-plan-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .saved-plan-btn {
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            background: #ffffff;
+            color: #334155;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .saved-plan-btn.primary {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: rgba(147, 197, 253, 0.95);
+        }
+
+        .saved-plan-btn.warning {
+            background: #fff7ed;
+            color: #b45309;
+            border-color: rgba(253, 230, 138, 0.95);
+        }
+
+        .saved-plan-empty {
+            padding: 16px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px dashed rgba(148, 163, 184, 0.4);
+            color: #64748b;
+            font-size: 0.88rem;
+        }
+
+        .saved-plan-btn.selected {
+            background: #dbeafe;
+            color: #1e40af;
+            border-color: rgba(96, 165, 250, 0.95);
+        }
+
+        .compare-panel {
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(191, 219, 254, 0.9);
+            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+        }
+
+        .compare-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: #475569;
+            font-size: 0.84rem;
+        }
+
+        .compare-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: #ffffff;
+            border: 1px solid rgba(191, 219, 254, 0.95);
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+
+        .compare-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .compare-summary-card {
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(219, 234, 254, 0.95);
+        }
+
+        .compare-summary-card span {
+            display: block;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .compare-summary-card strong {
+            display: block;
+            margin-top: 6px;
+            color: #0f172a;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .compare-summary-card.highlight {
+            border: 1px solid rgba(96, 165, 250, 0.95);
+            background: #dbeafe;
+        }
+
+        .compare-advantage {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #ffffff;
+            color: #1d4ed8;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .compare-semester-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .compare-semester-item {
+            padding: 12px;
+            border-radius: 14px;
+            background: #ffffff;
+            border: 1px solid rgba(219, 234, 254, 0.95);
+        }
+
+        .compare-semester-item.highlight {
+            border-color: rgba(96, 165, 250, 0.95);
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.08);
+            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+        }
+
+        .compare-semester-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .compare-semester-head strong {
+            font-size: 0.9rem;
+            color: #0f172a;
+        }
+
+        .compare-semester-badge {
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .compare-semester-columns {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .compare-semester-column {
+            padding: 10px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+        }
+
+        .compare-semester-column h5 {
+            margin: 0 0 6px;
+            font-size: 0.8rem;
+            color: #334155;
+        }
+
+        .compare-semester-column p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .compare-chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .compare-course-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 9px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .compare-course-chip.shared {
+            background: #eef2f7;
+            color: #475569;
+        }
+
+        .compare-course-chip.left-only {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .compare-course-chip.right-only {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .compare-empty {
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+
+        .result-summary-card {
+            border: 1px solid rgba(191, 219, 254, 0.9);
+            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+        }
+
+        .result-summary-card h3,
+        .result-semester-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .result-summary-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .result-summary-item {
+            display: grid;
+            gap: 4px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(219, 234, 254, 0.9);
+        }
+
+        .result-summary-item span {
+            font-size: 0.76rem;
+            color: #64748b;
+        }
+
+        .result-summary-item strong {
+            font-size: 0.98rem;
+            color: #0f172a;
+        }
+
+        .result-semester-card {
+            border: 1px solid rgba(226, 232, 240, 0.95);
+        }
+
+        .result-semester-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .result-semester-item {
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+        }
+
+        .result-semester-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .result-semester-head strong {
+            color: #0f172a;
+            font-size: 0.92rem;
+        }
+
+        .result-semester-count {
+            font-size: 0.74rem;
+            color: #1d4ed8;
+            background: #eff6ff;
+            border-radius: 999px;
+            padding: 4px 8px;
+            white-space: nowrap;
+        }
+
+        .result-semester-courses {
+            font-size: 0.84rem;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        .ai-analysis-shell {
+            display: grid;
+            gap: 14px;
+        }
+
+        .ai-analysis-loading {
+            min-height: 140px;
+            border: 1px solid rgba(219, 234, 254, 0.95);
+            background: linear-gradient(180deg, #eff6ff 0%, #f8fbff 100%);
+        }
+
+        .ai-analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .ai-analysis-card {
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: #ffffff;
+        }
+
+        .ai-analysis-card.strengths {
+            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+            border-color: rgba(191, 219, 254, 0.95);
+        }
+
+        .ai-analysis-card.recommendations {
+            background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+            border-color: rgba(253, 230, 138, 0.95);
+        }
+
+        .ai-analysis-card.summary {
+            grid-column: 1 / -1;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            border-color: rgba(30, 41, 59, 0.95);
+        }
+
+        .ai-analysis-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .ai-analysis-head h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .ai-analysis-badge {
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .ai-analysis-card.strengths .ai-analysis-badge {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .ai-analysis-card.recommendations .ai-analysis-badge {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .ai-analysis-card.summary .ai-analysis-badge {
+            background: rgba(148, 163, 184, 0.18);
+            color: #e2e8f0;
+        }
+
+        .ai-analysis-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        .ai-analysis-list li {
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.88);
+            color: #334155;
+        }
+
+        .ai-summary-text {
+            margin: 0;
+            font-size: 0.92rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+        }
+
+        .result-section-card {
+            padding: 18px;
+        }
+
+        .result-section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .result-section-head h3 {
+            margin-bottom: 0;
+        }
+
+        .section-toggle-btn {
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            background: #ffffff;
+            color: #334155;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .section-toggle-btn.active {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: rgba(147, 197, 253, 0.95);
+        }
+
+        .collapsible-body.hidden {
+            display: none;
+        }
+
+        #admin-page.admin-shell {
+            display: none;
+        }
+
+        #admin-page.active.admin-shell {
+            display: flex;
+        }
+
+        .admin-shell {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 14px;
+            min-height: calc(100vh - 92px);
+            padding: 20px 24px;
+            background: #f8fafc;
+        }
+
+        .admin-toolbar,
+        .admin-section-card {
+            padding: 18px;
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            box-shadow: 0 8px 22px rgba(148, 163, 184, 0.09);
+        }
+
+        .admin-login-card {
+            width: min(100%, 460px);
+            margin-left: auto;
+        }
+
+        .admin-console {
+            width: min(100%, 720px);
+            margin-left: auto;
+        }
+
+        .admin-toolbar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .admin-toolbar h2 {
+            margin: 0;
+            color: #0f172a;
+        }
+
+        .admin-toolbar p {
+            margin: 8px 0 0;
+            color: #475569;
+        }
+
+        .admin-storage-badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .admin-controls {
+            display: grid;
+            grid-template-columns: minmax(0, 180px) repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .admin-account-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .admin-account-card {
+            padding: 18px;
+        }
+
+        .admin-account-card h3 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .admin-account-card p {
+            margin: 8px 0 0;
+            color: #475569;
+        }
+
+        .admin-account-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .admin-account-status {
+            min-height: 24px;
+            margin-top: 14px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .admin-select,
+        .admin-action-btn,
+        .admin-textarea {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font: inherit;
+        }
+
+        .admin-select {
+            padding: 12px 14px;
+            background: #ffffff;
+        }
+
+        .admin-action-btn {
+            padding: 12px 14px;
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        .admin-action-btn.secondary {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .admin-action-btn.warning {
+            background: #fff7ed;
+            color: #b45309;
+        }
+
+        .admin-groups {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .admin-group-card {
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 14px;
+        }
+
+        .admin-group-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .admin-group-title {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .admin-group-count {
+            font-size: 0.78rem;
+            color: #1d4ed8;
+            background: #eff6ff;
+            padding: 6px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .admin-textarea {
+            min-height: 240px;
+            padding: 14px;
+            resize: vertical;
+            line-height: 1.5;
+            color: #0f172a;
+            background: #ffffff;
+        }
+
+        .admin-help {
+            margin: 10px 0 0;
+            color: #64748b;
+            font-size: 0.84rem;
+        }
+
+        .admin-status {
+            margin-top: 14px;
+            min-height: 24px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .admin-login-card {
+            padding: 24px;
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            box-shadow: 0 8px 22px rgba(148, 163, 184, 0.09);
+        }
+
+        .admin-login-fields {
+            display: grid;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .admin-login-label {
+            display: grid;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .admin-login-input {
+            width: 100%;
+            border: 1px solid rgba(148, 163, 184, 0.36);
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            color: #0f172a;
+            background: #ffffff;
+        }
+
+        .admin-login-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .admin-login-message {
+            min-height: 24px;
+            margin-top: 14px;
+            font-size: 0.9rem;
+            color: #dc2626;
+        }
+
+        .admin-auth-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .admin-hidden {
+            display: none !important;
+        }
+
+        .builder-save-status {
+            margin-top: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .app-container.admin-mode .app-tab-bar {
+            display: none;
+        }
+
+        .app-container.admin-mode .app-main {
+            padding-bottom: 0;
+        }
+
+        .app-container.admin-mode .app-header {
+            border-bottom-color: rgba(148, 163, 184, 0.12);
+            background: rgba(248, 250, 252, 0.94);
+        }
+
+        #tree-container {
+            overflow-x: auto;
+            padding: 12px;
+            background-color: #f8fbff;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        #tree-grid {
+            display: grid;
+            grid-template-columns: 76px repeat(6, minmax(128px, 1fr));
+            gap: 8px;
+            min-width: 860px;
+        }
+
+        .grid-header,
+        .area-label {
+            font-size: 0.8em;
+            font-weight: 700;
+            padding: 10px 8px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .grid-header {
+            background: #e8f1ff;
+            color: var(--primary-strong);
+        }
+
+        .area-label {
+            background-color: #eef2f7;
+            color: var(--text-color);
+        }
+
+        .grid-cell {
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 8px;
+            min-height: 72px;
+        }
+
+        .grid-cell ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .grid-cell ul li {
+            padding: 6px 8px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            font-size: 0.75em;
+            text-align: center;
+            border: 1px solid transparent;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin: 20px 0 8px;
+        }
+
+        #ai-analysis-container .p-6 {
+            padding: 1.2rem;
+        }
+
+        @media (max-width: 720px) {
+            .app-container {
+                max-width: 100%;
+            }
+
+            .app-header {
+                padding: 14px 16px;
+                gap: 10px;
+            }
+
+            .app-header-brand,
+            .app-header-actions,
+            .app-header-copy {
+                min-width: 0;
+            }
+
+            .app-header-badge {
+                display: none;
+            }
+
+            .header-admin-btn {
+                padding: 8px 11px;
+                font-size: 0.76rem;
+            }
+
+            #home-page .header-image {
+                height: 260px;
+            }
+
+            #home-page .intro-card {
+                margin: -72px 16px 0;
+                padding: 20px;
+            }
+
+            .content-padding,
+            .builder-shell,
+            .admin-shell,
+            .step {
+                padding: 16px;
+            }
+
+            .surface-card,
+            .results-hero,
+            .result-section-card,
+            .admin-toolbar,
+            .admin-section-card,
+            .admin-login-card,
+            .admin-account-card {
+                border-radius: 18px;
+            }
+
+            .intro-meta,
+            .builder-stats,
+            .results-overview-grid,
+            .ai-analysis-grid,
+            .admin-groups,
+            .admin-controls,
+            .admin-account-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .saved-plan-create {
+                grid-template-columns: 1fr;
+            }
+
+            .compare-summary-grid,
+            .compare-semester-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .step-intro,
+            .builder-topline,
+            .navigation,
+            .results-hero-top,
+            .result-semester-head,
+            .admin-toolbar-top,
+            .result-section-head,
+            .saved-plan-head,
+            .compare-semester-head {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .selection-group {
+                padding: 14px;
+                border-radius: 14px;
+            }
+
+            .selection-tools {
+                gap: 8px;
+            }
+
+            .selection-search {
+                padding: 10px 11px;
+                font-size: 0.84rem;
+            }
+
+            .selection-filter-bar {
+                gap: 6px;
+            }
+
+            .selection-filter-btn {
+                padding: 6px 9px;
+                font-size: 0.7rem;
+            }
+
+            .choice-select {
+                padding: 13px 36px 13px 12px;
+                font-size: 0.9rem;
+            }
+
+            .choice-button-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-hero {
+                padding: 18px;
+                top: 76px;
+            }
+
+            .results-flow-tools,
+            .results-export-tools {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .results-export-btn,
+            .results-flow-btn {
+                flex: 1 1 calc(50% - 6px);
+                text-align: center;
+            }
+
+            .section-toggle-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .results-metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .metric-card,
+            .result-summary-item,
+            .result-semester-item,
+            .ai-analysis-card {
+                padding: 12px;
+            }
+
+            .result-semester-count,
+            .admin-group-count {
+                align-self: flex-start;
+            }
+
+            .admin-shell {
+                align-items: stretch;
+            }
+
+            .admin-login-card,
+            .admin-console {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .admin-controls {
+                gap: 8px;
+            }
+
+            .admin-group-card {
+                padding: 12px;
+            }
+
+            .admin-textarea {
+                min-height: 200px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .app-header {
+                padding: 12px 14px;
+                align-items: flex-start;
+            }
+
+            .app-header-title {
+                font-size: 0.92rem;
+            }
+
+            .app-header-subtitle {
+                display: none;
+            }
+
+            .header-admin-btn {
+                padding: 8px 10px;
+                gap: 6px;
+            }
+
+            .header-admin-btn span {
+                display: none;
+            }
+
+            #home-page .header-image {
+                height: 220px;
+            }
+
+            #home-page .intro-card {
+                margin: -56px 12px 0;
+                padding: 18px;
+            }
+
+            #home-page .intro-card h1 {
+                font-size: 1.45rem;
+            }
+
+            .content-padding,
+            .builder-shell,
+            .admin-shell,
+            .step {
+                padding: 12px;
+            }
+
+            .results-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .results-export-btn,
+            .results-flow-btn,
+            .admin-action-btn,
+            .section-toggle-btn {
+                width: 100%;
+                flex-basis: 100%;
+            }
+
+            .builder-stat,
+            .metric-card {
+                border-radius: 14px;
+            }
+
+            .result-section-card {
+                padding: 14px;
+            }
+
+            .grid-cell {
+                min-height: 64px;
+            }
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+            }
+
+            .app-container {
+                max-width: none;
+                box-shadow: none;
+                background: #ffffff;
+                backdrop-filter: none;
+            }
+
+            .app-header,
+            .app-tab-bar,
+            .results-export-tools,
+            .results-flow-tools,
+            .section-toggle-btn,
+            #header-admin-btn,
+            #no-results {
+                display: none !important;
+            }
+
+            .app-main {
+                overflow: visible;
+                padding-bottom: 0;
+            }
+
+            .app-page {
+                display: none !important;
+            }
+
+            #result-page.active {
+                display: block !important;
+                padding: 0;
+            }
+
+            .results-hero,
+            .surface-card,
+            .result-section-card {
+                position: static;
+                top: auto;
+                box-shadow: none;
+                border: 1px solid #cbd5e1;
+                background: #ffffff;
+                backdrop-filter: none;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .results-hero,
+            .result-section-card,
+            .results-overview-grid {
+                margin-bottom: 14px;
+            }
+
+            .results-overview-grid,
+            .results-metrics,
+            .ai-analysis-grid {
+                display: block;
+            }
+
+            .metric-card,
+            .result-summary-item,
+            .result-semester-item,
+            .ai-analysis-card {
+                margin-bottom: 10px;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .collapsible-body {
+                display: block !important;
+            }
+
+            #tree-container {
+                overflow: visible;
+                padding: 0;
+                border: none;
+                background: #ffffff;
+            }
+
+            #tree-grid {
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 상단 헤더 -->
+        <header class="app-header">
+            <div class="app-header-brand">
+                <img src="https://i.imgur.com/Mo4ogKc.png" alt="KMLA 로고" class="app-header-logo">
+                <div class="app-header-copy">
+                    <h1 class="app-header-title">KMLA 교육과정 설계</h1>
+                    <span class="app-header-subtitle">민족사관고등학교 교육과정 체험 웹앱</span>
+                </div>
+            </div>
+            <div class="app-header-actions">
+                <div class="app-header-badge">Curriculum Studio</div>
+                <button type="button" id="header-admin-btn" class="header-admin-btn" onclick="showPage('admin-page')">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 1115 0 7.5 7.5 0 01-15 0zm7.5-4.5v3m0 3v.008h.008V13.5H12zm6.364-7.864l-1.06 1.06m-10.608 0l-1.06-1.06m12.728 17.728l-1.06-1.06m-10.608 0l-1.06 1.06" /></svg>
+                    <span>관리자 설정</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 메인 컨텐츠 영역 -->
+        <main class="app-main">
+            <!-- 홈 페이지 -->
+            <div id="home-page" class="app-page active">
+                <div class="hero-panel">
+                    <img src="https://i.imgur.com/58n2WYk.jpg" alt="민족사관고등학교 전경" class="header-image">
+                </div>
+                <div class="intro-card">
+                    <h1>민사고 영재교육과정 체험하기</h1>
+                    <p>학기별 과목을 설계하고, 결과를 시각화하고, 전공 기준으로 분석해보세요.</p>
+                    <div class="intro-meta">
+                        <div class="meta-pill">
+                            <strong>6학기</strong>
+                            <span>전 학년 설계 흐름</span>
+                        </div>
+                        <div class="meta-pill">
+                            <strong>150+</strong>
+                            <span>탐색 가능한 선택 과목</span>
+                        </div>
+                        <div class="meta-pill">
+                            <strong>AI</strong>
+                            <span>진로 적합성 분석</span>
+                        </div>
+                    </div>
+                    <button class="start-button" onclick="showPage('builder-page')">지금 시작하기</button>
+                </div>
+                <div class="content-padding feature-section-bg">
+                    <h2 class="text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-sky-900 tracking-tight emphasized-title">고교학점제의 원조이자 완성!<br>민사고 교육과정</h2>
+                    <div class="space-y-4 mt-4">
+                        <div class="p-4 rounded-2xl border border-blue-200 bg-white/80 backdrop-blur-sm">
+                            <h3 class="font-bold text-blue-800">폭넓은 학문적 탐색</h3>
+                            <p class="text-sm text-blue-700 mt-1 mb-0">학기당 150여 개의 다양한 선택 과목을 통해 자신의 진로와 적성을 마음껏 탐색할 수 있습니다.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl border border-purple-200 bg-white/80 backdrop-blur-sm">
+                            <h3 class="font-bold text-purple-800">자기주도적 학습 설계</h3>
+                            <p class="text-sm text-purple-700 mt-1 mb-0">학생 스스로 진로와 적성에 따라 과목을 선택하며 자기주도적 학습 역량을 키웁니다.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl border border-green-200 bg-white/80 backdrop-blur-sm">
+                            <h3 class="font-bold text-green-800">K-Diploma 인증 교육과정</h3>
+                            <p class="text-sm text-green-700 mt-1 mb-0">민사고만의 민족주체성, 글로벌리더, 영재교육 인증 교육과정을 운영합니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 과정 설계 페이지 -->
+            <div id="builder-page" class="app-page builder-shell">
+                <section class="builder-overview surface-card">
+                    <div class="builder-topline">
+                        <div>
+                            <h2 class="builder-title">교육과정 설계</h2>
+                            <p class="builder-caption">학기별 선택 현황과 진로 목표를 보면서 설계를 이어가세요.</p>
+                        </div>
+                        <div id="builder-step-label" class="builder-step-chip">1 / 7 단계</div>
+                    </div>
+                    <div class="progress-rail">
+                        <div id="builder-progress-fill" class="progress-fill"></div>
+                    </div>
+                    <div class="builder-stats">
+                        <div class="builder-stat">
+                            <span class="builder-stat-label">현재 진로</span>
+                            <strong id="goal-preview" class="builder-stat-value">미설정</strong>
+                        </div>
+                        <div class="builder-stat">
+                            <span class="builder-stat-label">선택 과목 수</span>
+                            <strong id="selected-count" class="builder-stat-value">0</strong>
+                        </div>
+                        <div class="builder-stat">
+                            <span class="builder-stat-label">진행률</span>
+                            <strong id="builder-progress-text" class="builder-stat-value">0%</strong>
+                        </div>
+                    </div>
+                    <div id="validation-message" class="validation-message"></div>
+                    <div id="builder-save-status" class="builder-save-status">설계 내용은 이 브라우저에 임시 저장됩니다.</div>
+                </section>
+
+                <div id="step-1" class="step step-card active">
+                    <div class="step-intro">
+                        <span class="step-kicker">1단계</span>
+                        <p class="step-description">진로 희망을 정하면 이후 분석과 예시 결과가 그 방향에 맞춰집니다.</p>
+                    </div>
+                    <p>당신의 진로 희망을 입력해주세요(<span class="font-semibold text-blue-600">직접 입력 or 선택</span>). AI 분석에 활용됩니다.</p>
+                    <input type="text" id="career-goal" placeholder="예: 컴퓨터과학 / AI" class="w-full p-3 border-2 border-slate-300 rounded-lg mb-4 mt-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" oninput="updateExampleButtonState()">
+                    <div class="choice-button-grid">
+                        <button type="button" onclick="setCareerGoal('의예 / 생명과학')">의예 / 생명과학</button>
+                        <button type="button" onclick="setCareerGoal('공학 / 물리')">공학 / 물리</button>
+                        <button type="button" onclick="setCareerGoal('컴퓨터과학 / AI')">컴퓨터과학 / AI</button>
+                        <button type="button" onclick="setCareerGoal('경제 / 경영')">경제 / 경영</button>
+                        <button type="button" onclick="setCareerGoal('정치 / 외교')">정치 / 외교</button>
+                        <button type="button" onclick="setCareerGoal('자율 전공')">자율 전공</button>
+                    </div>
+                    <div class="navigation">
+                        <button id="skip-to-results-btn" class="btn btn-secondary" onclick="skipToResultsWithDefault()">수강신청 결과(예시)</button>
+                        <button class="btn btn-primary" onclick="nextStep(1)">다음</button>
+                    </div>
+                </div>
+
+                <div id="step-2" class="step step-card">
+                    <div class="step-intro">
+                        <span class="step-kicker">1학년 1학기</span>
+                        <p class="step-description">필수 과목 위에 진로 탐색용 선택 과목 3개를 얹는 단계입니다.</p>
+                    </div>
+                    <div class="required-course-box my-4">
+                        <p class="required-course-text">
+                            <span class="required-course-label">필수과목:</span> 국어1, 수학1, 영어1, 통합사회1, 통합과학1, 한국사1, 진로와 직업, 체육, 음악, 미술
+                        </p>
+                    </div>
+                    <div class="selection-group">
+                        <label for="select-s1-1-1" class="selection-header selection-header-1">선택 1 (과학/사회)</label>
+                        <select id="select-s1-1-1" class="choice-select" data-semester-key="1-1" data-group-id="1-1-1"></select>
+                    </div>
+                    <div class="selection-group">
+                        <label for="select-s1-1-2" class="selection-header selection-header-2">선택 2 (과학/사회)</label>
+                        <select id="select-s1-1-2" class="choice-select" data-semester-key="1-1" data-group-id="1-1-2"></select>
+                    </div>
+                    <div class="selection-group">
+                        <label for="select-s1-1-3" class="selection-header selection-header-3">선택 3 (외국어/정보)</label>
+                        <select id="select-s1-1-3" class="choice-select" data-semester-key="1-1" data-group-id="1-1-3"></select>
+                    </div>
+                    <div class="navigation">
+                        <button class="btn btn-secondary" onclick="prevStep(2)">이전</button>
+                        <button class="btn btn-primary" onclick="nextStep(2)">다음</button>
+                    </div>
+                </div>
+
+                <div id="step-3" class="step step-card">
+                    <div class="step-intro">
+                        <span class="step-kicker">1학년 2학기</span>
+                        <p class="step-description">1학년 1학기의 흐름을 이어가며 두 번째 학기 선택을 구성합니다.</p>
+                    </div>
+                    <div class="required-course-box my-4">
+                        <p class="required-course-text">
+                            <span class="required-course-label">필수과목:</span> 국어2, 수학2, 영어2, 통합사회2, 통합과학2, 한국사2, 진로와 직업, 체육, 음악, 미술
+                        </p>
+                    </div>
+                    <div class="selection-group">
+                        <label for="select-s1-2-1" class="selection-header selection-header-1">선택 1 (과학/사회)</label>
+                        <select id="select-s1-2-1" class="choice-select" data-semester-key="1-2" data-group-id="1-2-1"></select>
+                    </div>
+                    <div class="selection-group">
+                        <label for="select-s1-2-2" class="selection-header selection-header-2">선택 2 (과학/사회)</label>
+                        <select id="select-s1-2-2" class="choice-select" data-semester-key="1-2" data-group-id="1-2-2"></select>
+                    </div>
+                    <div class="selection-group">
+                        <label for="select-s1-2-3" class="selection-header selection-header-3">선택 3 (외국어/정보)</label>
+                        <select id="select-s1-2-3" class="choice-select" data-semester-key="1-2" data-group-id="1-2-3"></select>
+                    </div>
+                    <div class="navigation"><button class="btn btn-secondary" onclick="prevStep(3)">이전</button><button class="btn btn-primary" onclick="nextStep(3)">다음</button></div>
+                </div>
+
+                <div id="step-4" class="step step-card">
+                    <div class="step-intro">
+                        <span class="step-kicker">2학년 1학기</span>
+                        <p class="step-description">본격적으로 심화 과목을 누적하기 시작하는 구간입니다.</p>
+                    </div>
+                    <div id="step-4-groups"></div>
+                    <div class="navigation"><button class="btn btn-secondary" onclick="prevStep(4)">이전</button><button class="btn btn-primary" onclick="nextStep(4)">다음</button></div>
+                </div>
+                <div id="step-5" class="step step-card">
+                    <div class="step-intro">
+                        <span class="step-kicker">2학년 2학기</span>
+                        <p class="step-description">진로 적합성을 높일 선택이 누적되는지 점검해보세요.</p>
+                    </div>
+                    <div id="step-5-groups"></div>
+                    <div class="navigation"><button class="btn btn-secondary" onclick="prevStep(5)">이전</button><button class="btn btn-primary" onclick="nextStep(5)">다음</button></div>
+                </div>
+                <div id="step-6" class="step step-card">
+                    <div class="step-intro">
+                        <span class="step-kicker">3학년 1학기</span>
+                        <p class="step-description">최종 전공 방향에 맞는 심화 라인을 정리하는 단계입니다.</p>
+                    </div>
+                    <div id="step-6-groups"></div>
+                    <div class="navigation"><button class="btn btn-secondary" onclick="prevStep(6)">이전</button><button class="btn btn-primary" onclick="nextStep(6)">다음</button></div>
+                </div>
+                <div id="step-7" class="step step-card">
+                    <div class="step-intro">
+                        <span class="step-kicker">3학년 2학기</span>
+                        <p class="step-description">마지막 학기 선택을 마치고 전체 교육과정 결과를 확인합니다.</p>
+                    </div>
+                    <div id="step-7-groups"></div>
+                    <div class="navigation"><button class="btn btn-secondary" onclick="prevStep(7)">이전</button><button class="btn btn-primary" onclick="showResults()">설계 완료</button></div>
+                </div>
+            </div>
+
+            <!-- 결과 분석 페이지 -->
+            <div id="result-page" class="app-page content-padding results-shell">
+                <div class="results-hero surface-card">
+                    <div class="results-hero-top">
+                        <div>
+                            <h2 id="result-summary-title">나의 교육과정 분석</h2>
+                            <p>설계한 교육과정을 시각화하고 전공 적합도와 AI 분석을 함께 확인해보세요.</p>
+                            <div class="results-flow-tools">
+                                <button type="button" class="results-flow-btn primary" onclick="continueCurriculumEditing()">이어서 수정</button>
+                                <button type="button" class="results-flow-btn warning" onclick="restartCurriculumDesign()">초기화 후 다시 시작</button>
+                            </div>
+                        </div>
+                        <div class="results-export-tools">
+                            <button type="button" class="results-export-btn" onclick="exportResultAsImage()">이미지 저장</button>
+                            <button type="button" class="results-export-btn" onclick="exportResultAsPdf()">PDF 저장</button>
+                            <button type="button" class="results-export-btn" onclick="printResultsReport()">인쇄</button>
+                            <button type="button" class="results-export-btn" onclick="shareResultsByEmail()">이메일 공유</button>
+                            <button type="button" class="results-export-btn" onclick="exportCurriculumData()">설계 저장</button>
+                            <button type="button" class="results-export-btn" onclick="triggerCurriculumImport()">불러오기</button>
+                        </div>
+                    </div>
+                    <div id="results-metrics" class="results-metrics"></div>
+                    <div id="results-export-status" class="results-export-status"></div>
+                    <input id="curriculum-import-input" type="file" accept="application/json,.json" class="admin-hidden">
+                </div>
+
+                <div id="results-content" class="hidden">
+                    <section class="results-overview-grid">
+                        <section class="result-section-card result-summary-card surface-card">
+                            <h3 class="text-xl font-bold">핵심 요약</h3>
+                            <div id="result-summary-list" class="result-summary-list"></div>
+                        </section>
+
+                        <section class="result-section-card result-semester-card surface-card">
+                            <h3 class="text-xl font-bold">학기별 요약</h3>
+                            <div id="result-semester-list" class="result-semester-list"></div>
+                        </section>
+                    </section>
+
+                    <section class="result-section-card surface-card saved-plans-card">
+                        <div class="result-section-head">
+                            <h3 class="text-xl font-bold">설계안 보관함</h3>
+                            <button type="button" class="section-toggle-btn" onclick="exportComparisonAsPdf()">비교 PDF 저장</button>
+                        </div>
+                        <div class="saved-plan-create">
+                            <input id="saved-plan-name" type="text" class="saved-plan-input" placeholder="예: 의생명 트랙안 / 공학 심화안">
+                            <button type="button" class="results-export-btn" onclick="saveCurrentPlanToLibrary()">현재 설계 저장</button>
+                            <button type="button" class="results-export-btn" onclick="duplicateCurrentPlanToLibrary()">현재 설계 복제</button>
+                        </div>
+                        <div id="saved-plan-compare" class="compare-panel"></div>
+                        <div id="saved-plan-list" class="saved-plan-list"></div>
+                    </section>
+
+                    <section class="result-section-card surface-card">
+                        <div class="result-section-head">
+                            <h3 class="text-xl font-bold">학기별 선택과목</h3>
+                            <button type="button" id="toggle-tree-btn" class="section-toggle-btn active" onclick="toggleResultSection('tree')">접기</button>
+                        </div>
+                        <div id="tree-section-body" class="collapsible-body">
+                            <div id="tree-container"><div id="tree-grid"></div></div>
+                        </div>
+                    </section>
+
+                    <section class="result-section-card surface-card">
+                        <div class="result-section-head">
+                            <h3 class="text-xl font-bold">교육과정 심층 분석</h3>
+                            <button type="button" id="toggle-analysis-btn" class="section-toggle-btn active" onclick="toggleResultSection('analysis')">접기</button>
+                        </div>
+                        <div id="analysis-section-body" class="collapsible-body">
+                            <label for="major-selector" class="font-semibold text-sm">관심 전공 계열:</label>
+                            <select id="major-selector" class="w-full p-3 border rounded-xl mt-2 text-sm">
+                                <option value="cs">컴퓨터과학 / AI</option>
+                                <option value="engineering">공학 / 물리</option>
+                                <option value="medical">의예 / 생명과학</option>
+                                <option value="economics">경제 / 경영</option>
+                                <option value="law">법학 / 정치외교</option>
+                                <option value="general">자유전공</option>
+                            </select>
+                            <div class="chart-container"><canvas id="curriculum-gap-chart"></canvas></div>
+                        </div>
+                    </section>
+
+                    <section class="result-section-card surface-card">
+                        <div class="result-section-head">
+                            <h3 class="text-xl font-bold">AI 진로 적합성 분석</h3>
+                            <button type="button" id="toggle-ai-btn" class="section-toggle-btn" onclick="toggleResultSection('ai')">펼치기</button>
+                        </div>
+                        <div id="ai-section-body" class="collapsible-body hidden">
+                            <div id="ai-analysis-container" class="ai-analysis-shell mt-2">
+                                <div id="ai-loading" class="ai-analysis-loading flex flex-col items-center justify-center p-6 rounded-2xl">
+                                    <p class="text-slate-700 font-semibold">AI가 분석 중입니다...</p>
+                                </div>
+                                <div id="ai-results" class="hidden">
+                                    <div class="ai-analysis-grid">
+                                        <section class="ai-analysis-card strengths">
+                                            <div class="ai-analysis-head">
+                                                <h4 class="font-bold text-blue-900">강점</h4>
+                                                <span class="ai-analysis-badge">Strengths</span>
+                                            </div>
+                                            <ul id="analysis-strengths" class="ai-analysis-list"></ul>
+                                        </section>
+                                        <section class="ai-analysis-card recommendations">
+                                            <div class="ai-analysis-head">
+                                                <h4 class="font-bold text-amber-900">보완 및 제언</h4>
+                                                <span class="ai-analysis-badge">Next Step</span>
+                                            </div>
+                                            <ul id="analysis-recommendations" class="ai-analysis-list"></ul>
+                                        </section>
+                                        <section class="ai-analysis-card summary">
+                                            <div class="ai-analysis-head">
+                                                <h4 class="font-bold text-white">AI 총평</h4>
+                                                <span class="ai-analysis-badge">Summary</span>
+                                            </div>
+                                            <p id="analysis-summary" class="ai-summary-text"></p>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div id="no-results" class="text-center p-8 mt-4 surface-card">
+                    <p>아직 설계된 교육과정이 없습니다.</p>
+                    <button class="btn btn-primary" onclick="showPage('builder-page')">과정 설계 시작하기</button>
+                </div>
+            </div>
+
+            <div id="admin-page" class="app-page admin-shell">
+                <section id="admin-login-panel" class="admin-login-card surface-card">
+                    <h2>관리자 로그인</h2>
+                    <p>로그인 후 학년·학기별 과목 목록을 확인하고 수정할 수 있습니다.</p>
+                    <div class="admin-login-fields">
+                        <label class="admin-login-label">
+                            관리자 아이디
+                            <input id="admin-login-id" type="text" class="admin-login-input" autocomplete="username">
+                        </label>
+                        <label class="admin-login-label">
+                            비밀번호
+                            <input id="admin-login-password" type="password" class="admin-login-input" autocomplete="current-password">
+                        </label>
+                    </div>
+                    <div class="admin-login-actions">
+                        <button type="button" class="admin-action-btn secondary" onclick="showPage('home-page')">홈으로</button>
+                        <button type="button" id="admin-login-btn" class="admin-action-btn">로그인</button>
+                    </div>
+                    <div id="admin-login-message" class="admin-login-message"></div>
+                </section>
+
+                <div id="admin-console" class="admin-hidden">
+                <section class="admin-toolbar surface-card">
+                    <div class="admin-toolbar-top">
+                        <div>
+                            <h2>관리자 화면</h2>
+                            <p>학년·학기별 과목 목록을 확인하고 수정하면 설계 화면 선택지에 바로 반영됩니다.</p>
+                        </div>
+                        <div class="admin-auth-row">
+                            <div class="admin-storage-badge">브라우저 로컬 저장</div>
+                            <button type="button" id="admin-home-btn" class="admin-action-btn secondary">홈으로</button>
+                        </div>
+                    </div>
+                    <div class="admin-controls">
+                        <select id="admin-semester-select" class="admin-select"></select>
+                        <button type="button" id="admin-save-btn" class="admin-action-btn">현재 학기 저장</button>
+                        <button type="button" id="admin-reset-semester-btn" class="admin-action-btn secondary">현재 학기 원본 복원</button>
+                        <button type="button" id="admin-reset-all-btn" class="admin-action-btn warning">전체 초기화</button>
+                    </div>
+                    <div id="admin-status" class="admin-status"></div>
+                </section>
+
+                <section class="admin-section-card surface-card">
+                    <div id="admin-groups" class="admin-groups"></div>
+                </section>
+
+                <section class="admin-account-grid">
+                    <section class="admin-section-card admin-account-card surface-card">
+                        <h3>관리자 계정 설정</h3>
+                        <p>현재 브라우저에서 사용하는 관리자 로그인 정보를 변경합니다.</p>
+                        <div class="admin-login-fields">
+                            <label class="admin-login-label">
+                                새 관리자 아이디
+                                <input id="admin-credentials-id" type="text" class="admin-login-input" autocomplete="off">
+                            </label>
+                            <label class="admin-login-label">
+                                새 비밀번호
+                                <input id="admin-credentials-password" type="password" class="admin-login-input" autocomplete="new-password">
+                            </label>
+                            <label class="admin-login-label">
+                                비밀번호 확인
+                                <input id="admin-credentials-password-confirm" type="password" class="admin-login-input" autocomplete="new-password">
+                            </label>
+                        </div>
+                        <div class="admin-account-actions">
+                            <button type="button" id="admin-credentials-save-btn" class="admin-action-btn">계정 저장</button>
+                            <button type="button" id="admin-credentials-reset-btn" class="admin-action-btn secondary">기본 계정 복원</button>
+                        </div>
+                        <div id="admin-credentials-status" class="admin-account-status"></div>
+                    </section>
+                </section>
+                </div>
+            </div>
+        </main>
+
+        <!-- 하단 탭 바 -->
+        <nav class="app-tab-bar">
+            <div id="tab-home" class="tab-item active" onclick="resetBuilder(); showPage('home-page');">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v--4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
+                <span>홈</span>
+            </div>
+            <div id="tab-builder" class="tab-item" onclick="showPage('builder-page')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+                <span>과정 설계</span>
+            </div>
+            <div id="tab-result" class="tab-item" onclick="showPage('result-page')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+                <span>결과 분석</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // --- DATA (기존 데이터 유지) ---
+        const courseData = { "1-1-1": ["물리학", "생명과학", "화학", "경제", "심리학", "Chemistry1", "Physics 1", "Biology1", "역사연구방법", "윤리와 사상", "프로그래밍 기초", "컴퓨터 시스템 일반"], "1-1-2": ["물리학", "생명과학", "화학", "경제", "심리학", "Chemistry1", "Physics 1", "Biology1", "역사연구방법", "윤리와 사상", "프로그래밍 기초", "컴퓨터 시스템 일반"], "1-1-3": ["프랑스어", "스페인어", "중국어", "한문", "프로그래밍 기초", "컴퓨터 시스템 일반"], "1-2-1": ["AP Chemistry1", "AP Physics1", "AP Biology1", "사회와 문화", "AP 환경과학", "생물과 유전", "AP 미국사1", "물질과 에너지", "화학 반응의 세계", "AP 미시경제", "역학과 에너지", "행성 우주과학", "AP 통계학 1", "AP 유럽사 1", "국제관계의 이해"], "1-2-2": ["AP Chemistry1", "AP Physics1", "AP Biology1", "사회와 문화", "AP 환경과학", "생물과 유전", "AP 미국사1", "물질과 에너지", "화학 반응의 세계", "AP 미시경제", "역학과 에너지", "행성 우주과학", "AP 통계학 1", "AP 유럽사 1", "국제관계의 이해"], "1-2-3": ["프랑스어", "스페인어", "중국어", "한문", "프로그래밍 기초", "컴퓨터 시스템 일반"], "2-1-1": ["대수", "미적분1", "AP 통계학 1", "기하", "경제 수학", "인공지능 수학", "AP 미적분학 BC 1", "고전문학 감상", "현대국어문법의 이해", "현대문학 감상", "한국문학과 세계문학", "토론과 논술", "현대희곡", "문학 수용과 창작", "소설 창작", "언어와 매체", "미국문학1", "영국문학1", "영미문학1", "AP 영문학1", "AP 영어학1", "세계문학1", "영어토론1"], "2-1-2": ["대수", "미적분1", "AP 통계학 1", "기하", "경제 수학", "인공지능 수학", "AP 미적분학 BC 1", "고전문학 감상", "현대국어문법의 이해", "현대문학 감상", "한국문학과 세계문학", "토론과 논술", "현대희곡", "문학 수용과 창작", "소설 창작", "언어와 매체", "미국문학1", "영국문학1", "영미문학1", "AP 영문학1", "AP 영어학1", "세계문학1", "영어토론1"], "2-1-3": ["대수", "미적분1", "AP 통계학 1", "기하", "경제 수학", "AP 미적분학 BC 1", "인공지능 수학", "고전문학 감상", "현대국어문법의 이해", "현대문학 감상", "한국문학과 세계문학", "토론과 논술", "현대희곡", "문학 수용과 창작", "소설 창작", "언어와 매체", "미국문학1", "영국문학1", "영미문학1", "AP 영문학1", "AP 영어학1", "세계문학1", "영어토론1"], "2-1-4": ["물리학", "화학", "생명과학", "Chemistry1", "Physics 1", "Biology1", "윤리와 사상", "AP 심리학 1", "데이터 과학", "정치", "법과 사회", "프랑스어 독해와 작문 1", "스페인어 독해와 작문 1", "한문 고전 읽기", "대수", "미적분1", "AP 통계학 1", "기하", "AP 미적분학 BC 1", "고전문학 감상", "현대국어문법의 이해", "미국문학1", "영국문학1", "영미문학1"], "2-1-5": ["AP Physics 2", "AP Biology 2", "AP Chemistry 2", "AP 환경과학", "고급생명과학", "고급화학", "고급물리학", "유기화학 1", "AP 심리학 1", "프로그래밍", "머신러닝", "AP 미시경제", "AP 거시경제", "AP 미국정치 1", "AP 비교정치 1", "AP 세계사 1", "AP 유럽사 1", "근대 정치사상", "비교정치", "한국 정치의 이해", "미적분1", "AP 통계학 1", "선형대수학", "응용수학탐구"], "2-1-6": ["AP Physics 2", "AP Biology 2", "AP Chemistry 2", "AP 환경과학", "고급생명과학", "고급화학", "고급물리학", "유기화학 1", "AP 심리학 1", "프로그래밍", "머신러닝", "AP 미시경제", "AP 거시경제", "AP 미국정치 1", "AP 비교정치 1", "AP 세계사 1", "AP 유럽사 1", "근대 정치사상", "비교정치", "한국 정치의 이해", "미적분1", "AP 통계학 1", "선형대수학", "응용수학탐구"], "2-1-7": ["AP Physics 2", "AP Biology 2", "AP Chemistry 2", "AP 환경과학", "고급생명과학", "고급화학", "고급물리학", "유기화학 1", "AP 심리학 1", "프로그래밍", "머신러닝", "AP 미시경제", "AP 거시경제", "AP 미국정치 1", "AP 비교정치 1", "AP 세계사 1", "AP 유럽사 1", "근대 정치사상", "비교정치", "한국 정치의 이해", "미적분1", "AP 통계학 1", "선형대수학", "응용수학탐구", "대수", "기하", "AP 미적분학 BC 1", "고전문학 감상", "현대국어문법의 이해", "미국문학1", "영국문학1", "영미문학1"], "2-1-8": ["AP Physics 2", "AP Biology 2", "AP Chemistry 2", "AP 환경과학", "고급생명과학", "고급화학", "고급물리학", "유기화학 1", "AP 심리학 1", "프로그래밍", "머신러닝", "AP 미시경제", "AP 거시경제", "AP 미국정치 1", "AP 비교정치 1", "AP 세계사 1", "AP 유럽사 1", "근대 정치사상", "비교정치", "한국 정치의 이해", "미적분1", "AP 통계학 1", "선형대수학", "응용수학탐구", "대수", "기하", "AP 미적분학 BC 1", "고전문학 감상", "현대국어문법의 이해", "미국문학1", "영국문학1", "영미문학1"], "2-2-1": ["화법과 언어", "독서와 작문", "문학", "주제 탐구 독서", "문학과 영상", "독서 토론과 글쓰기", "매체 의사소통", "언어생활 탐구", "문예 창작의 이해", "문장론", "고전문학의 감상과 비평", "현대 희곡", "AP 영문학 2", "AP 영어학2", "미국문학 2", "영미문학 2", "영국문학 2", "영어토론 2", "세계문학2", "고급 영어 토론과 작문", "미적분1", "미적분2", "AP 통계학 2", "확률과 통계", "기하", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "AP 미적분학 BC 2", "선형대수학", "응용수학탐구"], "2-2-2": ["화법과 언어", "독서와 작문", "문학", "주제 탐구 독서", "문학과 영상", "독서 토론과 글쓰기", "매체 의사소통", "언어생활 탐구", "문예 창작의 이해", "문장론", "고전문학의 감상과 비평", "현대 희곡", "AP 영문학 2", "AP 영어학2", "미국문학 2", "영미문학 2", "영국문학 2", "영어토론 2", "세계문학2", "고급 영어 토론과 작문", "미적분1", "미적분2", "AP 통계학 2", "확률과 통계", "기하", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "AP 미적분학 BC 2", "선형대수학", "응용수학탐구"], "2-2-3": ["화법과 언어", "독서와 작문", "문학", "주제 탐구 독서", "문학과 영상", "독서 토론과 글쓰기", "매체 의사소통", "언어생활 탐구", "문예 창작의 이해", "문장론", "고전문학의 감상과 비평", "현대 희곡", "AP 영문학 2", "AP 영어학2", "미국문학 2", "영미문학 2", "영국문학 2", "영어토론 2", "세계문학2", "고급 영어 토론과 작문", "미적분1", "미적분2", "AP 통계학 2", "확률과 통계", "기하", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "AP 미적분학 BC 2", "선형대수학", "응용수학탐구"], "2-2-4": ["물질과 에너지", "화학 반응의 세계", "세포와 물질대사", "생물과 유전", "미적분2", "확률과 통계", "프랑스어 독해와 작문 2", "스페인어 독해와 작문 2", "중국어 독해와 작문 2", "물리학", "생명과학", "화학", "지구과학", "Chemistry 1", "Physics 1", "Biology 1", "정치", "법과 사회", "윤리와 사상", "역학과 에너지", "기하", "이산 수학", "선형대수학", "응용수학탐구", "AP Physics 1", "AP Biology 1", "AP Chemistry 1"], "2-2-5": ["분자생물학의 이해", "세포생물학의 이해", "현대물리학 1", "일반화학1", "AP 물리학 C: 역학", "AP 물리학 C: 전자기학", "관측 천문학", "유기화학 1", "기초 생태학", "AP 미시경제", "AP 거시경제", "AP 중급미시경제학", "AP 미국정치 2", "AP 심리학 2", "AP 비교정치 2", "AP 세계사 2", "AP 미국사 2", "AP 유럽사 2", "다산연구", "서양철학개론", "국제정치", "미적분2", "확률과 통계", "AP 통계학 2", "선형대수학", "AP 컴퓨터과학 A", "머신러닝", "데이터과학"], "2-2-6": ["분자생물학의 이해", "세포생물학의 이해", "현대물리학 1", "일반화학1", "AP 물리학 C: 역학", "AP 물리학 C: 전자기학", "관측 천문학", "유기화학 1", "기초 생태학", "AP 미시경제", "AP 거시경제", "AP 중급미시경제학", "AP 미국정치 2", "AP 심리학 2", "AP 비교정치 2", "AP 세계사 2", "AP 미국사 2", "AP 유럽사 2", "다산연구", "서양철학개론", "국제정치", "미적분2", "확률과 통계", "AP 통계학 2", "선형대수학", "AP 컴퓨터과학 A", "머신러닝", "데이터과학"], "2-2-7": ["분자생물학의 이해", "세포생물학의 이해", "현대물리학 1", "일반화학1", "AP 물리학 C: 역학", "AP 물리학 C: 전자기학", "관측 천문학", "유기화학 1", "기초 생태학", "AP 미시경제", "AP 거시경제", "AP 중급미시경제학", "AP 미국정치 2", "AP 심리학 2", "AP 비교정치 2", "AP 세계사 2", "AP 미국사 2", "AP 유럽사 2", "다산연구", "서양철학개론", "국제정치", "미적분2", "확률과 통계", "AP 통계학 2", "선형대수학", "AP 컴퓨터과학 A", "머신러닝", "데이터과학"], "2-2-8": ["분자생물학의 이해", "세포생물학의 이해", "현대물리학 1", "일반화학1", "AP 물리학 C: 역학", "AP 물리학 C: 전자기학", "관측 천문학", "유기화학 1", "기초 생태학", "AP 미시경제", "AP 거시경제", "AP 중급미시경제학", "AP 미국정치 2", "AP 심리학 2", "AP 비교정치 2", "AP 세계사 2", "AP 미국사 2", "AP 유럽사 2", "다산연구", "서양철학개론", "국제정치", "미적분2", "확률과 통계", "AP 통계학 2", "선형대수학", "AP 컴퓨터과학 A", "머신러닝", "데이터과학"], "3-1-1": ["문학 감상과 비평", "시 창작", "소설 창작", "극 창작", "연극과 말", "연극 제작 실습", "연극 감상과 비평", "영화의 이해", "영화 감상과 비평", "고전문학의 감상과 비평", "현대 희곡", "심화 영어 독해 I", "AP 영문학 3", "AP 영어학 3", "고급 영어 토론과 작문", "자서전 연구", "심화 영어 토론", "창의적 영어 글쓰기와 독서", "영어권 문학 I", "확률과 통계", "기하", "미적분2", "AP 미적분학 BC 3", "AP 통계학 1", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "미분 방정식", "벡터 미적분학"], "3-1-2": ["문학 감상과 비평", "시 창작", "소설 창작", "극 창작", "연극과 말", "연극 제작 실습", "연극 감상과 비평", "영화의 이해", "영화 감상과 비평", "고전문학의 감상과 비평", "현대 희곡", "심화 영어 독해 I", "AP 영문학 3", "AP 영어학 3", "고급 영어 토론과 작문", "자서전 연구", "심화 영어 토론", "창의적 영어 글쓰기와 독서", "영어권 문학 I", "확률과 통계", "기하", "미적분2", "AP 미적분학 BC 3", "AP 통계학 1", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "미분 방정식", "벡터 미적분학"], "3-1-3": ["문학 감상과 비평", "시 창작", "소설 창작", "극 창작", "연극과 말", "연극 제작 실습", "연극 감상과 비평", "영화의 이해", "영화 감상과 비평", "고전문학의 감상과 비평", "현대 희곡", "심화 영어 독해 I", "AP 영문학 3", "AP 영어학 3", "고급 영어 토론과 작문", "자서전 연구", "심화 영어 토론", "창의적 영어 글쓰기와 독서", "확률과 통계", "기하", "미적분2", "AP 미적분학 BC 3", "AP 통계학 1", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "미분 방정식", "벡터 미적분학"], "3-1-4": ["영어권 문학 I", "프랑스어권 문화", "스페인어권 문화", "중국어권 문화", "물리학", "화학", "생명과학", "지구과학", "고급화학", "고급생명과학", "고급물리학", "고급지구과학", "미적분2", "미분 방정식", "벡터 미적분학", "고급 영어 토론과 작문", "고전문학의 감상과 비평", "현대 희곡", "한국지리 탐구", "세계사", "사회와 문화", "현대사회와 윤리", "정치", "법과 사회", "경제", "윤리와 사상", "AP Physics 2", "AP Biology 2", "AP Chemistry 2"], "3-1-5": ["현대 물리학 2", "일반화학 2", "지질학 및 실험", "항성 천문학", "은하와 우주론", "천문 통계학", "첨단 기기와 화학", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "유기화학 2", "해석역학 1", "중급 화학 실험", "생체모방공학", "AP 컴퓨터과학 A", "프로그래밍", "국제 관계의 이해", "사회과학 방법론", "임진왜란 연구", "정치학 고전 읽기", "AP 중급미시경제학", "긍정 심리학", "서양근대철학의 이해", "세포생물학의 이해", "분자생물학의 이해"], "3-1-6": ["현대 물리학 2", "일반화학 2", "지질학 및 실험", "항성 천문학", "은하와 우주론", "천문 통계학", "첨단 기기와 화학", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "유기화학 2", "해석역학 1", "중급 화학 실험", "생체모방공학", "AP 컴퓨터과학 A", "프로그래밍", "국제 관계의 이해", "사회과학 방법론", "임진왜란 연구", "정치학 고전 읽기", "AP 중급미시경제학", "긍정 심리학", "서양근대철학의 이해", "세포생물학의 이해", "분자생물학의 이해"], "3-1-7": ["현대 물리학 2", "일반화학 2", "지질학 및 실험", "항성 천문학", "은하와 우주론", "천문 통계학", "첨단 기기와 화학", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "유기화학 2", "해석역학 1", "중급 화학 실험", "생체모방공학", "AP 컴퓨터과학 A", "프로그래밍", "국제 관계의 이해", "사회과학 방법론", "임진왜란 연구", "정치학 고전 읽기", "AP 중급미시경제학", "긍정 심리학", "서양근대철학의 이해", "세포생물학의 이해", "분자생물학의 이해"], "3-1-8": ["현대 물리학 2", "일반화학 2", "지질학 및 실험", "항성 천문학", "은하와 우주론", "천문 통계학", "첨단 기기와 화학", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "유기화학 2", "해석역학 1", "중급 화학 실험", "생체모방공학", "AP 컴퓨터과학 A", "프로그래밍", "국제 관계의 이해", "사회과학 방법론", "임진왜란 연구", "정치학 고전 읽기", "AP 중급미시경제학", "긍정 심리학", "서양근대철학의 이해", "세포생물학의 이해", "분자생물학의 이해"], "3-2-1": ["화법과 언어", "독서와 작문", "문학", "주제 탐구 독서", "문학과 영상", "독서 토론과 글쓰기", "현대 희곡", "현대 국어 문법의 이해", "고전의 향기", "현대 문학의 감상과 이해", "심화 영어 독해 2", "고급 영어 토론과 작문", "문학에세이 쓰기", "영어 대중 연설과 발표", "미국문학 1", "영국문학 1", "영미문학 1", "AP 통계학 2", "수학과제 탐구", "미적분2", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "미분 방정식", "벡터 미적분학", "인공지능 수학", "실용 통계"], "3-2-2": ["화법과 언어", "독서와 작문", "문학", "주제 탐구 독서", "문학과 영상", "독서 토론과 글쓰기", "현대 희곡", "현대 국어 문법의 이해", "고전의 향기", "현대 문학의 감상과 이해", "심화 영어 독해 2", "고급 영어 토론과 작문", "문학에세이 쓰기", "영어 대중 연설과 발표", "미국문학 1", "영국문학 1", "영미문학 1", "AP 통계학 2", "수학과제 탐구", "미적분2", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "미분 방정식", "벡터 미적분학", "인공지능 수학", "실용 통계"], "3-2-3": ["화법과 언어", "독서와 작문", "문학", "주제 탐구 독서", "문학과 영상", "독서 토론과 글쓰기", "현대 희곡", "현대 국어 문법의 이해", "고전의 향기", "현대 문학의 감상과 이해", "심화 영어 독해 2", "고급 영어 토론과 작문", "문학에세이 쓰기", "영어 대중 연설과 발표", "미국문학 1", "영국문학 1", "영미문학 1", "AP 통계학 2", "수학과제 탐구", "미적분2", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "미분 방정식", "벡터 미적분학", "인공지능 수학", "실용 통계"], "3-2-4": ["데이터 과학", "창의 공학 설계", "역학과 에너지", "전자기와 양자", "물질과 에너지", "화학 반응의 세계", "세포와 물질대사", "생물과 유전", "지구시스템과학", "행성우주과학", "과학의 역사와 문화", "기후변화와 환경생태", "기초생태학", "세계시민과 지리", "여행지리", "한국지리 탐구", "사회문제 탐구", "역사연구 방법"], "3-2-5": ["AP 컴퓨터과학 A", "프로그래밍", "해석역학 2", "결정의 화학", "생명과학세미나", "지질학 및 실험", "항성 천문학", "은하와 우주론", "컴퓨터로 과학하기", "과학과제 연구", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "미술사", "고고학", "경제학고전강독", "다산 연구", "비교 정치", "성격과 자기이해", "서양현대철학의 이해", "한국근현대사 연구", "임진왜란 연구", "수학과제 탐구", "고급 대수", "고급 영어 토론과 작문", "문학에세이 쓰기", "영어 대중 연설과 발표", "화법과 언어", "독서와 작문", "문학", "주제 탐구 독서"], "3-2-6": ["AP 컴퓨터과학 A", "프로그래밍", "해석역학 2", "결정의 화학", "생명과학세미나", "지질학 및 실험", "항성 천문학", "은하와 우주론", "컴퓨터로 과학하기", "과학과제 연구", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "미술사", "고고학", "경제학고전강독", "다산 연구", "비교 정치", "성격과 자기이해", "서양현대철학의 이해", "한국근현대사 연구", "임진왜란 연구", "수학과제 탐구", "고급 대수", "고급 영어 토론과 작문", "문학에세이 쓰기", "영어 대중 연설과 발표", "화법과 언어", "독서와 작문", "문학", "주제 탐구 독서"], "3-2-7": ["AP 컴퓨터과학 A", "프로그래밍", "해석역학 2", "결정의 화학", "생명과학세미나", "지질학 및 실험", "항성 천문학", "은하와 우주론", "컴퓨터로 과학하기", "과학과제 연구", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "미술사", "고고학", "경제학고전강독", "다산 연구", "비교 정치", "성격과 자기이해", "서양현대철학의 이해", "한국근현대사 연구", "임진왜란 연구", "수학과제 탐구", "고급 대수", "고급 영어 토론과 작문", "문학에세이 쓰기", "영어 대중 연설과 발표", "화법과 언어", "독서와 작문", "문학", "주제 탐구 독서"], "3-2-8": ["AP 컴퓨터과학 A", "프로그래밍", "해석역학 2", "결정의 화학", "생명과학세미나", "지질학 및 실험", "항성 천문학", "은하와 우주론", "컴퓨터로 과학하기", "과학과제 연구", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "미술사", "고고학", "경제학고전강독", "다산 연구", "비교 정치", "성격과 자기이해", "서양현대철학의 이해", "한국근현대사 연구", "임진왜란 연구", "수학과제 탐구", "고급 대수", "고급 영어 토론과 작문", "문학에세이 쓰기", "영어 대중 연설과 발표", "화법과 언어", "독서와 작문", "문학", "주제 탐구 독서"] };
+        // [수정됨] courseToCategoryMap에 '국어1' 등 필수 과목 추가
+        const courseToCategoryMap = { '국어': ["국어1", "고전문학 감상", "현대국어문법의 이해", "현대문학 감상", "한국문학과 세계문학", "토론과 논술", "현대희곡", "문학 수용과 창작", "소설 창작", "언어와 매체", "화법과 언어", "독서와 작문", "문학", "주제 탐구 독서", "문학과 영상", "독서 토론과 글쓰기", "매체 의사소통", "언어생활 탐구", "문예 창작의 이해", "문장론", "고전문학의 감상과 비평", "시 창작", "극 창작", "연극과 말", "연극 제작 실습", "연극 감상과 비평", "영화의 이해", "영화 감상과 비평", "고전의 향기", "현대 문학의 감상과 이해", "문학 감상과 비평", "현대 희곡", "현대 국어 문법의 이해"], '영어': ["영어1", "미국문학1", "영국문학1", "영미문학1", "AP 영문학1", "AP 영어학1", "세계문학1", "영어토론1", "영어권 문화", "영어 독해와 작문", "AP 영문학 2", "AP 영어학2", "미국문학 2", "영미문학 2", "영국문학 2", "영어토론 2", "세계문학2", "고급 영어 토론과 작문", "심화 영어 독해 I", "AP 영문학 3", "AP 영어학 3", "자서전 연구", "심화 영어 토론", "창의적 영어 글쓰기와 독서", "영어권 문학 I", "심화 영어 독해 2", "문학에세이 쓰기", "영어 대중 연설과 발표", "미국문학 1", "영국문학 1", "영미문학 1"], '수학': ["수학1", "대수", "미적분1", "AP 통계학 1", "기하", "경제 수학", "인공지능 수학", "AP 미적분학 BC 1", "수학Ⅰ", "미적분", "확률과 통계", "심화 수학Ⅰ", "심화 수학Ⅱ", "선형대수학", "응용수학탐구", "미적분2", "AP 통계학 2", "이산 수학", "고급 기하", "고급 대수", "고급 미적분", "AP 미적분학 BC 2", "AP 미적분학 BC 3", "미분 방정식", "벡터 미적분학", "수학과제 탐구", "실용 통계"], '과학': ["통합과학1", "물리학", "생명과학", "화학", "Chemistry1", "Physics 1", "Biology1", "물리학Ⅰ", "화학Ⅰ", "생명과학Ⅰ", "지구과학Ⅰ", "물리학Ⅱ", "화학Ⅱ", "생명과학Ⅱ", "지구과학Ⅱ", "고급 물리학", "고급 화학", "고급 생명과학", "융합과학탐구", "생태와 환경", "AP Chemistry1", "AP Physics1", "AP Biology1", "AP 환경과학", "생물과 유전", "생물의 유전", "물질과 에너지", "역학과 에너지", "AP Physics 2", "AP Biology 2", "AP Chemistry 2", "고급생명과학", "고급화학", "고급물리학", "유기화학 1", "과학사", "세포와 물질대사", "분자생물학의 이해", "세포생물학의 이해", "현대물리학 1", "일반화학1", "AP 물리학 C: 역학", "AP 물리학 C: 전자기학", "관측 천문학", "기초 생태학", "지질학 및 실험", "항성 천문학", "은하와 우주론", "천문 통계학", "첨단 기기와 화학", "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험", "유기화학 2", "해석역학 1", "중급 화학 실험", "생체모방공학", "전자기와 양자", "지구시스템과학", "과학의 역사와 문화", "기후변화와 환경생태", "기초생태학", "현대 물리학 2", "일반화학 2", "결정의 화학", "생명과학세미나", "컴퓨터로 과학하기", "지구과학", "고급지구과학", "창의 공학 설계", "화학 반응의 세계", "행성 우주과학", "행성 우주과학", "해석역학 2", "과학과제 연구", "Chemistry 1", "Biology 1", "AP Physics 1", "AP Biology 1", "AP Chemistry 1"], '사회': ["통합사회1", "한국사1", "경제", "심리학", "역사연구방법", "윤리와 사상", "통합사회탐구", "세계사", "정치와 법", "사회문제 탐구", "현대 세계의 변화", "현대 철학의 흐름", "국제 경제", "사회와 문화", "AP 미국사1", "AP 미시경제", "AP 유럽사 1", "AP 심리학 1", "정치", "법과 사회", "AP미시경제", "AP 거시경제", "AP 미국정치 1", "AP 비교정치 1", "AP 세계사 1", "AP 중급미시경제", "AP 미국정치 2", "AP 심리학 2", "AP 비교정치 2", "AP 세계사 2", "AP 미국사 2", "AP 유럽사 2", "서양철학개론", "국제정치", "한국지리 탐구", "현대사회와 윤리", "사회과학 방법론", "임진왜란 연구", "정치학 고전 읽기", "AP 중급미시경제학", "긍정 심리학", "서양근대철학의 이해", "세계시민과 지리", "여행지리", "역사연구 방법", "미술사", "고고학", "경제학고전강독", "비교 정치", "성격과 자기이해", "국제관계의 이해", "서양현대철학의 이해", "한국근현대사 연구", "다산연구", "근대 정치사상", "비교정치", "한국 정치의 이해", "다산 연구"], '정보': ["프로그래밍 기초", "컴퓨터 시스템 일반", "정보", "정보과학", "데이터 과학", "데이터과학", "프로그래밍", "머신러닝", "AP 컴퓨터과학 A"], '제2외국어': ["프랑스어", "스페인어", "중국어", "한문", "프랑스어 독해와 작문 1", "스페인어 독해와 작문 1", "한문 고전 읽기", "프랑스어 독해와 작문 2", "스페인어 독해와 작문 2", "중국어 독해와 작문 2", "프랑스어권 문화", "스페인어권 문화", "중국어권 문화"], '기타': ["진로와 직업", "체육", "음악", "미술"] };
+        const categoryKeywords = {
+            '과학': ['생명', '생물', 'biology', 'bio', '화학', 'chem', '물리', 'physic', '과학', '천문', '생태', '환경', '지질', '우주', '세포', '분자', '유전', '양자'],
+            '수학': ['수학', '미적분', '기하', '통계', '대수', '벡터', '미분', '선형대수', '이산'],
+            '정보': ['프로그래밍', '컴퓨터', '정보', '데이터', '머신러닝', 'ai'],
+            '사회': ['사회', '경제', '정치', '법', '역사', '윤리', '지리', '철학', '심리', '국제'],
+            '영어': ['영어', '영문학', '영국문학', '미국문학', '영미문학', '영어권'],
+            '제2외국어': ['프랑스어', '스페인어', '중국어', '한문'],
+            '국어': ['국어', '문학', '독서', '작문', '화법', '언어', '희곡', '시 ', '시창작', '소설', '연극', '영화'],
+            '기타': ['체육', '음악', '미술', '진로']
+        };
+        const majorRequirements = { cs: { name: "컴퓨터과학/AI", core: ["미적분", "확률과 통계", "기하", "인공지능 수학", "데이터 과학"], advanced: ["심화 수학", "고급 미적분", "정보과학", "AP 컴퓨터과학 A"] }, engineering: { name: "공학/물리", core: ["물리학", "미적분", "화학", "기하"], advanced: ["고급 물리학", "고급 화학", "미분 방정식", "벡터 미적분학"] }, medical: { name: "의예/생명과학", core: ["생명과학", "화학", "미적분", "확률과 통계"], advanced: ["고급 생명과학", "고급 화학", "분자생물학의 이해", "세포생물학의 이해"] }, economics: { name: "경제/경영", core: ["미적분", "확률과 통계", "경제", "사회문제 탐구"], advanced: ["AP 미시경제", "AP 거시경제", "경제 수학"] }, law: { name: "법학/정치외교", core: ["정치와 법", "사회와 문화", "윤리와 사상", "세계사"], advanced: ["사회문제 탐구", "국제 관계의 이해", "현대 정치사상"] }, general: { name: "자유전공", core: ["미적분1", "물리학", "화학", "생명과학", "사회와 문화"], advanced: ["독서 토론과 글쓰기", "영어토론", "프로그래밍 기초"] } };
+        
+        // 1학년 1학기 필수 과목 리스트
+        const requiredCourses1_1 = ["국어1", "수학1", "영어1", "통합사회1", "통합과학1", "한국사1", "진로와 직업", "체육", "음악", "미술"];
+        const courseCategoryOrder = ['수학', '과학', '사회', '국어', '영어', '제2외국어', '정보', '기타'];
+        const selectionFilterCategories = ['전체', '과학', '사회', '수학', '영어', '정보', '제2외국어'];
+        const ADMIN_STORAGE_KEY = 'kmla-course-data-v1';
+        const ADMIN_AUTH_STORAGE_KEY = 'kmla-admin-auth-v1';
+        const ADMIN_CREDENTIALS_STORAGE_KEY = 'kmla-admin-credentials-v1';
+        const USER_PROGRESS_STORAGE_KEY = 'kmla-user-progress-v1';
+        const SAVED_PLANS_STORAGE_KEY = 'kmla-saved-plans-v1';
+        const DEFAULT_ADMIN_CREDENTIALS = { id: 'admin', password: 'kmla-admin' };
+        const originalCourseData = JSON.parse(JSON.stringify(courseData));
+        const adminSemesterConfigs = [
+            { key: '1-1', label: '1학년 1학기', groups: ['1-1-1', '1-1-2', '1-1-3'] },
+            { key: '1-2', label: '1학년 2학기', groups: ['1-2-1', '1-2-2', '1-2-3'] },
+            { key: '2-1', label: '2학년 1학기', groups: ['2-1-1', '2-1-2', '2-1-3', '2-1-4', '2-1-5', '2-1-6', '2-1-7', '2-1-8'] },
+            { key: '2-2', label: '2학년 2학기', groups: ['2-2-1', '2-2-2', '2-2-3', '2-2-4', '2-2-5', '2-2-6', '2-2-7', '2-2-8'] },
+            { key: '3-1', label: '3학년 1학기', groups: ['3-1-1', '3-1-2', '3-1-3', '3-1-4', '3-1-5', '3-1-6', '3-1-7', '3-1-8'] },
+            { key: '3-2', label: '3학년 2학기', groups: ['3-2-1', '3-2-2', '3-2-3', '3-2-4', '3-2-5', '3-2-6', '3-2-7', '3-2-8'] }
+        ];
+
+        // --- APP STATE ---
+        let currentPage = 'home-page';
+        let currentStep = 1;
+        const userData = { careerGoal: "", selections: {}, majorKey: "general", isFinished: false };
+        let curriculumChart = null;
+        let isAdminAuthenticated = false;
+        let adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
+        let savedPlans = [];
+        let selectedComparePlanIds = [];
+
+        function setValidationMessage(message) {
+            const el = document.getElementById('validation-message');
+            if (!el) return;
+            el.textContent = message;
+            el.classList.toggle('visible', Boolean(message));
+        }
+
+        function clearValidationMessage() {
+            setValidationMessage('');
+        }
+
+        function countSelections() {
+            return Object.entries(userData.selections)
+                .filter(([key]) => key !== '1-1-required')
+                .reduce((total, [, courses]) => total + courses.length, 0);
+        }
+
+        function countSelectionsFromData(selections) {
+            return Object.entries(selections || {})
+                .filter(([key]) => key !== '1-1-required')
+                .reduce((total, [, courses]) => total + (Array.isArray(courses) ? courses.length : 0), 0);
+        }
+
+        function setBuilderSaveStatus(message) {
+            const el = document.getElementById('builder-save-status');
+            if (!el) return;
+            el.textContent = message;
+        }
+
+        function hasMeaningfulProgress() {
+            return Boolean(
+                userData.careerGoal.trim() ||
+                countSelections() > 0 ||
+                userData.isFinished
+            );
+        }
+
+        function persistUserProgress(message = '현재 설계 내용이 자동 저장되었습니다.') {
+            if (!hasMeaningfulProgress()) {
+                localStorage.removeItem(USER_PROGRESS_STORAGE_KEY);
+                setBuilderSaveStatus('설계 내용은 이 브라우저에 임시 저장됩니다.');
+                return;
+            }
+
+            const payload = {
+                careerGoal: userData.careerGoal,
+                selections: userData.selections,
+                majorKey: userData.majorKey,
+                isFinished: userData.isFinished,
+                currentStep,
+                currentPage: currentPage === 'admin-page' ? 'builder-page' : currentPage
+            };
+            localStorage.setItem(USER_PROGRESS_STORAGE_KEY, JSON.stringify(payload));
+            setBuilderSaveStatus(message);
+        }
+
+        function clearUserProgress() {
+            localStorage.removeItem(USER_PROGRESS_STORAGE_KEY);
+            setBuilderSaveStatus('저장된 설계 내용이 없습니다.');
+        }
+
+        function buildCurrentPlanPayload() {
+            const normalized = normalizeImportedUserData({
+                careerGoal: userData.careerGoal,
+                selections: userData.selections,
+                majorKey: userData.majorKey,
+                isFinished: userData.isFinished,
+                currentStep,
+                currentPage: currentPage === 'admin-page' ? 'builder-page' : currentPage
+            });
+
+            return {
+                app: 'kmla-curriculum-planner',
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                ...normalized
+            };
+        }
+
+        function persistSavedPlans() {
+            localStorage.setItem(SAVED_PLANS_STORAGE_KEY, JSON.stringify(savedPlans));
+        }
+
+        function loadSavedPlans() {
+            const raw = localStorage.getItem(SAVED_PLANS_STORAGE_KEY);
+            if (!raw) {
+                savedPlans = [];
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(raw);
+                savedPlans = Array.isArray(parsed) ? parsed.map(plan => ({
+                    id: typeof plan.id === 'string' ? plan.id : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                    name: typeof plan.name === 'string' && plan.name.trim() ? plan.name.trim() : '저장된 설계안',
+                    savedAt: typeof plan.savedAt === 'string' ? plan.savedAt : new Date().toISOString(),
+                    data: buildCurrentPlanPayloadFromImported(plan.data || {})
+                })) : [];
+            } catch (error) {
+                console.error('Failed to load saved plans:', error);
+                savedPlans = [];
+                localStorage.removeItem(SAVED_PLANS_STORAGE_KEY);
+            }
+        }
+
+        function buildCurrentPlanPayloadFromImported(parsed) {
+            const normalized = normalizeImportedUserData(parsed);
+            return {
+                app: 'kmla-curriculum-planner',
+                version: 1,
+                exportedAt: typeof parsed?.exportedAt === 'string' ? parsed.exportedAt : new Date().toISOString(),
+                ...normalized
+            };
+        }
+
+        function normalizeImportedUserData(parsed) {
+            const normalizedSelections = {};
+            const allowedSemesterKeys = ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'];
+
+            if (parsed && parsed.selections && typeof parsed.selections === 'object') {
+                allowedSemesterKeys.forEach(key => {
+                    const courses = parsed.selections[key];
+                    normalizedSelections[key] = Array.isArray(courses)
+                        ? courses.map(course => String(course).trim()).filter(Boolean)
+                        : [];
+                });
+            } else {
+                allowedSemesterKeys.forEach(key => {
+                    normalizedSelections[key] = [];
+                });
+            }
+
+            return {
+                careerGoal: typeof parsed?.careerGoal === 'string' ? parsed.careerGoal : "",
+                selections: normalizedSelections,
+                majorKey: typeof parsed?.majorKey === 'string' ? parsed.majorKey : "general",
+                isFinished: Boolean(parsed?.isFinished),
+                currentStep: Number.isInteger(parsed?.currentStep) ? Math.min(Math.max(parsed.currentStep, 1), 7) : 1,
+                currentPage: ['home-page', 'builder-page', 'result-page'].includes(parsed?.currentPage) ? parsed.currentPage : 'builder-page'
+            };
+        }
+
+        function applyImportedUserData(parsed, message = '설계 데이터를 불러왔습니다.') {
+            const normalized = normalizeImportedUserData(parsed);
+            userData.careerGoal = normalized.careerGoal;
+            userData.selections = normalized.selections;
+            userData.majorKey = normalized.majorKey;
+            userData.isFinished = normalized.isFinished;
+            currentStep = normalized.currentStep;
+
+            applySavedSelectionsToDom();
+
+            document.querySelectorAll('#builder-page .step').forEach(step => step.classList.remove('active'));
+            const currentStepEl = document.getElementById(`step-${currentStep}`);
+            if (currentStepEl) currentStepEl.classList.add('active');
+
+            updateBuilderChrome();
+            showPage(normalized.currentPage);
+            persistUserProgress(message);
+            setResultsExportStatus(message);
+        }
+
+        function getDefaultSavedPlanName() {
+            const goal = userData.careerGoal.trim() || '새 설계안';
+            return `${goal} ${savedPlans.length + 1}`;
+        }
+
+        function formatSavedPlanDate(isoString) {
+            const date = new Date(isoString);
+            if (Number.isNaN(date.getTime())) return '';
+            return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        }
+
+        function renderSavedPlanLibrary() {
+            const listEl = document.getElementById('saved-plan-list');
+            const inputEl = document.getElementById('saved-plan-name');
+            if (!listEl || !inputEl) return;
+
+            if (!inputEl.value.trim() && hasMeaningfulProgress()) {
+                inputEl.value = getDefaultSavedPlanName();
+            }
+
+            if (savedPlans.length === 0) {
+                listEl.innerHTML = `<div class="saved-plan-empty">아직 저장된 설계안이 없습니다. 현재 설계를 이름 붙여 저장해두면 나중에 다시 불러올 수 있습니다.</div>`;
+                renderSavedPlanComparison();
+                return;
+            }
+
+            listEl.innerHTML = savedPlans.map(plan => {
+                const selectionsCount = Object.values(plan.data.selections || {}).reduce((total, courses) => total + (Array.isArray(courses) ? courses.length : 0), 0);
+                return `
+                    <article class="saved-plan-item">
+                        <div class="saved-plan-head">
+                            <div>
+                                <h4 class="saved-plan-title">${escapeHtml(plan.name)}</h4>
+                                <p class="saved-plan-meta">진로: ${escapeHtml(plan.data.careerGoal || '자유전공')} · 선택 과목 ${selectionsCount}개 · 저장 ${escapeHtml(formatSavedPlanDate(plan.savedAt))}</p>
+                            </div>
+                            <div class="saved-plan-actions">
+                                <button type="button" class="saved-plan-btn${selectedComparePlanIds.includes(plan.id) ? ' selected' : ''}" onclick="togglePlanCompareSelection('${plan.id}')">비교 선택</button>
+                                <button type="button" class="saved-plan-btn primary" onclick="loadSavedPlan('${plan.id}')">불러오기</button>
+                                <button type="button" class="saved-plan-btn" onclick="overwriteSavedPlan('${plan.id}')">현재 설계로 덮어쓰기</button>
+                                <button type="button" class="saved-plan-btn" onclick="renameSavedPlan('${plan.id}')">이름 변경</button>
+                                <button type="button" class="saved-plan-btn warning" onclick="deleteSavedPlan('${plan.id}')">삭제</button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            renderSavedPlanComparison();
+        }
+
+        function togglePlanCompareSelection(planId) {
+            if (selectedComparePlanIds.includes(planId)) {
+                selectedComparePlanIds = selectedComparePlanIds.filter(id => id !== planId);
+            } else {
+                if (selectedComparePlanIds.length >= 2) {
+                    selectedComparePlanIds = [selectedComparePlanIds[1], planId];
+                } else {
+                    selectedComparePlanIds = [...selectedComparePlanIds, planId];
+                }
+            }
+
+            renderSavedPlanLibrary();
+        }
+
+        function savePlanRecord(name, data, successMessage) {
+            const nextName = String(name || '').trim() || getDefaultSavedPlanName();
+            savedPlans.unshift({
+                id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                name: nextName,
+                savedAt: new Date().toISOString(),
+                data: buildCurrentPlanPayloadFromImported(data)
+            });
+            persistSavedPlans();
+            renderSavedPlanLibrary();
+            setResultsExportStatus(successMessage || '설계안을 저장했습니다.');
+        }
+
+        function saveCurrentPlanToLibrary() {
+            if (!hasMeaningfulProgress()) {
+                setResultsExportStatus('저장할 현재 설계가 없습니다.', true);
+                return;
+            }
+
+            const inputEl = document.getElementById('saved-plan-name');
+            savePlanRecord(inputEl ? inputEl.value : '', buildCurrentPlanPayload(), '현재 설계를 보관함에 저장했습니다.');
+        }
+
+        function duplicateCurrentPlanToLibrary() {
+            if (!hasMeaningfulProgress()) {
+                setResultsExportStatus('복제할 현재 설계가 없습니다.', true);
+                return;
+            }
+
+            const inputEl = document.getElementById('saved-plan-name');
+            const baseName = inputEl && inputEl.value.trim() ? inputEl.value.trim() : getDefaultSavedPlanName();
+            savePlanRecord(`${baseName} 복사본`, buildCurrentPlanPayload(), '현재 설계를 복제해 보관함에 저장했습니다.');
+        }
+
+        function loadSavedPlan(planId) {
+            const plan = savedPlans.find(item => item.id === planId);
+            if (!plan) {
+                setResultsExportStatus('선택한 설계안을 찾을 수 없습니다.', true);
+                return;
+            }
+
+            applyImportedUserData(plan.data, `"${plan.name}" 설계안을 불러왔습니다.`);
+            const inputEl = document.getElementById('saved-plan-name');
+            if (inputEl) inputEl.value = plan.name;
+            renderSavedPlanLibrary();
+        }
+
+        function overwriteSavedPlan(planId) {
+            const planIndex = savedPlans.findIndex(item => item.id === planId);
+            if (planIndex === -1) {
+                setResultsExportStatus('선택한 설계안을 찾을 수 없습니다.', true);
+                return;
+            }
+
+            savedPlans[planIndex] = {
+                ...savedPlans[planIndex],
+                savedAt: new Date().toISOString(),
+                data: buildCurrentPlanPayload()
+            };
+            persistSavedPlans();
+            renderSavedPlanLibrary();
+            setResultsExportStatus(`"${savedPlans[planIndex].name}" 설계안을 현재 내용으로 덮어썼습니다.`);
+        }
+
+        function renameSavedPlan(planId) {
+            const plan = savedPlans.find(item => item.id === planId);
+            if (!plan) {
+                setResultsExportStatus('선택한 설계안을 찾을 수 없습니다.', true);
+                return;
+            }
+
+            const nextName = window.prompt('설계안 이름을 입력하세요.', plan.name);
+            if (nextName === null) return;
+
+            const trimmed = nextName.trim();
+            if (!trimmed) {
+                setResultsExportStatus('설계안 이름은 비워둘 수 없습니다.', true);
+                return;
+            }
+
+            plan.name = trimmed;
+            persistSavedPlans();
+            renderSavedPlanLibrary();
+            setResultsExportStatus('설계안 이름을 변경했습니다.');
+        }
+
+        function deleteSavedPlan(planId) {
+            const plan = savedPlans.find(item => item.id === planId);
+            if (!plan) {
+                setResultsExportStatus('선택한 설계안을 찾을 수 없습니다.', true);
+                return;
+            }
+
+            if (!window.confirm(`"${plan.name}" 설계안을 삭제할까요?`)) return;
+
+            savedPlans = savedPlans.filter(item => item.id !== planId);
+            selectedComparePlanIds = selectedComparePlanIds.filter(id => id !== planId);
+            persistSavedPlans();
+            renderSavedPlanLibrary();
+            setResultsExportStatus('설계안을 삭제했습니다.');
+        }
+
+        function computeFitStatsForSelections(selections, majorKey) {
+            const requirements = majorRequirements[majorKey] || majorRequirements.general;
+            const myCourses = new Set([
+                ...Object.values(selections || {}).flat(),
+                ...requiredCourses1_1
+            ]);
+            const allRequired = [...requirements.core, ...requirements.advanced];
+            const areCoursesEquivalent = (a, b) => a.replace(/Ⅰ|Ⅱ|1|2|3/g, '').trim() === b.replace(/Ⅰ|Ⅱ|1|2|3/g, '').trim();
+            let matched = 0;
+            allRequired.forEach(req => {
+                if ([...myCourses].some(my => areCoursesEquivalent(my, req))) matched++;
+            });
+
+            return {
+                matched,
+                total: allRequired.length,
+                percent: allRequired.length ? Math.round((matched / allRequired.length) * 100) : 0,
+                majorName: requirements.name
+            };
+        }
+
+        function buildPlanComparisonData(leftPlan, rightPlan) {
+            const semesters = [
+                ['1-1', '1학년 1학기'],
+                ['1-2', '1학년 2학기'],
+                ['2-1', '2학년 1학기'],
+                ['2-2', '2학년 2학기'],
+                ['3-1', '3학년 1학기'],
+                ['3-2', '3학년 2학기']
+            ];
+
+            const leftFit = computeFitStatsForSelections(leftPlan.data.selections, leftPlan.data.majorKey || 'general');
+            const rightFit = computeFitStatsForSelections(rightPlan.data.selections, rightPlan.data.majorKey || 'general');
+
+            const semesterDiffs = semesters.map(([key, label]) => {
+                const leftCourses = Array.isArray(leftPlan.data.selections[key]) ? leftPlan.data.selections[key] : [];
+                const rightCourses = Array.isArray(rightPlan.data.selections[key]) ? rightPlan.data.selections[key] : [];
+                const onlyLeft = leftCourses.filter(course => !rightCourses.includes(course));
+                const onlyRight = rightCourses.filter(course => !leftCourses.includes(course));
+                const shared = leftCourses.filter(course => rightCourses.includes(course));
+
+                return {
+                    key,
+                    label,
+                    leftCourses,
+                    rightCourses,
+                    shared,
+                    onlyLeft,
+                    onlyRight,
+                    totalDiff: onlyLeft.length + onlyRight.length
+                };
+            });
+
+            const biggestDiff = [...semesterDiffs].sort((a, b) => b.totalDiff - a.totalDiff)[0];
+            const fitLeader = leftFit.percent === rightFit.percent
+                ? null
+                : (leftFit.percent > rightFit.percent ? 'left' : 'right');
+            const countLeader = countSelectionsFromData(leftPlan.data.selections) === countSelectionsFromData(rightPlan.data.selections)
+                ? null
+                : (countSelectionsFromData(leftPlan.data.selections) > countSelectionsFromData(rightPlan.data.selections) ? 'left' : 'right');
+
+            return {
+                leftFit,
+                rightFit,
+                leftCount: countSelectionsFromData(leftPlan.data.selections),
+                rightCount: countSelectionsFromData(rightPlan.data.selections),
+                fitLeader,
+                countLeader,
+                biggestDiff,
+                semesterDiffs
+            };
+        }
+
+        function renderSavedPlanComparison() {
+            const compareEl = document.getElementById('saved-plan-compare');
+            if (!compareEl) return;
+
+            const selectedPlans = selectedComparePlanIds
+                .map(id => savedPlans.find(plan => plan.id === id))
+                .filter(Boolean);
+
+            if (selectedPlans.length < 2) {
+                compareEl.innerHTML = `
+                    <div class="compare-selection">
+                        <span>보관함에서 설계안 2개를 고르면 학기별 차이와 적합도 차이를 바로 비교합니다.</span>
+                        ${selectedPlans.map(plan => `<span class="compare-chip">${escapeHtml(plan.name)}</span>`).join('')}
+                    </div>
+                `;
+                return;
+            }
+
+            const [leftPlan, rightPlan] = selectedPlans;
+            const comparison = buildPlanComparisonData(leftPlan, rightPlan);
+            const countAdvantage = comparison.countLeader === 'left'
+                ? `${leftPlan.name}이 더 많음`
+                : comparison.countLeader === 'right'
+                    ? `${rightPlan.name}이 더 많음`
+                    : '동일';
+            const fitAdvantage = comparison.fitLeader === 'left'
+                ? `${leftPlan.name} 우세`
+                : comparison.fitLeader === 'right'
+                    ? `${rightPlan.name} 우세`
+                    : '동일';
+            const overviewText = comparison.fitLeader === 'left'
+                ? `${leftPlan.name}이 전공 적합도에서 앞서고 있습니다.`
+                : comparison.fitLeader === 'right'
+                    ? `${rightPlan.name}이 전공 적합도에서 앞서고 있습니다.`
+                    : '두 설계안의 전공 적합도는 비슷합니다.';
+            const renderChipList = (items, className) => items.length
+                ? `<div class="compare-chip-list">${items.map(item => `<span class="compare-course-chip ${className}">${escapeHtml(item)}</span>`).join('')}</div>`
+                : '<div class="compare-empty">없음</div>';
+
+            compareEl.innerHTML = `
+                <div class="compare-selection">
+                    <span>${escapeHtml(overviewText)}</span>
+                    <span class="compare-chip">${escapeHtml(leftPlan.name)}</span>
+                    <span class="compare-chip">${escapeHtml(rightPlan.name)}</span>
+                </div>
+                <div class="compare-summary-grid">
+                    <div class="compare-summary-card${comparison.countLeader ? ' highlight' : ''}">
+                        <span>선택 과목 수</span>
+                        <strong>${escapeHtml(leftPlan.name)} ${comparison.leftCount}개<br>${escapeHtml(rightPlan.name)} ${comparison.rightCount}개</strong>
+                        <div class="compare-advantage">${escapeHtml(countAdvantage)}</div>
+                    </div>
+                    <div class="compare-summary-card${comparison.fitLeader ? ' highlight' : ''}">
+                        <span>전공 적합도</span>
+                        <strong>${escapeHtml(leftPlan.name)} ${comparison.leftFit.percent}%<br>${escapeHtml(rightPlan.name)} ${comparison.rightFit.percent}%</strong>
+                        <div class="compare-advantage">${escapeHtml(fitAdvantage)}</div>
+                    </div>
+                    <div class="compare-summary-card">
+                        <span>가장 차이가 큰 학기</span>
+                        <strong>${comparison.biggestDiff && comparison.biggestDiff.totalDiff > 0 ? `${comparison.biggestDiff.label} (${comparison.biggestDiff.totalDiff}개 차이)` : '차이가 거의 없습니다.'}</strong>
+                    </div>
+                </div>
+                <div class="compare-semester-list">
+                    ${comparison.semesterDiffs.map(diff => {
+                        return `
+                            <article class="compare-semester-item${comparison.biggestDiff && comparison.biggestDiff.key === diff.key && diff.totalDiff > 0 ? ' highlight' : ''}">
+                                <div class="compare-semester-head">
+                                    <strong>${diff.label}</strong>
+                                    <span class="compare-semester-badge">${diff.totalDiff}개 차이</span>
+                                </div>
+                                <div class="compare-semester-columns">
+                                    <div class="compare-semester-column">
+                                        <h5>공통 과목</h5>
+                                        ${renderChipList(diff.shared, 'shared')}
+                                    </div>
+                                    <div class="compare-semester-column">
+                                        <h5>${escapeHtml(leftPlan.name)}에만 있는 과목</h5>
+                                        ${renderChipList(diff.onlyLeft, 'left-only')}
+                                    </div>
+                                    <div class="compare-semester-column">
+                                        <h5>${escapeHtml(rightPlan.name)}에만 있는 과목</h5>
+                                        ${renderChipList(diff.onlyRight, 'right-only')}
+                                    </div>
+                                </div>
+                            </article>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function applySavedSelectionsToDom() {
+            document.getElementById('career-goal').value = userData.careerGoal || "";
+            updateExampleButtonState();
+
+            document.querySelectorAll('#builder-page .choice-select').forEach(select => {
+                const semesterKey = select.dataset.semesterKey;
+                const groupId = select.dataset.groupId;
+                const semesterSelections = userData.selections[semesterKey] || [];
+                const nextValue = semesterSelections.find(course => (courseData[groupId] || []).includes(course)) || "";
+                select.value = nextValue;
+            });
+
+            syncUserSelectionsFromDom();
+            updateAllDisabledStates();
+        }
+
+        function restoreUserProgress() {
+            const saved = localStorage.getItem(USER_PROGRESS_STORAGE_KEY);
+            if (!saved) {
+                setBuilderSaveStatus('설계 내용은 이 브라우저에 임시 저장됩니다.');
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(saved);
+                applyImportedUserData(parsed, '이전 설계 내용을 불러왔습니다.');
+            } catch (error) {
+                console.error('Failed to restore user progress:', error);
+                clearUserProgress();
+            }
+        }
+
+        function updateBuilderChrome() {
+            const totalSteps = 7;
+            const progress = Math.round((Math.max(currentStep - 1, 0) / (totalSteps - 1)) * 100);
+            const progressFill = document.getElementById('builder-progress-fill');
+            const progressText = document.getElementById('builder-progress-text');
+            const stepLabel = document.getElementById('builder-step-label');
+            const goalPreview = document.getElementById('goal-preview');
+            const selectedCount = document.getElementById('selected-count');
+
+            if (progressFill) progressFill.style.width = `${progress}%`;
+            if (progressText) progressText.textContent = `${progress}%`;
+            if (stepLabel) stepLabel.textContent = `${currentStep} / ${totalSteps} 단계`;
+            if (goalPreview) goalPreview.textContent = userData.careerGoal.trim() || '미설정';
+            if (selectedCount) selectedCount.textContent = String(countSelections());
+        }
+
+        function getAdminSemesterConfig(semesterKey) {
+            return adminSemesterConfigs.find(config => config.key === semesterKey) || adminSemesterConfigs[0];
+        }
+
+        function setAdminLoginMessage(message) {
+            const el = document.getElementById('admin-login-message');
+            if (!el) return;
+            el.textContent = message;
+        }
+
+        function setAdminCredentialsStatus(message, isError = false) {
+            const el = document.getElementById('admin-credentials-status');
+            if (!el) return;
+            el.textContent = message;
+            el.style.color = isError ? '#fca5a5' : '#93c5fd';
+        }
+
+        function updateAdminAuthUI() {
+            const loginPanel = document.getElementById('admin-login-panel');
+            const consolePanel = document.getElementById('admin-console');
+            if (!loginPanel || !consolePanel) return;
+
+            loginPanel.classList.toggle('admin-hidden', isAdminAuthenticated);
+            consolePanel.classList.toggle('admin-hidden', !isAdminAuthenticated);
+
+            if (isAdminAuthenticated) {
+                setAdminLoginMessage('');
+                renderAdminPage();
+                setAdminStatus('학기별 과목 목록을 확인하고 저장할 수 있습니다.');
+            } else {
+                setAdminStatus('');
+            }
+        }
+
+        function updateHeaderAdminState() {
+            const headerAdminBtn = document.getElementById('header-admin-btn');
+            const container = document.querySelector('.app-container');
+            if (!headerAdminBtn || !container) return;
+
+            const adminMode = currentPage === 'admin-page';
+            headerAdminBtn.classList.toggle('active', adminMode);
+            container.classList.toggle('admin-mode', adminMode);
+        }
+
+        function loadAdminAuth() {
+            isAdminAuthenticated = sessionStorage.getItem(ADMIN_AUTH_STORAGE_KEY) === 'true';
+        }
+
+        function loadAdminCredentials() {
+            const saved = localStorage.getItem(ADMIN_CREDENTIALS_STORAGE_KEY);
+            if (!saved) {
+                adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed && typeof parsed.id === 'string' && typeof parsed.password === 'string' && parsed.id.trim() && parsed.password) {
+                    adminCredentials = {
+                        id: parsed.id.trim(),
+                        password: parsed.password
+                    };
+                    return;
+                }
+            } catch (error) {
+                console.error('Failed to load admin credentials:', error);
+            }
+
+            adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
+            localStorage.removeItem(ADMIN_CREDENTIALS_STORAGE_KEY);
+        }
+
+        function fillAdminCredentialsForm() {
+            const idInput = document.getElementById('admin-credentials-id');
+            const pwInput = document.getElementById('admin-credentials-password');
+            const confirmInput = document.getElementById('admin-credentials-password-confirm');
+            if (!idInput || !pwInput || !confirmInput) return;
+
+            idInput.value = adminCredentials.id;
+            pwInput.value = '';
+            confirmInput.value = '';
+        }
+
+        function attemptAdminLogin() {
+            const idInput = document.getElementById('admin-login-id');
+            const passwordInput = document.getElementById('admin-login-password');
+            const id = idInput.value.trim();
+            const password = passwordInput.value;
+
+            if (id === adminCredentials.id && password === adminCredentials.password) {
+                isAdminAuthenticated = true;
+                sessionStorage.setItem(ADMIN_AUTH_STORAGE_KEY, 'true');
+                passwordInput.value = '';
+                setAdminLoginMessage('');
+                updateAdminAuthUI();
+                return;
+            }
+
+            isAdminAuthenticated = false;
+            sessionStorage.removeItem(ADMIN_AUTH_STORAGE_KEY);
+            setAdminLoginMessage('아이디 또는 비밀번호가 올바르지 않습니다.');
+        }
+
+        function logoutAdmin() {
+            isAdminAuthenticated = false;
+            sessionStorage.removeItem(ADMIN_AUTH_STORAGE_KEY);
+            document.getElementById('admin-login-id').value = '';
+            document.getElementById('admin-login-password').value = '';
+            setAdminLoginMessage('');
+            updateAdminAuthUI();
+            showPage('home-page');
+        }
+
+        function saveAdminCredentials() {
+            const idInput = document.getElementById('admin-credentials-id');
+            const pwInput = document.getElementById('admin-credentials-password');
+            const confirmInput = document.getElementById('admin-credentials-password-confirm');
+            const nextId = idInput.value.trim();
+            const nextPassword = pwInput.value;
+            const confirmPassword = confirmInput.value;
+
+            if (!nextId) {
+                setAdminCredentialsStatus('관리자 아이디를 입력해야 합니다.', true);
+                return;
+            }
+
+            if (!nextPassword) {
+                setAdminCredentialsStatus('새 비밀번호를 입력해야 합니다.', true);
+                return;
+            }
+
+            if (nextPassword !== confirmPassword) {
+                setAdminCredentialsStatus('비밀번호 확인이 일치하지 않습니다.', true);
+                return;
+            }
+
+            adminCredentials = { id: nextId, password: nextPassword };
+            localStorage.setItem(ADMIN_CREDENTIALS_STORAGE_KEY, JSON.stringify(adminCredentials));
+            fillAdminCredentialsForm();
+            document.getElementById('admin-login-id').value = nextId;
+            setAdminCredentialsStatus('관리자 계정을 저장했습니다.');
+            setAdminLoginMessage('');
+        }
+
+        function resetAdminCredentials() {
+            adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
+            localStorage.removeItem(ADMIN_CREDENTIALS_STORAGE_KEY);
+            fillAdminCredentialsForm();
+            document.getElementById('admin-login-id').value = adminCredentials.id;
+            setAdminCredentialsStatus('기본 관리자 계정으로 복원했습니다.');
+            setAdminLoginMessage('');
+        }
+
+        function setAdminStatus(message, isError = false) {
+            const status = document.getElementById('admin-status');
+            if (!status) return;
+            status.textContent = message;
+            status.classList.toggle('error', isError);
+        }
+
+        function syncUserSelectionsFromDom() {
+            const selections = {};
+            document.querySelectorAll('#builder-page .choice-select').forEach(select => {
+                const semesterKey = select.dataset.semesterKey;
+                if (!semesterKey) return;
+                if (!selections[semesterKey]) selections[semesterKey] = [];
+                if (select.value) selections[semesterKey].push(select.value);
+            });
+            userData.selections = {
+                ...selections,
+                ...(userData.selections['1-1-required'] ? { '1-1-required': userData.selections['1-1-required'] } : {})
+            };
+        }
+
+        function persistAdminOverrides() {
+            const payload = {};
+            Object.keys(originalCourseData).forEach(key => {
+                payload[key] = [...courseData[key]];
+            });
+            localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(payload));
+        }
+
+        function loadAdminOverrides() {
+            const saved = localStorage.getItem(ADMIN_STORAGE_KEY);
+            if (!saved) return;
+
+            try {
+                const parsed = JSON.parse(saved);
+                Object.keys(originalCourseData).forEach(key => {
+                    if (Array.isArray(parsed[key])) {
+                        courseData[key] = parsed[key].map(course => String(course).trim()).filter(Boolean);
+                    }
+                });
+            } catch (error) {
+                console.error('Failed to load admin course overrides:', error);
+                localStorage.removeItem(ADMIN_STORAGE_KEY);
+            }
+        }
+
+        function refreshAllSelectOptions() {
+            document.querySelectorAll('#builder-page .choice-select').forEach(select => {
+                const groupId = select.dataset.groupId;
+                const currentValue = select.value;
+                if (!groupId) return;
+
+                populateSelectWithOptions(groupId, select.id);
+                const hasOption = Array.from(select.querySelectorAll('option')).some(option => option.value === currentValue);
+                select.value = hasOption ? currentValue : "";
+            });
+
+            syncUserSelectionsFromDom();
+            updateAllDisabledStates();
+            updateBuilderChrome();
+        }
+
+        function updateAdminCounts() {
+            document.querySelectorAll('#admin-page .admin-textarea').forEach(textarea => {
+                const count = textarea.value
+                    .split('\n')
+                    .map(course => course.trim())
+                    .filter(Boolean).length;
+                const countEl = document.querySelector(`[data-count-for="${textarea.dataset.groupKey}"]`);
+                if (countEl) countEl.textContent = `${count}개 과목`;
+            });
+        }
+
+        function renderAdminPage() {
+            const select = document.getElementById('admin-semester-select');
+            const groupsContainer = document.getElementById('admin-groups');
+            if (!select || !groupsContainer) return;
+
+            const semesterConfig = getAdminSemesterConfig(select.value || adminSemesterConfigs[0].key);
+            select.value = semesterConfig.key;
+
+            groupsContainer.innerHTML = semesterConfig.groups.map((groupKey, index) => {
+                const courses = Array.isArray(courseData[groupKey]) ? courseData[groupKey] : [];
+                const safeText = courses.map(course => String(course)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;'))
+                    .join('\n');
+
+                return `
+                    <article class="admin-group-card">
+                        <div class="admin-group-head">
+                            <div class="admin-group-title">선택 ${index + 1}</div>
+                            <div class="admin-group-count" data-count-for="${groupKey}">${courses.length}개 과목</div>
+                        </div>
+                        <textarea class="admin-textarea" data-group-key="${groupKey}" spellcheck="false">${safeText}</textarea>
+                        <p class="admin-help">한 줄에 한 과목씩 입력하세요. 빈 줄은 저장 시 제외됩니다.</p>
+                    </article>
+                `;
+            }).join('');
+
+            groupsContainer.querySelectorAll('.admin-textarea').forEach(textarea => {
+                textarea.addEventListener('input', () => {
+                    updateAdminCounts();
+                    setAdminStatus('저장되지 않은 변경사항이 있습니다.');
+                });
+            });
+
+            updateAdminCounts();
+        }
+
+        function saveAdminSemester() {
+            const semesterSelect = document.getElementById('admin-semester-select');
+            const semesterConfig = getAdminSemesterConfig(semesterSelect.value);
+            const textareas = document.querySelectorAll('#admin-page .admin-textarea');
+
+            textareas.forEach(textarea => {
+                const nextCourses = [...new Set(
+                    textarea.value
+                        .split('\n')
+                        .map(course => course.trim())
+                        .filter(Boolean)
+                )];
+                courseData[textarea.dataset.groupKey] = nextCourses;
+            });
+
+            persistAdminOverrides();
+            refreshAllSelectOptions();
+            renderAdminPage();
+            setAdminStatus(`${semesterConfig.label} 과목 목록을 저장했습니다.`);
+        }
+
+        function resetAdminSemester() {
+            const semesterSelect = document.getElementById('admin-semester-select');
+            const semesterConfig = getAdminSemesterConfig(semesterSelect.value);
+            semesterConfig.groups.forEach(groupKey => {
+                courseData[groupKey] = [...originalCourseData[groupKey]];
+            });
+            persistAdminOverrides();
+            refreshAllSelectOptions();
+            renderAdminPage();
+            setAdminStatus(`${semesterConfig.label} 과목 목록을 원본으로 복원했습니다.`);
+        }
+
+        function resetAllAdminData() {
+            Object.keys(originalCourseData).forEach(groupKey => {
+                courseData[groupKey] = [...originalCourseData[groupKey]];
+            });
+            localStorage.removeItem(ADMIN_STORAGE_KEY);
+            refreshAllSelectOptions();
+            renderAdminPage();
+            setAdminStatus('전체 학기 과목 목록을 원본으로 복원했습니다.');
+        }
+
+        function computeFitStats(majorKey) {
+            const requirements = majorRequirements[majorKey] || majorRequirements.general;
+            const myCourses = new Set([
+                ...Object.values(userData.selections).flat(),
+                ...requiredCourses1_1
+            ]);
+            const allRequired = [...requirements.core, ...requirements.advanced];
+            const areCoursesEquivalent = (a, b) => a.replace(/Ⅰ|Ⅱ|1|2|3/g, '').trim() === b.replace(/Ⅰ|Ⅱ|1|2|3/g, '').trim();
+            let matched = 0;
+            allRequired.forEach(req => {
+                if ([...myCourses].some(my => areCoursesEquivalent(my, req))) matched++;
+            });
+            return {
+                matched,
+                total: allRequired.length,
+                percent: allRequired.length ? Math.round((matched / allRequired.length) * 100) : 0,
+                majorName: requirements.name
+            };
+        }
+
+        function renderResultMetrics() {
+            const metrics = document.getElementById('results-metrics');
+            const title = document.getElementById('result-summary-title');
+            const heroDescription = document.querySelector('#result-page .results-hero p');
+            if (!metrics || !title) return;
+
+            const semesters = ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'];
+            const completedSemesters = semesters.filter(sem => (userData.selections[sem] || []).length > 0).length;
+            const totalCourses = countSelections() + requiredCourses1_1.length;
+            const fit = computeFitStats(userData.majorKey || 'general');
+            const fitSummary = fit.percent >= 80 ? '전공 적합도가 매우 높습니다.' : fit.percent >= 60 ? '전공 방향이 비교적 선명합니다.' : '전공 방향을 더 선명하게 다듬을 수 있습니다.';
+
+            title.textContent = `${userData.careerGoal || '나의'} 교육과정 분석`;
+            if (heroDescription) {
+                heroDescription.textContent = `${completedSemesters}개 학기 설계, 총 ${totalCourses}개 과목, 적합도 ${fit.percent}%. ${fitSummary}`;
+            }
+            metrics.innerHTML = `
+                <div class="metric-card"><span>설계 방향</span><strong>${userData.careerGoal || '자유전공'}</strong></div>
+                <div class="metric-card"><span>완료 학기</span><strong>${completedSemesters} / 6</strong></div>
+                <div class="metric-card"><span>과목 수</span><strong>${totalCourses}개</strong></div>
+                <div class="metric-card"><span>적합도</span><strong>${fit.percent}%</strong></div>
+            `;
+        }
+
+        function renderResultOverview() {
+            const summaryList = document.getElementById('result-summary-list');
+            const semesterList = document.getElementById('result-semester-list');
+            if (!summaryList || !semesterList) return;
+
+            const semesters = [
+                ['1-1', '1학년 1학기'],
+                ['1-2', '1학년 2학기'],
+                ['2-1', '2학년 1학기'],
+                ['2-2', '2학년 2학기'],
+                ['3-1', '3학년 1학기'],
+                ['3-2', '3학년 2학기']
+            ];
+            const fit = computeFitStats(userData.majorKey || 'general');
+            const completedSemesters = semesters.filter(([key]) => (userData.selections[key] || []).length > 0).length;
+            const totalCourses = countSelections() + requiredCourses1_1.length;
+            const longestSemester = semesters
+                .map(([key, label]) => ({ key, label, count: (userData.selections[key] || []).length }))
+                .sort((a, b) => b.count - a.count)[0];
+            const topSemesterText = longestSemester && longestSemester.count > 0 ? `${longestSemester.label} · ${longestSemester.count}개` : '아직 없음';
+
+            summaryList.innerHTML = `
+                <div class="result-summary-item"><span>방향</span><strong>${userData.careerGoal || '자유전공'}</strong></div>
+                <div class="result-summary-item"><span>진행도</span><strong>${completedSemesters} / 6학기</strong></div>
+                <div class="result-summary-item"><span>설계 규모</span><strong>${totalCourses}개 과목</strong></div>
+                <div class="result-summary-item"><span>집중 학기</span><strong>${topSemesterText}</strong></div>
+                <div class="result-summary-item"><span>적합도 요약</span><strong>${fit.percent}% · ${fit.majorName}</strong></div>
+            `;
+
+            semesterList.innerHTML = semesters.map(([key, label]) => {
+                const courses = userData.selections[key] || [];
+                return `
+                    <div class="result-semester-item">
+                        <div class="result-semester-head">
+                            <strong>${label}</strong>
+                            <span class="result-semester-count">${courses.length}개</span>
+                        </div>
+                        <div class="result-semester-courses">${courses.length ? courses.join(', ') : '아직 선택한 과목이 없습니다.'}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        const resultSectionDefaults = {
+            tree: true,
+            analysis: true,
+            ai: false
+        };
+
+        function setResultSectionState(sectionKey, isExpanded) {
+            const body = document.getElementById(`${sectionKey}-section-body`);
+            const button = document.getElementById(`toggle-${sectionKey}-btn`);
+            if (!body || !button) return;
+
+            body.classList.toggle('hidden', !isExpanded);
+            button.classList.toggle('active', isExpanded);
+            button.textContent = isExpanded ? '접기' : '펼치기';
+        }
+
+        function toggleResultSection(sectionKey) {
+            const body = document.getElementById(`${sectionKey}-section-body`);
+            if (!body) return;
+            setResultSectionState(sectionKey, body.classList.contains('hidden'));
+        }
+
+        function resetResultSections() {
+            Object.entries(resultSectionDefaults).forEach(([sectionKey, isExpanded]) => {
+                setResultSectionState(sectionKey, isExpanded);
+            });
+        }
+
+        function getLastConfiguredBuilderStep() {
+            const semesterStepMap = [
+                ['3-2', 7],
+                ['3-1', 6],
+                ['2-2', 5],
+                ['2-1', 4],
+                ['1-2', 3],
+                ['1-1', 2]
+            ];
+
+            const found = semesterStepMap.find(([semesterKey]) => (userData.selections[semesterKey] || []).length > 0);
+            return found ? found[1] : 1;
+        }
+
+        function activateBuilderStep(step) {
+            currentStep = Math.min(Math.max(step, 1), 7);
+            document.querySelectorAll('#builder-page .step').forEach(panel => panel.classList.remove('active'));
+            const targetStep = document.getElementById(`step-${currentStep}`);
+            if (targetStep) targetStep.classList.add('active');
+            updateAllDisabledStates();
+            updateBuilderChrome();
+        }
+
+        function continueCurriculumEditing() {
+            userData.isFinished = false;
+            activateBuilderStep(getLastConfiguredBuilderStep());
+            showPage('builder-page');
+            setBuilderSaveStatus('이전 설계 내용으로 이어서 수정할 수 있습니다.');
+        }
+
+        function restartCurriculumDesign() {
+            resetBuilder();
+            showPage('builder-page');
+            setBuilderSaveStatus('새 교육과정 설계를 시작합니다.');
+        }
+
+        function setResultsExportStatus(message, isError = false) {
+            const el = document.getElementById('results-export-status');
+            if (!el) return;
+            el.textContent = message;
+            el.style.color = isError ? '#dc2626' : '#2563eb';
+        }
+
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function buildCurriculumMatrixData() {
+            const semesters = [
+                ['1-1', '1학년 1학기'],
+                ['1-2', '1학년 2학기'],
+                ['2-1', '2학년 1학기'],
+                ['2-2', '2학년 2학기'],
+                ['3-1', '3학년 1학기'],
+                ['3-2', '3학년 2학기']
+            ];
+            const tracks = new Map();
+            const trackOrder = ['생명', '화학', '물리', '수학', '프로그래밍', '경제', '사회', '외국어', '기타'];
+
+            semesters.forEach(([semesterKey]) => {
+                (userData.selections[semesterKey] || []).forEach(courseName => {
+                    const trackName = getCourseTrack(courseName);
+                    if (!tracks.has(trackName)) {
+                        tracks.set(trackName, {});
+                    }
+                    if (!tracks.get(trackName)[semesterKey]) {
+                        tracks.get(trackName)[semesterKey] = [];
+                    }
+                    tracks.get(trackName)[semesterKey].push(courseName);
+                });
+            });
+
+            return {
+                semesters,
+                trackOrder: trackOrder.filter(track => tracks.has(track)).concat(
+                    [...tracks.keys()].filter(track => !trackOrder.includes(track))
+                ),
+                tracks
+            };
+        }
+
+        function buildCurriculumMatrixHtml() {
+            const { semesters, trackOrder, tracks } = buildCurriculumMatrixData();
+            const bgByTrack = {
+                '생명': '#e7f5e9',
+                '화학': '#e4f2fa',
+                '물리': '#f0eaf5',
+                '수학': '#fff8e5',
+                '프로그래밍': '#fdedee',
+                '경제': '#e3f5f8',
+                '사회': '#fdeee0',
+                '외국어': '#e0f0f8',
+                '기타': '#f8fafc'
+            };
+            const borderByTrack = {
+                '생명': '#b7e1bf',
+                '화학': '#a9d6f0',
+                '물리': '#d3c1e6',
+                '수학': '#ffe6a6',
+                '프로그래밍': '#f7c6c9',
+                '경제': '#a6e1ea',
+                '사회': '#f7d3b5',
+                '외국어': '#b0d8ea',
+                '기타': '#cbd5e1'
+            };
+
+            let html = '<table style="width:100%; border-collapse:separate; border-spacing:8px;">';
+            html += '<thead><tr>';
+            html += '<th style="padding:10px; border-radius:12px; background:#e2e8f0; color:#0f172a; font-size:12px;">계열</th>';
+            semesters.forEach(([, label]) => {
+                html += `<th style="padding:10px; border-radius:12px; background:#dbeafe; color:#1d4ed8; font-size:12px;">${escapeHtml(label.replace('학기', ''))}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            trackOrder.forEach(trackName => {
+                html += '<tr>';
+                html += `<td style="vertical-align:top; padding:12px 10px; border-radius:12px; background:#f1f5f9; color:#0f172a; font-weight:700; font-size:13px;">${escapeHtml(trackName)}</td>`;
+                semesters.forEach(([semesterKey]) => {
+                    const courses = (tracks.get(trackName) && tracks.get(trackName)[semesterKey]) || [];
+                    const chips = courses.map(course => (
+                        `<div style="display:inline-block; margin:4px 4px 0 0; padding:7px 10px; border-radius:10px; border:1px solid ${borderByTrack[trackName] || '#cbd5e1'}; background:${bgByTrack[trackName] || '#f8fafc'}; color:#0f172a; font-size:12px;">${escapeHtml(course)}</div>`
+                    )).join('');
+                    html += `<td style="min-width:110px; vertical-align:top; padding:10px; border-radius:14px; border:1px solid #dbe4f0; background:#ffffff;">${chips || '&nbsp;'}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function buildCurriculumMatrixText() {
+            const { semesters, trackOrder, tracks } = buildCurriculumMatrixData();
+            const lines = ['[계열별 선택 과목]', ''];
+
+            trackOrder.forEach(trackName => {
+                lines.push(`${trackName}`);
+                semesters.forEach(([, label], index) => {
+                    const semesterKey = semesters[index][0];
+                    const courses = (tracks.get(trackName) && tracks.get(trackName)[semesterKey]) || [];
+                    if (courses.length > 0) {
+                        lines.push(`- ${label}: ${courses.join(', ')}`);
+                    }
+                });
+                lines.push('');
+            });
+
+            return lines.join('\n').trim();
+        }
+
+        function buildResultsSummaryText() {
+            const semesters = [
+                ['1-1', '1학년 1학기'],
+                ['1-2', '1학년 2학기'],
+                ['2-1', '2학년 1학기'],
+                ['2-2', '2학년 2학기'],
+                ['3-1', '3학년 1학기'],
+                ['3-2', '3학년 2학기']
+            ];
+            const fit = computeFitStats(userData.majorKey || 'general');
+            const lines = [
+                `진로 목표: ${userData.careerGoal || '자유전공'}`,
+                `전공 적합도: ${fit.percent}% (${fit.matched}/${fit.total})`,
+                ''
+            ];
+
+            semesters.forEach(([key, label]) => {
+                const courses = userData.selections[key] || [];
+                if (courses.length > 0) {
+                    lines.push(`${label}: ${courses.join(', ')}`);
+                }
+            });
+
+            return lines.join('\n');
+        }
+
+        async function exportResultAsImage() {
+            if (!userData.isFinished && countSelections() === 0) {
+                setResultsExportStatus('저장할 결과가 없습니다.', true);
+                return;
+            }
+
+            if (typeof html2canvas !== 'function') {
+                setResultsExportStatus('이미지 저장 도구를 불러오지 못했습니다.', true);
+                return;
+            }
+
+            try {
+                setResultsExportStatus('결과 이미지를 준비하고 있습니다.');
+                const target = document.getElementById('result-page');
+                const canvas = await html2canvas(target, {
+                    backgroundColor: '#f8fbff',
+                    scale: 2,
+                    useCORS: true
+                });
+                const link = document.createElement('a');
+                link.download = `kmla-report-${new Date().toISOString().slice(0, 10)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                setResultsExportStatus('결과 이미지를 저장했습니다.');
+            } catch (error) {
+                console.error('Failed to export result image:', error);
+                setResultsExportStatus('이미지 저장 중 오류가 발생했습니다.', true);
+            }
+        }
+
+        async function exportElementAsPdf(element, filename, successMessage) {
+            if (typeof html2canvas !== 'function') {
+                setResultsExportStatus('PDF 저장 도구를 불러오지 못했습니다.', true);
+                return;
+            }
+
+            const JsPdfCtor = window.jspdf && window.jspdf.jsPDF;
+            if (typeof JsPdfCtor !== 'function') {
+                setResultsExportStatus('PDF 생성 도구를 불러오지 못했습니다.', true);
+                return;
+            }
+
+            try {
+                setResultsExportStatus('PDF 파일을 준비하고 있습니다.');
+                const canvas = await html2canvas(element, {
+                    backgroundColor: '#f8fbff',
+                    scale: 2,
+                    useCORS: true
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new JsPdfCtor('p', 'mm', 'a4');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = pageWidth;
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save(filename);
+                setResultsExportStatus(successMessage);
+            } catch (error) {
+                console.error('Failed to export PDF:', error);
+                setResultsExportStatus('PDF 저장 중 오류가 발생했습니다.', true);
+            }
+        }
+
+        async function exportResultAsPdf() {
+            if (!userData.isFinished && countSelections() === 0) {
+                setResultsExportStatus('저장할 결과가 없습니다.', true);
+                return;
+            }
+
+            const filename = `kmla-report-${new Date().toISOString().slice(0, 10)}.pdf`;
+            await exportElementAsPdf(document.getElementById('result-page'), filename, '결과 화면 PDF를 저장했습니다.');
+        }
+
+        async function exportComparisonAsPdf() {
+            if (selectedComparePlanIds.length < 2) {
+                setResultsExportStatus('비교 PDF를 저장하려면 설계안 2개를 먼저 선택해야 합니다.', true);
+                return;
+            }
+
+            const compareEl = document.getElementById('saved-plan-compare');
+            if (!compareEl) {
+                setResultsExportStatus('비교 영역을 찾을 수 없습니다.', true);
+                return;
+            }
+
+            const filename = `kmla-compare-${new Date().toISOString().slice(0, 10)}.pdf`;
+            await exportElementAsPdf(compareEl, filename, '비교 화면 PDF를 저장했습니다.');
+        }
+
+        function printResultsReport() {
+            if (!userData.isFinished && countSelections() === 0) {
+                setResultsExportStatus('인쇄할 결과가 없습니다.', true);
+                return;
+            }
+
+            const summary = buildResultsSummaryText().replace(/\n/g, '<br>');
+            const matrixHtml = buildCurriculumMatrixHtml();
+            const printWindow = window.open('', '_blank', 'width=960,height=900');
+            if (!printWindow) {
+                setResultsExportStatus('인쇄 창을 열 수 없습니다.', true);
+                return;
+            }
+
+            printWindow.document.write(`
+                <html lang="ko">
+                <head>
+                    <title>KMLA 교육과정 리포트</title>
+                    <style>
+                        @page { size: A4 portrait; margin: 14mm; }
+                        * { box-sizing: border-box; }
+                        body {
+                            font-family: 'Noto Sans KR', sans-serif;
+                            padding: 0;
+                            margin: 0;
+                            color: #0f172a;
+                            background: #ffffff;
+                            line-height: 1.6;
+                        }
+                        h1 { margin: 0; font-size: 28px; line-height: 1.25; }
+                        h2 { margin: 0 0 12px; font-size: 18px; }
+                        .report {
+                            display: grid;
+                            gap: 14px;
+                        }
+                        .hero {
+                            padding: 22px 24px;
+                            border: 1px solid #cbd5e1;
+                            border-radius: 20px;
+                            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+                            page-break-inside: avoid;
+                        }
+                        .meta {
+                            color: #475569;
+                            margin-top: 8px;
+                            font-size: 14px;
+                        }
+                        .block {
+                            border: 1px solid #cbd5e1;
+                            border-radius: 18px;
+                            padding: 18px 20px;
+                            background: #ffffff;
+                            page-break-inside: avoid;
+                        }
+                        .summary {
+                            font-size: 14px;
+                            color: #334155;
+                        }
+                        .matrix-wrap {
+                            overflow: hidden;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: separate;
+                            border-spacing: 6px;
+                            table-layout: fixed;
+                        }
+                        th, td {
+                            word-break: keep-all;
+                            vertical-align: top;
+                        }
+                        .footer-note {
+                            margin-top: 4px;
+                            font-size: 12px;
+                            color: #64748b;
+                        }
+                        @media print {
+                            .report {
+                                gap: 10px;
+                            }
+                            .hero,
+                            .block {
+                                break-inside: avoid;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <main class="report">
+                        <section class="hero">
+                            <h1>${userData.careerGoal || '나의'} 교육과정 리포트</h1>
+                            <div class="meta">민족사관고등학교 교육과정 설계 결과</div>
+                        </section>
+                        <section class="block">
+                            <h2>핵심 요약</h2>
+                            <div class="summary">${summary}</div>
+                        </section>
+                        <section class="block matrix-wrap">
+                            <h2>학기별 선택과목</h2>
+                            ${matrixHtml}
+                            <div class="footer-note">계열별로 정리된 선택 과목표입니다.</div>
+                        </section>
+                    </main>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            setResultsExportStatus('인쇄 창을 열었습니다.');
+        }
+
+        function shareResultsByEmail() {
+            if (!userData.isFinished && countSelections() === 0) {
+                setResultsExportStatus('공유할 결과가 없습니다.', true);
+                return;
+            }
+
+            const subject = encodeURIComponent(`[KMLA] ${userData.careerGoal || '교육과정'} 리포트`);
+            const body = encodeURIComponent(`${buildResultsSummaryText()}\n\n${buildCurriculumMatrixText()}`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            setResultsExportStatus('기본 메일 앱으로 공유를 시도했습니다.');
+        }
+
+        function exportCurriculumData() {
+            if (!hasMeaningfulProgress()) {
+                setResultsExportStatus('저장할 설계 데이터가 없습니다.', true);
+                return;
+            }
+
+            const payload = buildCurrentPlanPayload();
+
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+            const link = document.createElement('a');
+            const safeGoal = (userData.careerGoal || 'curriculum').replace(/[^\w\u3131-\uD79D-]+/g, '-').replace(/^-+|-+$/g, '');
+            link.href = URL.createObjectURL(blob);
+            link.download = `kmla-${safeGoal || 'curriculum'}-${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            setResultsExportStatus('설계 데이터를 JSON 파일로 저장했습니다.');
+        }
+
+        function triggerCurriculumImport() {
+            const fileInput = document.getElementById('curriculum-import-input');
+            if (!fileInput) return;
+            fileInput.value = '';
+            fileInput.click();
+        }
+
+        function importCurriculumData(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const parsed = JSON.parse(String(reader.result || '{}'));
+                    if (parsed.app && parsed.app !== 'kmla-curriculum-planner') {
+                        throw new Error('이 앱에서 저장한 설계 파일이 아닙니다.');
+                    }
+                    applyImportedUserData(parsed, '설계 데이터를 불러왔습니다.');
+                } catch (error) {
+                    console.error('Failed to import curriculum data:', error);
+                    setResultsExportStatus(`불러오기 중 오류가 발생했습니다: ${error.message}`, true);
+                }
+            };
+            reader.onerror = () => {
+                setResultsExportStatus('파일을 읽는 중 오류가 발생했습니다.', true);
+            };
+            reader.readAsText(file, 'utf-8');
+        }
+
+        // --- PAGE NAVIGATION ---
+        function renderResultsPage() {
+            if (!userData.isFinished && countSelections() === 0) {
+                document.getElementById('results-content').classList.add('hidden');
+                document.getElementById('no-results').classList.remove('hidden');
+                document.getElementById('result-summary-title').textContent = '나의 교육과정 분석';
+                document.getElementById('results-metrics').innerHTML = '';
+                resetResultSections();
+                return;
+            }
+
+            if (userData.careerGoal.trim() === "") {
+                userData.careerGoal = "자유전공";
+            }
+
+            userData.selections['1-1-required'] = requiredCourses1_1;
+            ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'].forEach(sem => {
+                if (!userData.selections[sem]) userData.selections[sem] = [];
+            });
+
+            document.getElementById('results-content').classList.remove('hidden');
+            document.getElementById('no-results').classList.add('hidden');
+
+            userData.majorKey = getMajorKeyFromGoal(userData.careerGoal);
+            renderResultMetrics();
+            renderResultOverview();
+            renderSavedPlanLibrary();
+            resetResultSections();
+            generateTreeView();
+            document.getElementById('major-selector').value = userData.majorKey;
+            updateAnalysis();
+
+            const allSelectionsForAI = JSON.parse(JSON.stringify(userData.selections));
+            allSelectionsForAI['1-1'] = (allSelectionsForAI['1-1'] || []).concat(requiredCourses1_1);
+            delete allSelectionsForAI['1-1-required'];
+            runAIAnalysis(userData.careerGoal, allSelectionsForAI);
+        }
+
+        function showPage(pageId) {
+            if (pageId === 'result-page') {
+                renderResultsPage();
+            }
+            if (pageId === 'admin-page') {
+                updateAdminAuthUI();
+            }
+            
+            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+            const activeTab = document.getElementById(`tab-${pageId.split('-')[0]}`);
+            if (activeTab) activeTab.classList.add('active');
+            
+            currentPage = pageId;
+            updateHeaderAdminState();
+            updateBuilderChrome();
+            if (pageId !== 'admin-page') {
+                persistUserProgress(pageId === 'result-page' ? '결과 화면 기준으로 설계 내용이 저장되었습니다.' : '현재 설계 내용이 자동 저장되었습니다.');
+            }
+        }
+
+        // --- BUILDER LOGIC ---
+        function setCareerGoal(goal) {
+            document.getElementById('career-goal').value = goal;
+            userData.careerGoal = goal;
+            updateExampleButtonState();
+            clearValidationMessage();
+            updateBuilderChrome();
+            persistUserProgress();
+        }
+
+        function nextStep(step) {
+            if (step === 1) {
+                const goal = document.getElementById('career-goal').value;
+                if (goal.trim() === "") {
+                    setValidationMessage('진로 희망을 먼저 입력해주세요.');
+                    return;
+                }
+                userData.careerGoal = goal;
+            } else {
+                const currentStepElement = document.getElementById(`step-${step}`);
+                const selectionsInStep = Array.from(currentStepElement.querySelectorAll('select.choice-select'));
+                const allSelected = selectionsInStep.every(select => select.value !== "");
+                const requiredSelections = (step <= 3) ? 3 : 8;
+
+                if (!allSelected) {
+                    setValidationMessage(`모든 ${requiredSelections}개 영역에서 과목을 선택해야 합니다.`);
+                    return;
+                }
+
+                const semesterKey = getSemesterKeyForStep(step);
+                userData.selections[semesterKey] = selectionsInStep.map(select => select.value);
+            }
+
+            clearValidationMessage();
+            document.getElementById(`step-${step}`).classList.remove('active');
+            currentStep++;
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            updateBuilderChrome();
+            persistUserProgress();
+        }
+
+        function prevStep(step) {
+            clearValidationMessage();
+            document.getElementById(`step-${step}`).classList.remove('active');
+            currentStep--;
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            updateAllDisabledStates();
+            updateBuilderChrome();
+            persistUserProgress();
+        }
+
+        function showResults() {
+            const selectionsInStep = Array.from(document.querySelectorAll('#step-7 .choice-select'));
+            const allSelected = selectionsInStep.every(select => select.value !== "");
+            if (!allSelected) {
+                setValidationMessage('모든 8개 영역에서 과목을 선택해야 합니다.');
+                return;
+            }
+            userData.selections['3-2'] = selectionsInStep.map(select => select.value);
+
+            clearValidationMessage();
+            userData.isFinished = true;
+            updateBuilderChrome();
+            showPage('result-page');
+        }
+
+        function resetBuilder() {
+            userData.careerGoal = "";
+            userData.selections = {};
+            userData.isFinished = false;
+            currentStep = 1;
+
+            document.getElementById('career-goal').value = "";
+            updateExampleButtonState();
+            document.querySelectorAll('#builder-page .choice-select').forEach(select => {
+                select.value = "";
+            });
+            updateAllDisabledStates();
+            document.querySelectorAll('#builder-page .step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('step-1').classList.add('active');
+            clearValidationMessage();
+            updateBuilderChrome();
+            clearUserProgress();
+        }
+
+        function updateExampleButtonState() {
+            const goal = document.getElementById('career-goal').value;
+            const button = document.getElementById('skip-to-results-btn');
+            
+            // 예시 데이터가 있는 진로 희망인지 확인
+            if ( (goal.includes('의예') || goal.includes('생명과학')) || (goal.includes('공학') || goal.includes('물리')) || (goal.includes('경제') || goal.includes('경영')) ) {
+                button.classList.remove('btn-secondary');
+                button.classList.add('btn-example-active');
+            } else {
+                button.classList.remove('btn-example-active');
+                button.classList.add('btn-secondary');
+            }
+        }
+        
+        const baseSelections1_1 = ["국어1", "수학1", "영어1", "통합사회1", "통합과학1", "한국사1", "진로와 직업", "체육", "음악", "미술"];
+
+        function skipToResultsWithDefault() {
+            const goal = document.getElementById('career-goal').value;
+
+            if (goal.includes('의예') || goal.includes('생명과학')) {
+                userData.careerGoal = "의예 / 생명과학";
+                document.getElementById('career-goal').value = userData.careerGoal;
+            
+                userData.selections = {
+                    '1-1': ['Biology1', '화학', '프로그래밍 기초'], // 1-1 선택 과목
+                    '1-2': ['AP Biology1', 'AP Chemistry1', '컴퓨터 시스템 일반'],
+                    '2-1': ['대수', '미적분1', 'AP Biology 2', 'AP Chemistry 2', 'Physics 1', '데이터 과학', 'AP 심리학 1'],
+                    '2-2': ['미적분2', '선형대수학', '세포생물학의 이해', '유기화학 1', 'AP Physics 1', 'AP 심리학 2', '프로그래밍'],
+                    '3-1': ['확률과 통계', '벡터 미적분학', '분자생물학의 이해', '유기화학 2', 'AP Physics 2', 'AP 컴퓨터과학 A', '긍정심리학'],
+                    '3-2': ['미분방정식', '이산수학', '생명과학세미나', '화학 세미나', '일반물리학']
+                };
+
+                userData.isFinished = true;
+                showPage('result-page');
+                clearValidationMessage();
+                updateBuilderChrome();
+                persistUserProgress('예시 설계 결과가 저장되었습니다.');
+            } else if (goal.includes('공학') || goal.includes('물리')) {
+                userData.careerGoal = "공학 / 물리";
+                document.getElementById('career-goal').value = userData.careerGoal;
+            
+                userData.selections = {
+                    '1-1': ['Physics 1', '화학', '프로그래밍 기초'], // 1-1 선택 과목
+                    '1-2': ['AP Physics 1', 'AP Chemistry1', '컴퓨터 시스템 일반'],
+                    '2-1': ['AP Physics 2', 'AP Chemistry 2', '대수', '미적분1', '데이터 과학', 'AP 미시경제'],
+                    '2-2': ['AP 물리학 C: 전자기학', '유기화학 1', '미적분2', '선형대수학', '프로그래밍', 'AP 거시경제', 'AP 통계학 1'],
+                    '3-1': ['해석역학 1', '유기화학 2', '확률과 통계', '벡터 미적분학', 'AP 컴퓨터과학 A', 'AP 중급미시경제학', 'AP 통계학 2'],
+                    '3-2': ['해석역학 2', '화학 세미나', '미분방정식', '이산수학', '인공지능 수학', '머신러닝']
+                };
+
+                userData.isFinished = true;
+                showPage('result-page');
+                clearValidationMessage();
+                updateBuilderChrome();
+                persistUserProgress('예시 설계 결과가 저장되었습니다.');
+            } else if (goal.includes('경제') || goal.includes('경영')) {
+                userData.careerGoal = "경제 / 경영";
+                document.getElementById('career-goal').value = userData.careerGoal;
+            
+                userData.selections = {
+                    '1-1': ['경제', '심리학', '프로그래밍 기초'], // 1-1 선택 과목
+                    '1-2': ['AP 미시경제', 'AP 통계학 1', '컴퓨터 시스템 일반'],
+                    '2-1': ['대수', '미적분1', 'AP 거시경제', '데이터 과학', 'AP 심리학 1', 'Physics 1'],
+                    '2-2': ['미적분2', 'AP 통계학 2', 'AP 중급미시경제학', '프로그래밍', 'AP 심리학 2', 'AP Physics 1'],
+                    '3-1': ['확률과 통계', '경제학 고전강독', 'AP 컴퓨터과학 A', '긍정심리학', 'AP Physics 2'],
+                    '3-2': ['미분방정식', '선형대수학', '머신러닝', '성격과 자기이해', '일반물리학']
+                };
+
+                userData.isFinished = true;
+                showPage('result-page');
+                clearValidationMessage();
+                updateBuilderChrome();
+                persistUserProgress('예시 설계 결과가 저장되었습니다.');
+            } else {
+                alert("선택하신 진로 희망의 예시 데이터는 준비 중입니다. 다른 진로를 선택 후 예시를 확인해주세요.");
+            }
+        }
+
+
+        // --- UI RENDERING & UPDATES ---
+        function getCourseCategory(courseName) {
+            for (const category in courseToCategoryMap) {
+                if (courseToCategoryMap[category].includes(courseName)) return category;
+            }
+            const normalized = String(courseName).toLowerCase();
+            for (const category in categoryKeywords) {
+                if (categoryKeywords[category].some(keyword => normalized.includes(keyword.toLowerCase()))) {
+                    return category;
+                }
+            }
+            return '기타';
+        }
+
+        function renderSelectOptions(select) {
+            if (!select) return;
+            const dataKey = select.dataset.groupId;
+            const currentValue = select.value;
+            const query = (select.dataset.searchQuery || '').trim().toLowerCase();
+            const activeCategory = select.dataset.filterCategory || '전체';
+            select.innerHTML = ''; // Clear existing options
+
+            const placeholder = document.createElement('option');
+            placeholder.value = "";
+            placeholder.textContent = "과목을 선택하세요";
+            select.appendChild(placeholder);
+
+            const courses = [...new Set(courseData[dataKey])]; // 중복 제거
+            const categorized = {};
+            courseCategoryOrder.forEach(cat => categorized[cat] = []);
+
+            courses.forEach(course => {
+                const category = getCourseCategory(course);
+                const matchesQuery = !query || course.toLowerCase().includes(query);
+                const matchesCategory = activeCategory === '전체' || category === activeCategory;
+                if (matchesQuery && matchesCategory) {
+                    categorized[category].push(course);
+                }
+            });
+
+            let renderedCurrentValue = false;
+            if (currentValue && !courses.some(course => {
+                const category = getCourseCategory(course);
+                return course === currentValue &&
+                    (!query || course.toLowerCase().includes(query)) &&
+                    (activeCategory === '전체' || category === activeCategory);
+            })) {
+                const currentGroup = document.createElement('optgroup');
+                currentGroup.label = '현재 선택';
+                const currentOption = document.createElement('option');
+                currentOption.value = currentValue;
+                currentOption.textContent = `${currentValue} (유지)`;
+                currentGroup.appendChild(currentOption);
+                select.appendChild(currentGroup);
+                renderedCurrentValue = true;
+            }
+
+            courseCategoryOrder.forEach(category => {
+                if (categorized[category].length > 0) {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = category;
+                    categorized[category].forEach(course => {
+                        const option = document.createElement('option');
+                        option.value = course;
+                        option.textContent = course;
+                        optgroup.appendChild(option);
+                    });
+                    select.appendChild(optgroup);
+                }
+            });
+
+            if (currentValue) {
+                select.value = currentValue;
+            } else {
+                placeholder.selected = true;
+            }
+
+            if (!renderedCurrentValue && currentValue && !Array.from(select.querySelectorAll('option')).some(option => option.value === currentValue)) {
+                select.value = "";
+            }
+        }
+
+        function attachSelectionEnhancements(groupDiv, select) {
+            if (!groupDiv || !select || groupDiv.querySelector('.selection-tools')) return;
+
+            select.dataset.searchQuery = select.dataset.searchQuery || '';
+            select.dataset.filterCategory = select.dataset.filterCategory || '전체';
+
+            const tools = document.createElement('div');
+            tools.className = 'selection-tools';
+
+            const searchInput = document.createElement('input');
+            searchInput.type = 'search';
+            searchInput.className = 'selection-search';
+            searchInput.placeholder = '과목 검색';
+            searchInput.value = select.dataset.searchQuery;
+            searchInput.addEventListener('input', () => {
+                select.dataset.searchQuery = searchInput.value;
+                renderSelectOptions(select);
+                updateAllDisabledStates();
+            });
+
+            const filterBar = document.createElement('div');
+            filterBar.className = 'selection-filter-bar';
+            selectionFilterCategories.forEach(category => {
+                const filterBtn = document.createElement('button');
+                filterBtn.type = 'button';
+                filterBtn.className = `selection-filter-btn${select.dataset.filterCategory === category ? ' active' : ''}`;
+                filterBtn.textContent = category;
+                filterBtn.addEventListener('click', () => {
+                    select.dataset.filterCategory = category;
+                    filterBar.querySelectorAll('.selection-filter-btn').forEach(button => {
+                        button.classList.toggle('active', button.textContent === category);
+                    });
+                    renderSelectOptions(select);
+                    updateAllDisabledStates();
+                });
+                filterBar.appendChild(filterBtn);
+            });
+
+            tools.appendChild(searchInput);
+            tools.appendChild(filterBar);
+            select.insertAdjacentElement('beforebegin', tools);
+        }
+
+        function populateSelectWithOptions(dataKey, selectElementId) {
+            const select = document.getElementById(selectElementId);
+            if (!select) return;
+            select.dataset.groupId = dataKey;
+            attachSelectionEnhancements(select.closest('.selection-group'), select);
+            renderSelectOptions(select);
+        }
+        
+        function updateAllDisabledStates() {
+            // 1. Get all currently selected courses from ALL steps.
+            const allSelectedCourses = new Set();
+            Object.values(userData.selections).forEach(courses => {
+                courses.forEach(course => allSelectedCourses.add(course));
+            });
+
+            // 2. Iterate through ALL <select> elements in the builder
+            document.querySelectorAll('#builder-page .choice-select').forEach(select => {
+                const currentSelection = select.value;
+                // Iterate through all <option> elements in this <select>
+                select.querySelectorAll('option').forEach(option => {
+                    const courseName = option.value;
+                    if (courseName === "") return; // Skip placeholder
+
+                    // 3. A course is disabled if it's in the selected set, BUT it's not the one currently selected in THIS dropdown.
+                    if (allSelectedCourses.has(courseName) && courseName !== currentSelection) {
+                        option.disabled = true;
+                    } else {
+                        option.disabled = false;
+                    }
+                });
+            });
+        }
+
+
+        // --- RESULT ANALYSIS LOGIC ---
+        function getSemesterKeyForStep(stepNum) { if (stepNum === 2) return '1-1'; if (stepNum === 3) return '1-2'; if (stepNum === 4) return '2-1'; if (stepNum === 5) return '2-2'; if (stepNum === 6) return '3-1'; if (stepNum === 7) return '3-2'; return null; }
+        function getMajorKeyFromGoal(goal) { if (goal.includes('의예') || goal.includes('생명')) return 'medical'; if (goal.includes('공학') || goal.includes('물리')) return 'engineering'; if (goal.includes('컴퓨터') || goal.includes('AI')) return 'cs'; if (goal.includes('경제') || goal.includes('경영')) return 'economics'; if (goal.includes('법학') || goal.includes('정치')) return 'law'; return 'general'; }
+        const subjectGroupColors = { '필수': { bgColor: '#f3f4f6', borderColor: '#d1d5db' }, '생명': { bgColor: '#e7f5e9', borderColor: '#b7e1bf' }, '화학': { bgColor: '#e4f2fa', borderColor: '#a9d6f0' }, '물리': { bgColor: '#f0eaf5', borderColor: '#d3c1e6' }, '수학': { bgColor: '#fff8e5', borderColor: '#ffe6a6' }, '프로그래밍': { bgColor: '#fdedee', borderColor: '#f7c6c9' }, '경제': { bgColor: '#e3f5f8', borderColor: '#a6e1ea' }, '사회': { bgColor: '#fdeee0', borderColor: '#f7d3b5' }, '외국어': { bgColor: '#e0f0f8', borderColor: '#b0d8ea' } };
+        const subjectGroupKeywordsForColoring = { '필수': ["국어1", "수학1", "영어1", "통합사회1", "통합과학1", "한국사1", "진로와 직업", "체육", "음악", "미술"], '생명': ['생명', 'Biology', '생물', '환경', '생태'], '화학': ['화학', 'Chem'], '물리': ['물리', 'Physic', '에너지', '역학'], '수학': ['수학', '미적분', '기하', '확률과 통계', '통계학', '대수', '선형대수학', '미분방정식', '이산수학', '벡터'], '프로그래밍': ['프로그래밍', '컴퓨터', '정보', '데이터', '머신러닝'], '경제': ['경제'], '사회': ['사회', '역사', '윤리', '미국사', '유럽사', '국제관계', '정치', '법', '철학', '심리'], '외국어': ['영어', '프랑스어', '스페인어', '중국어', '한문', '문학', '독해', '작문'] };
+        
+        function getCourseTrack(courseName) { 
+            for (const group in subjectGroupKeywordsForColoring) { 
+                if (subjectGroupKeywordsForColoring[group].some(keyword => courseName.includes(keyword))) { 
+                    return group; 
+                } 
+            } 
+            return '기타'; 
+        }
+        
+        function generateTreeView() {
+            const grid = document.getElementById('tree-grid');
+            const s = userData.selections;
+            const semesters = ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'];
+            const tracks = new Map();
+            const untrackedCourses = [];
+            
+            // 모든 과목(필수+선택)을 tracks에 분류
+            const allCourses = [];
+            
+            /* [수정됨] 1학년 1학기 필수 과목을 '학기별 선택과목' 표에서 제외
+            if (s['1-1-required']) {
+                s['1-1-required'].forEach(c => allCourses.push({ sem: '1-1', name: c }));
+            }
+            */
+            
+            semesters.forEach(semKey => {
+                if (s[semKey]) {
+                    s[semKey].forEach(c => allCourses.push({ sem: semKey, name: c }));
+                }
+            });
+            
+            allCourses.forEach(course => {
+                const trackName = getCourseTrack(course.name);
+                if (trackName !== '기타') {
+                    if (!tracks.has(trackName)) { tracks.set(trackName, []); }
+                    tracks.get(trackName).push(course);
+                } else {
+                    untrackedCourses.push(course);
+                }
+            });
+            
+            const trackOrder = ['필수', '생명', '화학', '물리', '수학', '프로그래밍', '경제', '사회', '외국어'];
+            let gridHTML = `<div class="grid-header">계열</div>`;
+            semesters.forEach(sem => gridHTML += `<div class="grid-header">${sem.replace('-', '학년 ')}</div>`);
+            
+            trackOrder.forEach(trackName => {
+                if (tracks.has(trackName)) {
+                    const courses = tracks.get(trackName);
+                    gridHTML += `<div class="area-label">${trackName}</div>`;
+                    semesters.forEach(sem => {
+                        gridHTML += `<div class="grid-cell"><ul>`;
+                        const coursesInCell = courses.filter(c => c.sem === sem);
+                        coursesInCell.forEach(course => { 
+                            const colorInfo = subjectGroupColors[trackName]; 
+                            const style = colorInfo ? `style="background-color: ${colorInfo.bgColor}; border-color: ${colorInfo.borderColor};"` : ''; 
+                            gridHTML += `<li ${style}>${course.name}</li>`; 
+                        });
+                        gridHTML += `</ul></div>`;
+                    });
+                }
+            });
+
+            if (untrackedCourses.length > 0) {
+                gridHTML += `<div class="area-label">기타</div>`;
+                semesters.forEach(sem => {
+                    gridHTML += `<div class="grid-cell"><ul>`;
+                    const coursesInCell = untrackedCourses.filter(c => c.sem === sem);
+                    coursesInCell.forEach(course => { gridHTML += `<li>${course.name}</li>`; });
+                    gridHTML += `</ul></div>`;
+                });
+            }
+            grid.innerHTML = gridHTML;
+        }
+
+        function updateAnalysis() {
+            const majorKey = document.getElementById('major-selector').value;
+            const requirements = majorRequirements[majorKey];
+            
+            // 모든 선택 과목 + 필수 과목
+            const myCourses = new Set([
+                ...Object.values(userData.selections).flat(),
+                ...requiredCourses1_1
+            ]);
+            
+            let metCount = 0;
+            const allRequired = [...requirements.core, ...requirements.advanced];
+            const areCoursesEquivalent = (a, b) => a.replace(/Ⅰ|Ⅱ|1|2|3/g, '').trim() === b.replace(/Ⅰ|Ⅱ|1|2|3/g, '').trim();
+            allRequired.forEach(req => { if ([...myCourses].some(my => areCoursesEquivalent(my, req))) metCount++; });
+
+            const chartLabels = ['수학', '물리', '화학', '생명', '정보', '사회'];
+            const myData = [0, 0, 0, 0, 0, 0]; const reqData = [0, 0, 0, 0, 0, 0];
+            const keywordMap = { '수학': ['수학', '미적분', '기하', '통계'], '물리': ['물리', '역학'], '화학': ['화학', 'Chem'], '생명': ['생명', 'Bio', '생물'], '정보': ['정보', '프로그래밍', '컴퓨터'], '사회': ['사회', '경제', '정치', '법', '역사', '윤리', '통합사회'] };
+            myCourses.forEach(c => { for(let i=0; i<chartLabels.length; i++) if (keywordMap[chartLabels[i]].some(kw => c.includes(kw))) myData[i]++; });
+            allRequired.forEach(c => { for(let i=0; i<chartLabels.length; i++) if (keywordMap[chartLabels[i]].some(kw => c.includes(kw))) reqData[i]++; });
+
+            const ctx = document.getElementById('curriculum-gap-chart').getContext('2d');
+            if (curriculumChart) curriculumChart.destroy();
+            curriculumChart = new Chart(ctx, { type: 'radar', data: { labels: chartLabels, datasets: [{ label: '나의 선택', data: myData, backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: 'rgb(59, 130, 246)', }, { label: '전공 권장', data: reqData, backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: 'rgb(255, 99, 132)', }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: Math.max(...reqData, ...myData, 3), pointLabels: { font: { size: 10 } }, ticks: { backdropPadding: 0, stepSize: 1 } } }, plugins: { legend: { labels: { font: { size: 10 } } } } } });
+        }
+
+        async function runAIAnalysis(goal, selections) {
+            const loadingDiv = document.getElementById('ai-loading');
+            const resultsDiv = document.getElementById('ai-results');
+            loadingDiv.style.display = 'flex'; 
+            resultsDiv.classList.add('hidden');
+
+            // Construct the prompt for the API
+            let courseText = "";
+            const semesters = {'1-1': '1학년 1학기', '1-2': '1학년 2학기', '2-1': '2학년 1학기', '2-2': '2학년 2학기', '3-1': '3학년 1학기', '3-2': '3학년 2학기'};
+            for(const semKey in semesters) {
+                if(selections[semKey] && selections[semKey].length > 0) {
+                    courseText += `${semesters[semKey]}: ${selections[semKey].join(', ')}\n`;
+                }
+            }
+
+            // 1. 시스템 프롬프트를 백엔드 함수로 전송합니다.
+            const systemPrompt = "당신은 민족사관고등학교(KMLA)의 교육과정과 대학 입시 전략에 매우 정통한 최고의 진로 진학 컨설턴트입니다. 학생이 선택한 과목들을 바탕으로, 학생의 진로 희망에 맞춰 교육과정의 강점, 보완점, 그리고 종합적인 총평을 한국어로 체계적으로 분석해주세요. 답변은 반드시 제공된 JSON 스키마에 따라야 합니다. 분석은 긍정적이고 격려하는 어조로 작성해주세요. 중요: '보완 및 제언' 항목에서는 교외 봉사활동, 병원 인턴, 캠프 활동 등 대학 입시에 반영될 수 없는 활동은 절대 제안해서는 안 됩니다. 모든 제안은 학교생활기록부에 기재 가능한 교내 활동(예: 교내 봉사활동)에 한정되어야 합니다.";
+            
+            // 2. API 키를 삭제하고 Netlify 백엔드 함수 주소를 사용합니다.
+            const apiUrl = "/.netlify/functions/analyze";
+
+            // 3. 백엔드 함수(analyze.js)에 보낼 데이터를 구성합니다.
+            const payload = {
+                goal: goal,
+                selections: selections,
+                systemPrompt: systemPrompt
+            };
+
+            try {
+                // 4. 브라우저는 OpenAI를 직접 호출하지 않고 Netlify 함수만 호출합니다.
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    const errorDetails = result?.error || `HTTP ${response.status}`;
+                    throw new Error(errorDetails);
+                }
+
+                if (Array.isArray(result?.strengths) && Array.isArray(result?.recommendations) && typeof result?.summary === 'string') {
+                    const analysis = result;
+                    document.getElementById('analysis-strengths').innerHTML = analysis.strengths.map(s => `<li>${s}</li>`).join('');
+                    document.getElementById('analysis-recommendations').innerHTML = analysis.recommendations.map(r => `<li>${r}</li>`).join('');
+                    document.getElementById('analysis-summary').textContent = analysis.summary;
+                } else {
+                    throw new Error('분석 응답 형식이 올바르지 않습니다.');
+                }
+
+            } catch (error) {
+                console.error("AI Analysis Error:", error);
+                document.getElementById('analysis-summary').textContent = `AI 분석 중 오류가 발생했습니다: ${error.message}`;
+                document.getElementById('analysis-strengths').innerHTML = "<li>강점 분석 결과를 불러오지 못했습니다.</li>";
+                document.getElementById('analysis-recommendations').innerHTML = "<li>보완 제언 결과를 불러오지 못했습니다.</li>";
+            } finally {
+                loadingDiv.style.display = 'none';
+                resultsDiv.classList.remove('hidden');
+            }
+        }
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAdminOverrides();
+            loadAdminAuth();
+            loadAdminCredentials();
+            loadSavedPlans();
+
+             // Add a single, global event listener for handling selections
+            document.getElementById('builder-page').addEventListener('change', (e) => {
+                if (e.target.matches('select.choice-select')) {
+                    // Save current selections to userData
+                    const select = e.target;
+                    const semesterKey = select.dataset.semesterKey;
+                    
+                    const stepElement = select.closest('.step');
+                    const selectionsInStep = Array.from(stepElement.querySelectorAll('select.choice-select'));
+                    userData.selections[semesterKey] = selectionsInStep
+                        .map(s => s.value)
+                        .filter(v => v !== ""); // Filter out placeholder
+
+                    // Update disabled state for ALL choices everywhere
+                    updateAllDisabledStates();
+                    persistUserProgress();
+                }
+            });
+            document.getElementById('career-goal').addEventListener('input', (e) => {
+                userData.careerGoal = e.target.value;
+                updateExampleButtonState();
+                updateBuilderChrome();
+                persistUserProgress();
+            });
+
+            const adminSemesterSelect = document.getElementById('admin-semester-select');
+            adminSemesterSelect.innerHTML = adminSemesterConfigs
+                .map(config => `<option value="${config.key}">${config.label}</option>`)
+                .join('');
+            adminSemesterSelect.addEventListener('change', () => {
+                renderAdminPage();
+                setAdminStatus('다른 학기의 과목 목록을 불러왔습니다.');
+            });
+            document.getElementById('admin-login-btn').addEventListener('click', attemptAdminLogin);
+            document.getElementById('admin-login-password').addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    attemptAdminLogin();
+                }
+            });
+            document.getElementById('curriculum-import-input').addEventListener('change', importCurriculumData);
+            document.getElementById('admin-home-btn').addEventListener('click', () => showPage('home-page'));
+            document.getElementById('admin-credentials-save-btn').addEventListener('click', saveAdminCredentials);
+            document.getElementById('admin-credentials-reset-btn').addEventListener('click', resetAdminCredentials);
+            document.getElementById('admin-save-btn').addEventListener('click', saveAdminSemester);
+            document.getElementById('admin-reset-semester-btn').addEventListener('click', resetAdminSemester);
+            document.getElementById('admin-reset-all-btn').addEventListener('click', resetAllAdminData);
+
+            // [수정됨] 1학년 1학기 선택 드롭다운 (3개) 채우기
+            populateSelectWithOptions('1-1-1', 'select-s1-1-1');
+            populateSelectWithOptions('1-1-2', 'select-s1-1-2');
+            populateSelectWithOptions('1-1-3', 'select-s1-1-3');
+            
+            // 1학년 2학기 선택 드롭다운 (3개) 채우기
+            populateSelectWithOptions('1-2-1', 'select-s1-2-1');
+            populateSelectWithOptions('1-2-2', 'select-s1-2-2');
+            populateSelectWithOptions('1-2-3', 'select-s1-2-3');
+
+            // 2, 3학년 과정 그룹 렌더링 (8개씩)
+            ['4', '5', '6', '7'].forEach(stepNum => {
+                const container = document.getElementById(`step-${stepNum}-groups`);
+                const semesterKeyPrefix = stepNum < 6 ? `2-${stepNum-3}` : `3-${stepNum-5}`;
+                const semesterKey = stepNum < 6 ? `2-${stepNum-3}` : `3-${stepNum-5}`;
+                
+                if (container) {
+                    container.innerHTML = ''; // 기존 내용 삭제
+                    for (let i = 1; i <= 8; i++) {
+                        const groupId = `s${semesterKeyPrefix}-${i}`;
+                        const selectId = `select-${groupId}`;
+                        
+                        // 1. Create selection-group wrapper
+                        const groupDiv = document.createElement('div');
+                        groupDiv.className = 'selection-group';
+                        
+                        // 2. Create label
+                        const label = document.createElement('label');
+                        label.htmlFor = selectId;
+                        label.className = `selection-header selection-header-${i}`;
+                        label.textContent = `선택 ${i}`;
+                        
+                        // 3. Create select
+                        const select = document.createElement('select');
+                        select.id = selectId;
+                        select.className = 'choice-select';
+                        select.dataset.semesterKey = semesterKey;
+                        select.dataset.groupId = groupId.substring(1); // 's' 제거
+                        
+                        // 4. Append
+                        groupDiv.appendChild(label);
+                        groupDiv.appendChild(select);
+                        container.appendChild(groupDiv);
+                        
+                        // 5. Populate
+                        populateSelectWithOptions(groupId.substring(1), selectId);
+                    }
+                }
+            });
+
+            document.getElementById('major-selector').addEventListener('change', updateAnalysis);
+            renderAdminPage();
+            fillAdminCredentialsForm();
+            document.getElementById('admin-login-id').value = adminCredentials.id;
+            updateAdminAuthUI();
+            updateHeaderAdminState();
+            restoreUserProgress();
+            updateBuilderChrome();
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
