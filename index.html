@@ -3927,6 +3927,11 @@
 
                 const semesterKey = getSemesterKeyForStep(step);
                 userData.selections[semesterKey] = selectionsInStep.map(select => select.value);
+                const sequenceConflict = findSequentialSelectionConflict(userData.selections);
+                if (sequenceConflict) {
+                    setValidationMessage(`"${sequenceConflict.courseName}"을(를) 선택하려면 먼저 "${sequenceConflict.prerequisiteCandidates[0]}"을(를) 선택해야 합니다.`);
+                    return;
+                }
             }
 
             clearValidationMessage();
@@ -3955,6 +3960,11 @@
                 return;
             }
             userData.selections['3-2'] = selectionsInStep.map(select => select.value);
+            const sequenceConflict = findSequentialSelectionConflict(userData.selections);
+            if (sequenceConflict) {
+                setValidationMessage(`"${sequenceConflict.courseName}"을(를) 선택하려면 먼저 "${sequenceConflict.prerequisiteCandidates[0]}"을(를) 선택해야 합니다.`);
+                return;
+            }
 
             clearValidationMessage();
             userData.isFinished = true;
@@ -4194,6 +4204,59 @@
             attachSelectionEnhancements(select.closest('.selection-group'), select);
             renderSelectOptions(select);
         }
+
+        function getPrerequisiteCourseCandidates(courseName) {
+            const raw = String(courseName || '').trim();
+            const candidates = new Set();
+
+            const digitMatch = raw.match(/^(.*?)(\s?)2$/);
+            if (digitMatch) {
+                const prefix = digitMatch[1];
+                const space = digitMatch[2];
+                candidates.add(`${prefix}${space}1`);
+                candidates.add(space ? `${prefix}1` : `${prefix} 1`);
+            }
+
+            const romanMatch = raw.match(/^(.*?)(\s?)Ⅱ$/);
+            if (romanMatch) {
+                const prefix = romanMatch[1];
+                const space = romanMatch[2];
+                candidates.add(`${prefix}${space}Ⅰ`);
+                candidates.add(space ? `${prefix}Ⅰ` : `${prefix} Ⅰ`);
+            }
+
+            return [...candidates].filter(Boolean);
+        }
+
+        function isSequentialSecondCourse(courseName) {
+            return getPrerequisiteCourseCandidates(courseName).length > 0;
+        }
+
+        function hasRequiredFirstCourse(courseName, selectedCourses) {
+            const prerequisiteCandidates = getPrerequisiteCourseCandidates(courseName);
+            if (!prerequisiteCandidates.length) return true;
+            return prerequisiteCandidates.some(candidate => selectedCourses.has(candidate));
+        }
+
+        function findSequentialSelectionConflict(selections) {
+            const selectedCourses = new Set([
+                ...requiredCourses1_1,
+                ...Object.values(selections || {}).flat()
+            ]);
+
+            for (const courses of Object.values(selections || {})) {
+                for (const courseName of courses || []) {
+                    if (!hasRequiredFirstCourse(courseName, selectedCourses)) {
+                        return {
+                            courseName,
+                            prerequisiteCandidates: getPrerequisiteCourseCandidates(courseName)
+                        };
+                    }
+                }
+            }
+
+            return null;
+        }
         
         function updateAllDisabledStates() {
             // 1. Get all currently selected courses from ALL steps.
@@ -4201,6 +4264,7 @@
             Object.values(userData.selections).forEach(courses => {
                 courses.forEach(course => allSelectedCourses.add(course));
             });
+            requiredCourses1_1.forEach(course => allSelectedCourses.add(course));
 
             // 2. Iterate through ALL <select> elements in the builder
             document.querySelectorAll('#builder-page .choice-select').forEach(select => {
@@ -4211,7 +4275,10 @@
                     if (courseName === "") return; // Skip placeholder
 
                     // 3. A course is disabled if it's in the selected set, BUT it's not the one currently selected in THIS dropdown.
-                    if (allSelectedCourses.has(courseName) && courseName !== currentSelection) {
+                    const isDuplicateElsewhere = allSelectedCourses.has(courseName) && courseName !== currentSelection;
+                    const isBlockedByPrerequisite = isSequentialSecondCourse(courseName) && !hasRequiredFirstCourse(courseName, allSelectedCourses) && courseName !== currentSelection;
+
+                    if (isDuplicateElsewhere || isBlockedByPrerequisite) {
                         option.disabled = true;
                     } else {
                         option.disabled = false;
