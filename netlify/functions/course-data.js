@@ -32,6 +32,17 @@ function getBlobsConfig() {
     return undefined;
 }
 
+function getBlobsEnvStatus() {
+    return {
+        hasBloBsSiteId: Boolean(process.env.BLOBS_SITE_ID),
+        hasNetlifySiteId: Boolean(process.env.NETLIFY_SITE_ID),
+        hasSiteId: Boolean(process.env.SITE_ID),
+        hasBloBsToken: Boolean(process.env.BLOBS_TOKEN),
+        hasNetlifyBlobsToken: Boolean(process.env.NETLIFY_BLOBS_TOKEN),
+        hasNetlifyAuthToken: Boolean(process.env.NETLIFY_AUTH_TOKEN)
+    };
+}
+
 function getExpectedAdminCredentials() {
     return {
         id: process.env.ADMIN_ID || DEFAULT_ADMIN_ID,
@@ -54,7 +65,15 @@ function normalizeCourseData(input) {
 }
 
 exports.handler = async function handler(event) {
-    const store = getStore(STORE_NAME, getBlobsConfig());
+    const blobsConfig = getBlobsConfig();
+    if (!blobsConfig) {
+        return jsonResponse(500, {
+            error: "Netlify Blobs environment is not configured.",
+            envStatus: getBlobsEnvStatus()
+        });
+    }
+
+    const store = getStore(STORE_NAME, blobsConfig);
 
     if (event.httpMethod === "GET") {
         try {
