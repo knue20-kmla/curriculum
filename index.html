@@ -2314,10 +2314,13 @@
                     <div class="admin-controls">
                         <select id="admin-semester-select" class="admin-select"></select>
                         <button type="button" id="admin-save-btn" class="admin-action-btn">현재 학기 저장</button>
+                        <button type="button" id="admin-export-btn" class="admin-action-btn secondary">전체 백업</button>
+                        <button type="button" id="admin-import-btn" class="admin-action-btn secondary">백업 복원</button>
                         <button type="button" id="admin-reset-semester-btn" class="admin-action-btn secondary">현재 학기 원본 복원</button>
                         <button type="button" id="admin-reset-all-btn" class="admin-action-btn warning">전체 초기화</button>
                     </div>
                     <div id="admin-status" class="admin-status"></div>
+                    <input id="admin-course-import-input" type="file" accept="application/json,.json" class="admin-hidden">
                 </section>
 
                 <section class="admin-section-card surface-card">
@@ -3037,6 +3040,76 @@
             if (!status) return;
             status.textContent = message;
             status.classList.toggle('error', isError);
+        }
+
+        function buildAdminCourseBackupPayload() {
+            const payload = {};
+            Object.keys(originalCourseData).forEach(key => {
+                payload[key] = Array.isArray(courseData[key]) ? [...courseData[key]] : [];
+            });
+
+            return {
+                app: 'kmla-curriculum-admin-course-data',
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                courseData: payload
+            };
+        }
+
+        function exportAdminCourseData() {
+            try {
+                const payload = buildAdminCourseBackupPayload();
+                const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `kmla-course-backup-${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                setAdminStatus('전체 과목 데이터를 JSON 백업 파일로 저장했습니다.');
+            } catch (error) {
+                console.error('Failed to export admin course data:', error);
+                setAdminStatus(`백업 파일 저장 중 오류가 발생했습니다: ${error.message}`, true);
+            }
+        }
+
+        function triggerAdminCourseImport() {
+            const fileInput = document.getElementById('admin-course-import-input');
+            if (!fileInput) return;
+            fileInput.value = '';
+            fileInput.click();
+        }
+
+        async function importAdminCourseData(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            try {
+                const fileText = await file.text();
+                const parsed = JSON.parse(fileText);
+                const nextCourseData = parsed?.courseData;
+
+                if (!nextCourseData || typeof nextCourseData !== 'object') {
+                    throw new Error('백업 파일 안에 courseData 정보가 없습니다.');
+                }
+
+                Object.keys(originalCourseData).forEach(key => {
+                    const nextCourses = Array.isArray(nextCourseData[key]) ? nextCourseData[key] : originalCourseData[key];
+                    courseData[key] = [...new Set(nextCourses.map(course => String(course).trim()).filter(Boolean))];
+                });
+
+                await saveCourseDataToServer();
+                refreshAllSelectOptions();
+                renderAdminPage();
+                setAdminStatus('백업 파일에서 과목 데이터를 불러와 서버에 반영했습니다.');
+            } catch (error) {
+                console.error('Failed to import admin course data:', error);
+                setAdminStatus(`백업 복원 중 오류가 발생했습니다: ${error.message}`, true);
+            } finally {
+                event.target.value = '';
+            }
         }
 
         function syncUserSelectionsFromDom() {
@@ -4456,8 +4529,11 @@
                 }
             });
             document.getElementById('curriculum-import-input').addEventListener('change', importCurriculumData);
+            document.getElementById('admin-course-import-input').addEventListener('change', importAdminCourseData);
             document.getElementById('admin-home-btn').addEventListener('click', () => showPage('home-page'));
             document.getElementById('admin-save-btn').addEventListener('click', saveAdminSemester);
+            document.getElementById('admin-export-btn').addEventListener('click', exportAdminCourseData);
+            document.getElementById('admin-import-btn').addEventListener('click', triggerAdminCourseImport);
             document.getElementById('admin-reset-semester-btn').addEventListener('click', resetAdminSemester);
             document.getElementById('admin-reset-all-btn').addEventListener('click', resetAllAdminData);
 
