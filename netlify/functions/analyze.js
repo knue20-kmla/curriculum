@@ -27,13 +27,30 @@ function buildCourseText(selections) {
         .join("\n");
 }
 
-function buildInput(goal, selections) {
+function buildInput(goal, selections, analysisContext) {
     const courseText = buildCourseText(selections);
-    return [
+    const lines = [
         `진로 희망: ${goal || "자유전공"}`,
         "",
         "선택 과목:",
-        courseText || "선택 과목 정보 없음",
+        courseText || "선택 과목 정보 없음"
+    ];
+
+    if (analysisContext && typeof analysisContext === "object") {
+        lines.push(
+            "",
+            "정량 지표(이 수치를 반드시 근거로 인용하여 분석):",
+            JSON.stringify(analysisContext, null, 2)
+        );
+    }
+
+    lines.push(
+        "",
+        "분석 기준:",
+        "A. 진로연관 과목 수/비율이 낮거나 진로연관 심화·전문 과목이 거의 없으면, 어떤 세부 영역이 비어 있는지 구체적으로 지목하며 명확히 지적합니다. 막연한 격려로 넘기지 않습니다.",
+        "B. 진로연관 과목이 특정 계열에만 과도하게 편중되어 균형이 깨졌으면 그 점을 지적합니다.",
+        "C. 진로와 무관한 심화·전문 과목이 많으면 학업 부담 대비 진로 정합성 관점에서 비판적으로 평가합니다.",
+        "D. summary에는 진로-교육과정 정합성 수준(높음/보통/낮음)을 분명히 드러냅니다.",
         "",
         "출력 규칙:",
         "1. 반드시 순수 JSON 객체만 출력합니다.",
@@ -43,16 +60,19 @@ function buildInput(goal, selections) {
         "5. 분석은 반드시 선택 과목과 희망 분야의 관련성만 다룹니다.",
         "6. 동아리, 봉사, 캠프, 인턴, 독서, 탐구활동, 대회, 비교과 활동은 절대 언급하지 않습니다.",
         "7. strengths와 recommendations는 각각 2~5개의 한국어 문자열 배열이어야 합니다.",
-        "8. recommendations는 앞으로 선택하면 좋은 과목 또는 부족한 과목 영역만 다룹니다.",
+        "8. recommendations는 앞으로 선택하면 좋은 구체적 과목명 또는 부족한 과목 영역만 다룹니다.",
         "9. summary는 2~4문장의 한국어 문자열이어야 합니다.",
+        "10. strengths도 사실에 기반해 냉정하게 서술하고, 실제 지표가 빈약하면 강점을 과장하지 않습니다.",
         "",
-        "정확한 출력 형식 예시:",
+        "정확한 출력 형식 예시:"
+    );
+    return lines.concat([
         '{',
         '  "strengths": ["강점 1", "강점 2"],',
         '  "recommendations": ["제언 1", "제언 2"],',
         '  "summary": "총평 문장 1. 총평 문장 2."',
         '}'
-    ].join("\n");
+    ]).join("\n");
 }
 
 function extractJsonObject(rawText) {
@@ -124,8 +144,8 @@ exports.handler = async function handler(event) {
     }
 
     try {
-        const { goal, selections, systemPrompt } = JSON.parse(event.body || "{}");
-        const input = buildInput(goal, selections);
+        const { goal, selections, systemPrompt, analysisContext } = JSON.parse(event.body || "{}");
+        const input = buildInput(goal, selections, analysisContext);
 
         const response = await fetch("https://api.openai.com/v1/responses", {
             method: "POST",
