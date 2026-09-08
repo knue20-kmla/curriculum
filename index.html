@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -593,6 +593,269 @@
             padding: 12px 10px;
             border-radius: 12px;
             font-weight: 600;
+        }
+
+        .subject-catalog-menu {
+            margin-top: 20px;
+            padding: 18px;
+            background: rgba(248, 250, 252, 0.92);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+        }
+
+        .subject-catalog-title {
+            display: block;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+
+        .subject-catalog-caption {
+            margin: 6px 0 12px;
+            font-size: 0.8rem;
+            color: var(--muted-color);
+        }
+
+        .subject-catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .subject-catalog-btn {
+            padding: 11px 6px;
+            border-radius: 12px;
+            border: 1px solid rgba(191, 219, 254, 0.95);
+            background: #ffffff;
+            color: #1e40af;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .subject-catalog-btn:hover {
+            background: #eff6ff;
+            border-color: rgba(96, 165, 250, 0.95);
+            transform: translateY(-1px);
+        }
+
+        .subject-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            padding: 24px 16px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subject-modal-overlay.open {
+            display: flex;
+        }
+
+        .subject-modal {
+            width: 100%;
+            max-width: min(96vw, 880px);
+            max-height: min(82vh, 760px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .subject-modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 18px 20px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .subject-modal-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+
+        .subject-modal-sub {
+            margin: 4px 0 0;
+            font-size: 0.76rem;
+            color: var(--muted-color);
+        }
+
+        .subject-modal-close {
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: var(--muted-color);
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .subject-modal-body {
+            padding: 16px 20px 22px;
+            overflow-y: auto;
+        }
+
+        .subject-grade-section {
+            margin-bottom: 18px;
+        }
+
+        .subject-grade-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .subject-grade-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 10px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--primary-strong);
+        }
+
+        .subject-grade-count {
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.1);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .subject-chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .subject-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 11px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .subject-chip.level-1 { background: #dcfce7; border-color: #86efac; color: #166534; }
+        .subject-chip.level-2 { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+        .subject-chip.level-3 { background: #fef3c7; border-color: #fcd34d; color: #b45309; }
+        .subject-chip.level-4 { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+
+        .subject-track-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .subject-track-tab {
+            flex: 0 0 auto;
+            border: 1px solid rgba(191, 219, 254, 0.95);
+            background: #ffffff;
+            color: #334155;
+            padding: 7px 13px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .subject-track-tab.active {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #ffffff;
+        }
+
+        .subject-columns {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            padding-bottom: 4px;
+        }
+
+        .subject-column {
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #f8fafc;
+            border: 1px solid #eef2f7;
+            border-radius: 14px;
+            padding: 8px;
+        }
+
+        .subject-column-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 9px;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .subject-column-head em {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 0.72rem;
+            opacity: 0.75;
+        }
+
+        .subject-col-item {
+            display: block;
+            padding: 8px 9px;
+            border-radius: 9px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left-width: 3px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            line-height: 1.35;
+            color: #0f172a;
+            word-break: keep-all;
+            overflow-wrap: anywhere;
+        }
+
+        .subject-col-1 .subject-column-head { background: #dcfce7; color: #166534; }
+        .subject-col-1 .subject-col-item { border-left-color: #22c55e; }
+        .subject-col-2 .subject-column-head { background: #dbeafe; color: #1e40af; }
+        .subject-col-2 .subject-col-item { border-left-color: #3b82f6; }
+        .subject-col-3 .subject-column-head { background: #fef3c7; color: #b45309; }
+        .subject-col-3 .subject-col-item { border-left-color: #f59e0b; }
+        .subject-col-4 .subject-column-head { background: #fee2e2; color: #b91c1c; }
+        .subject-col-4 .subject-col-item { border-left-color: #ef4444; }
+
+        .subject-empty {
+            margin: 0;
+            font-size: 0.88rem;
+            color: var(--muted-color);
+        }
+
+        @media (max-width: 480px) {
+            .subject-catalog-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
         }
 
         .navigation {
@@ -2058,6 +2321,20 @@
                         <button type="button" onclick="setCareerGoal('정치 / 외교')">정치 / 외교</button>
                         <button type="button" onclick="setCareerGoal('자율 전공')">자율 전공</button>
                     </div>
+                    <div class="subject-catalog-menu">
+                        <span class="subject-catalog-title">교과별 개설 과목 확인하기</span>
+                        <p class="subject-catalog-caption">2022 개정 교육과정 기준 개설 과목입니다. 교과를 누르면 학년별 과목 목록을 확인할 수 있습니다.</p>
+                        <div class="subject-catalog-grid">
+                            <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('국어')">국어</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('영어')">영어</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('수학')">수학</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('사회')">사회</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('과학')">과학</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('제2외국어')">제2외국어</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('정보')">정보</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('교양')">교양</button>
+                        </div>
+                    </div>
                     <div class="navigation">
                         <button id="skip-to-results-btn" class="btn btn-secondary" onclick="skipToResultsWithDefault()">수강신청 결과(예시)</button>
                         <button class="btn btn-primary" onclick="nextStep(1)">다음</button>
@@ -2307,24 +2584,47 @@
                             <p>학년·학기별 과목 목록을 확인하고 수정하면 설계 화면 선택지에 바로 반영됩니다.</p>
                         </div>
                         <div class="admin-auth-row">
-                            <div class="admin-storage-badge">Firebase 클라우드 저장</div>
+                            <div class="admin-storage-badge">브라우저 로컬 저장</div>
                             <button type="button" id="admin-home-btn" class="admin-action-btn secondary">홈으로</button>
                         </div>
                     </div>
                     <div class="admin-controls">
                         <select id="admin-semester-select" class="admin-select"></select>
                         <button type="button" id="admin-save-btn" class="admin-action-btn">현재 학기 저장</button>
-                        <button type="button" id="admin-export-btn" class="admin-action-btn secondary">전체 백업</button>
-                        <button type="button" id="admin-import-btn" class="admin-action-btn secondary">백업 복원</button>
                         <button type="button" id="admin-reset-semester-btn" class="admin-action-btn secondary">현재 학기 원본 복원</button>
                         <button type="button" id="admin-reset-all-btn" class="admin-action-btn warning">전체 초기화</button>
                     </div>
                     <div id="admin-status" class="admin-status"></div>
-                    <input id="admin-course-import-input" type="file" accept="application/json,.json" class="admin-hidden">
                 </section>
 
                 <section class="admin-section-card surface-card">
                     <div id="admin-groups" class="admin-groups"></div>
+                </section>
+
+                <section class="admin-account-grid">
+                    <section class="admin-section-card admin-account-card surface-card">
+                        <h3>관리자 계정 설정</h3>
+                        <p>현재 브라우저에서 사용하는 관리자 로그인 정보를 변경합니다.</p>
+                        <div class="admin-login-fields">
+                            <label class="admin-login-label">
+                                새 관리자 아이디
+                                <input id="admin-credentials-id" type="text" class="admin-login-input" autocomplete="off">
+                            </label>
+                            <label class="admin-login-label">
+                                새 비밀번호
+                                <input id="admin-credentials-password" type="password" class="admin-login-input" autocomplete="new-password">
+                            </label>
+                            <label class="admin-login-label">
+                                비밀번호 확인
+                                <input id="admin-credentials-password-confirm" type="password" class="admin-login-input" autocomplete="new-password">
+                            </label>
+                        </div>
+                        <div class="admin-account-actions">
+                            <button type="button" id="admin-credentials-save-btn" class="admin-action-btn">계정 저장</button>
+                            <button type="button" id="admin-credentials-reset-btn" class="admin-action-btn secondary">기본 계정 복원</button>
+                        </div>
+                        <div id="admin-credentials-status" class="admin-account-status"></div>
+                    </section>
                 </section>
                 </div>
             </div>
@@ -2345,6 +2645,20 @@
                 <span>결과 분석</span>
             </div>
         </nav>
+
+        <!-- 교과별 개설 과목 팝업 -->
+        <div id="subject-modal-overlay" class="subject-modal-overlay" onclick="closeSubjectCatalog(event)">
+            <div class="subject-modal surface-card" role="dialog" aria-modal="true" aria-labelledby="subject-modal-title">
+                <div class="subject-modal-head">
+                    <div>
+                        <h3 id="subject-modal-title" class="subject-modal-title">개설 과목</h3>
+                        <p class="subject-modal-sub">교과목리스트_2022개정_교육과정(2026.07.09.) 기준</p>
+                    </div>
+                    <button type="button" class="subject-modal-close" onclick="closeSubjectCatalog()" aria-label="닫기">✕</button>
+                </div>
+                <div id="subject-modal-body" class="subject-modal-body"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -2368,11 +2682,12 @@
         const requiredCourses1_1 = ["국어1", "수학1", "영어1", "통합사회1", "통합과학1", "한국사1", "진로와 직업", "체육", "음악", "미술"];
         const courseCategoryOrder = ['수학', '과학', '사회', '국어', '영어', '제2외국어', '정보', '기타'];
         const selectionFilterCategories = ['전체', '과학', '사회', '수학', '영어', '정보', '제2외국어'];
+        const ADMIN_STORAGE_KEY = 'kmla-course-data-v1';
         const ADMIN_AUTH_STORAGE_KEY = 'kmla-admin-auth-v1';
-        const ADMIN_SESSION_ID_STORAGE_KEY = 'kmla-admin-session-id-v1';
-        const ADMIN_SESSION_PASSWORD_STORAGE_KEY = 'kmla-admin-session-password-v1';
+        const ADMIN_CREDENTIALS_STORAGE_KEY = 'kmla-admin-credentials-v1';
         const USER_PROGRESS_STORAGE_KEY = 'kmla-user-progress-v1';
         const SAVED_PLANS_STORAGE_KEY = 'kmla-saved-plans-v1';
+        const DEFAULT_ADMIN_CREDENTIALS = { id: 'admin', password: 'kmla-admin' };
         const originalCourseData = JSON.parse(JSON.stringify(courseData));
         const adminSemesterConfigs = [
             { key: '1-1', label: '1학년 1학기', groups: ['1-1-1', '1-1-2', '1-1-3'] },
@@ -2389,7 +2704,7 @@
         const userData = { careerGoal: "", selections: {}, majorKey: "general", isFinished: false };
         let curriculumChart = null;
         let isAdminAuthenticated = false;
-        let adminCredentials = { id: '', password: '' };
+        let adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
         let savedPlans = [];
         let selectedComparePlanIds = [];
 
@@ -2942,6 +3257,13 @@
             el.textContent = message;
         }
 
+        function setAdminCredentialsStatus(message, isError = false) {
+            const el = document.getElementById('admin-credentials-status');
+            if (!el) return;
+            el.textContent = message;
+            el.style.color = isError ? '#fca5a5' : '#93c5fd';
+        }
+
         function updateAdminAuthUI() {
             const loginPanel = document.getElementById('admin-login-panel');
             const consolePanel = document.getElementById('admin-console');
@@ -2971,63 +3293,66 @@
 
         function loadAdminAuth() {
             isAdminAuthenticated = sessionStorage.getItem(ADMIN_AUTH_STORAGE_KEY) === 'true';
-            adminCredentials = {
-                id: sessionStorage.getItem(ADMIN_SESSION_ID_STORAGE_KEY) || '',
-                password: sessionStorage.getItem(ADMIN_SESSION_PASSWORD_STORAGE_KEY) || ''
-            };
         }
 
-        async function attemptAdminLogin() {
+        function loadAdminCredentials() {
+            const saved = localStorage.getItem(ADMIN_CREDENTIALS_STORAGE_KEY);
+            if (!saved) {
+                adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed && typeof parsed.id === 'string' && typeof parsed.password === 'string' && parsed.id.trim() && parsed.password) {
+                    adminCredentials = {
+                        id: parsed.id.trim(),
+                        password: parsed.password
+                    };
+                    return;
+                }
+            } catch (error) {
+                console.error('Failed to load admin credentials:', error);
+            }
+
+            adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
+            localStorage.removeItem(ADMIN_CREDENTIALS_STORAGE_KEY);
+        }
+
+        function fillAdminCredentialsForm() {
+            const idInput = document.getElementById('admin-credentials-id');
+            const pwInput = document.getElementById('admin-credentials-password');
+            const confirmInput = document.getElementById('admin-credentials-password-confirm');
+            if (!idInput || !pwInput || !confirmInput) return;
+
+            idInput.value = adminCredentials.id;
+            pwInput.value = '';
+            confirmInput.value = '';
+        }
+
+        function attemptAdminLogin() {
             const idInput = document.getElementById('admin-login-id');
             const passwordInput = document.getElementById('admin-login-password');
             const id = idInput.value.trim();
             const password = passwordInput.value;
 
-            if (!id || !password) {
-                setAdminLoginMessage('아이디와 비밀번호를 모두 입력해야 합니다.');
-                return;
-            }
-
-            try {
-                const response = await fetch('/.netlify/functions/admin-auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        adminId: id,
-                        adminPassword: password
-                    })
-                });
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result?.error || `HTTP ${response.status}`);
-                }
-
+            if (id === adminCredentials.id && password === adminCredentials.password) {
                 isAdminAuthenticated = true;
                 sessionStorage.setItem(ADMIN_AUTH_STORAGE_KEY, 'true');
-                sessionStorage.setItem(ADMIN_SESSION_ID_STORAGE_KEY, id);
-                sessionStorage.setItem(ADMIN_SESSION_PASSWORD_STORAGE_KEY, password);
-                adminCredentials = { id, password };
-                idInput.value = id;
                 passwordInput.value = '';
                 setAdminLoginMessage('');
                 updateAdminAuthUI();
-            } catch (error) {
-                isAdminAuthenticated = false;
-                adminCredentials = { id: '', password: '' };
-                sessionStorage.removeItem(ADMIN_AUTH_STORAGE_KEY);
-                sessionStorage.removeItem(ADMIN_SESSION_ID_STORAGE_KEY);
-                sessionStorage.removeItem(ADMIN_SESSION_PASSWORD_STORAGE_KEY);
-                setAdminLoginMessage(error.message || '아이디 또는 비밀번호가 올바르지 않습니다.');
+                return;
             }
+
+            isAdminAuthenticated = false;
+            sessionStorage.removeItem(ADMIN_AUTH_STORAGE_KEY);
+            setAdminLoginMessage('아이디 또는 비밀번호가 올바르지 않습니다.');
         }
 
         function logoutAdmin() {
             isAdminAuthenticated = false;
-            adminCredentials = { id: '', password: '' };
             sessionStorage.removeItem(ADMIN_AUTH_STORAGE_KEY);
-            sessionStorage.removeItem(ADMIN_SESSION_ID_STORAGE_KEY);
-            sessionStorage.removeItem(ADMIN_SESSION_PASSWORD_STORAGE_KEY);
             document.getElementById('admin-login-id').value = '';
             document.getElementById('admin-login-password').value = '';
             setAdminLoginMessage('');
@@ -3035,81 +3360,51 @@
             showPage('home-page');
         }
 
+        function saveAdminCredentials() {
+            const idInput = document.getElementById('admin-credentials-id');
+            const pwInput = document.getElementById('admin-credentials-password');
+            const confirmInput = document.getElementById('admin-credentials-password-confirm');
+            const nextId = idInput.value.trim();
+            const nextPassword = pwInput.value;
+            const confirmPassword = confirmInput.value;
+
+            if (!nextId) {
+                setAdminCredentialsStatus('관리자 아이디를 입력해야 합니다.', true);
+                return;
+            }
+
+            if (!nextPassword) {
+                setAdminCredentialsStatus('새 비밀번호를 입력해야 합니다.', true);
+                return;
+            }
+
+            if (nextPassword !== confirmPassword) {
+                setAdminCredentialsStatus('비밀번호 확인이 일치하지 않습니다.', true);
+                return;
+            }
+
+            adminCredentials = { id: nextId, password: nextPassword };
+            localStorage.setItem(ADMIN_CREDENTIALS_STORAGE_KEY, JSON.stringify(adminCredentials));
+            fillAdminCredentialsForm();
+            document.getElementById('admin-login-id').value = nextId;
+            setAdminCredentialsStatus('관리자 계정을 저장했습니다.');
+            setAdminLoginMessage('');
+        }
+
+        function resetAdminCredentials() {
+            adminCredentials = { ...DEFAULT_ADMIN_CREDENTIALS };
+            localStorage.removeItem(ADMIN_CREDENTIALS_STORAGE_KEY);
+            fillAdminCredentialsForm();
+            document.getElementById('admin-login-id').value = adminCredentials.id;
+            setAdminCredentialsStatus('기본 관리자 계정으로 복원했습니다.');
+            setAdminLoginMessage('');
+        }
+
         function setAdminStatus(message, isError = false) {
             const status = document.getElementById('admin-status');
             if (!status) return;
             status.textContent = message;
             status.classList.toggle('error', isError);
-        }
-
-        function buildAdminCourseBackupPayload() {
-            const payload = {};
-            Object.keys(originalCourseData).forEach(key => {
-                payload[key] = Array.isArray(courseData[key]) ? [...courseData[key]] : [];
-            });
-
-            return {
-                app: 'kmla-curriculum-admin-course-data',
-                version: 1,
-                exportedAt: new Date().toISOString(),
-                courseData: payload
-            };
-        }
-
-        function exportAdminCourseData() {
-            try {
-                const payload = buildAdminCourseBackupPayload();
-                const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `kmla-course-backup-${new Date().toISOString().slice(0, 10)}.json`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-                setAdminStatus('전체 과목 데이터를 JSON 백업 파일로 저장했습니다.');
-            } catch (error) {
-                console.error('Failed to export admin course data:', error);
-                setAdminStatus(`백업 파일 저장 중 오류가 발생했습니다: ${error.message}`, true);
-            }
-        }
-
-        function triggerAdminCourseImport() {
-            const fileInput = document.getElementById('admin-course-import-input');
-            if (!fileInput) return;
-            fileInput.value = '';
-            fileInput.click();
-        }
-
-        async function importAdminCourseData(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file) return;
-
-            try {
-                const fileText = await file.text();
-                const parsed = JSON.parse(fileText);
-                const nextCourseData = parsed?.courseData;
-
-                if (!nextCourseData || typeof nextCourseData !== 'object') {
-                    throw new Error('백업 파일 안에 courseData 정보가 없습니다.');
-                }
-
-                Object.keys(originalCourseData).forEach(key => {
-                    const nextCourses = Array.isArray(nextCourseData[key]) ? nextCourseData[key] : originalCourseData[key];
-                    courseData[key] = [...new Set(nextCourses.map(course => String(course).trim()).filter(Boolean))];
-                });
-
-                await saveCourseDataToServer();
-                refreshAllSelectOptions();
-                renderAdminPage();
-                setAdminStatus('백업 파일에서 과목 데이터를 불러와 서버에 반영했습니다.');
-            } catch (error) {
-                console.error('Failed to import admin course data:', error);
-                setAdminStatus(`백업 복원 중 오류가 발생했습니다: ${error.message}`, true);
-            } finally {
-                event.target.value = '';
-            }
         }
 
         function syncUserSelectionsFromDom() {
@@ -3126,46 +3421,28 @@
             };
         }
 
-        async function saveCourseDataToServer() {
+        function persistAdminOverrides() {
             const payload = {};
             Object.keys(originalCourseData).forEach(key => {
-                payload[key] = Array.isArray(courseData[key]) ? [...courseData[key]] : [];
+                payload[key] = [...courseData[key]];
             });
-
-            const response = await fetch('/.netlify/functions/course-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    adminId: adminCredentials.id,
-                    adminPassword: adminCredentials.password,
-                    courseData: payload
-                })
-            });
-
-            const result = await response.json();
-            if (!response.ok) {
-                throw new Error(result?.error || `HTTP ${response.status}`);
-            }
+            localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(payload));
         }
 
-        async function loadAdminOverrides() {
+        function loadAdminOverrides() {
+            const saved = localStorage.getItem(ADMIN_STORAGE_KEY);
+            if (!saved) return;
+
             try {
-                const response = await fetch('/.netlify/functions/course-data');
-                const result = await response.json();
-                if (!response.ok) {
-                    throw new Error(result?.error || `HTTP ${response.status}`);
-                }
-
-                const nextCourseData = result?.courseData;
-                if (!nextCourseData || typeof nextCourseData !== 'object') return;
-
+                const parsed = JSON.parse(saved);
                 Object.keys(originalCourseData).forEach(key => {
-                    if (Array.isArray(nextCourseData[key])) {
-                        courseData[key] = nextCourseData[key].map(course => String(course).trim()).filter(Boolean);
+                    if (Array.isArray(parsed[key])) {
+                        courseData[key] = parsed[key].map(course => String(course).trim()).filter(Boolean);
                     }
                 });
             } catch (error) {
-                console.error('Failed to load server course overrides:', error);
+                console.error('Failed to load admin course overrides:', error);
+                localStorage.removeItem(ADMIN_STORAGE_KEY);
             }
         }
 
@@ -3234,59 +3511,47 @@
             updateAdminCounts();
         }
 
-        async function saveAdminSemester() {
+        function saveAdminSemester() {
             const semesterSelect = document.getElementById('admin-semester-select');
             const semesterConfig = getAdminSemesterConfig(semesterSelect.value);
             const textareas = document.querySelectorAll('#admin-page .admin-textarea');
 
-            try {
-                textareas.forEach(textarea => {
-                    const nextCourses = [...new Set(
-                        textarea.value
-                            .split('\n')
-                            .map(course => course.trim())
-                            .filter(Boolean)
-                    )];
-                    courseData[textarea.dataset.groupKey] = nextCourses;
-                });
+            textareas.forEach(textarea => {
+                const nextCourses = [...new Set(
+                    textarea.value
+                        .split('\n')
+                        .map(course => course.trim())
+                        .filter(Boolean)
+                )];
+                courseData[textarea.dataset.groupKey] = nextCourses;
+            });
 
-                await saveCourseDataToServer();
-                refreshAllSelectOptions();
-                renderAdminPage();
-                setAdminStatus(`${semesterConfig.label} 과목 목록을 저장했습니다.`);
-            } catch (error) {
-                setAdminStatus(`저장 중 오류가 발생했습니다: ${error.message}`, true);
-            }
+            persistAdminOverrides();
+            refreshAllSelectOptions();
+            renderAdminPage();
+            setAdminStatus(`${semesterConfig.label} 과목 목록을 저장했습니다.`);
         }
 
-        async function resetAdminSemester() {
+        function resetAdminSemester() {
             const semesterSelect = document.getElementById('admin-semester-select');
             const semesterConfig = getAdminSemesterConfig(semesterSelect.value);
-            try {
-                semesterConfig.groups.forEach(groupKey => {
-                    courseData[groupKey] = [...originalCourseData[groupKey]];
-                });
-                await saveCourseDataToServer();
-                refreshAllSelectOptions();
-                renderAdminPage();
-                setAdminStatus(`${semesterConfig.label} 과목 목록을 원본으로 복원했습니다.`);
-            } catch (error) {
-                setAdminStatus(`복원 중 오류가 발생했습니다: ${error.message}`, true);
-            }
+            semesterConfig.groups.forEach(groupKey => {
+                courseData[groupKey] = [...originalCourseData[groupKey]];
+            });
+            persistAdminOverrides();
+            refreshAllSelectOptions();
+            renderAdminPage();
+            setAdminStatus(`${semesterConfig.label} 과목 목록을 원본으로 복원했습니다.`);
         }
 
-        async function resetAllAdminData() {
-            try {
-                Object.keys(originalCourseData).forEach(groupKey => {
-                    courseData[groupKey] = [...originalCourseData[groupKey]];
-                });
-                await saveCourseDataToServer();
-                refreshAllSelectOptions();
-                renderAdminPage();
-                setAdminStatus('전체 학기 과목 목록을 원본으로 복원했습니다.');
-            } catch (error) {
-                setAdminStatus(`전체 초기화 중 오류가 발생했습니다: ${error.message}`, true);
-            }
+        function resetAllAdminData() {
+            Object.keys(originalCourseData).forEach(groupKey => {
+                courseData[groupKey] = [...originalCourseData[groupKey]];
+            });
+            localStorage.removeItem(ADMIN_STORAGE_KEY);
+            refreshAllSelectOptions();
+            renderAdminPage();
+            setAdminStatus('전체 학기 과목 목록을 원본으로 복원했습니다.');
         }
 
         function computeFitStats(majorKey) {
@@ -3899,6 +4164,403 @@
             runAIAnalysis(userData.careerGoal, allSelectionsForAI);
         }
 
+        // --- 교과별 개설 과목 카탈로그 (교과목리스트_2022개정_교육과정(20260709).xlsx 기준) ---
+        const SUBJECT_CATALOG = {
+            '국어': [
+                { name: '공통국어1', level: '100공통', grade: '1' },
+                { name: '공통국어2', level: '100공통', grade: '1' },
+                { name: '화법과 언어', level: '200선택', grade: '전학년' },
+                { name: '독서와 작문', level: '200선택', grade: '전학년' },
+                { name: '문학', level: '200선택', grade: '전학년' },
+                { name: '주제 탐구 독서', level: '200선택', grade: '2,3' },
+                { name: '문학과 영상', level: '200선택', grade: '2,3' },
+                { name: '직무 의사소통', level: '200선택', grade: '2,3' },
+                { name: '독서 토론과 글쓰기', level: '200선택', grade: '2,3' },
+                { name: '매체 의사소통', level: '200선택', grade: '2,3' },
+                { name: '언어생활 탐구', level: '200선택', grade: '2,3' },
+                { name: '고전문학의 감상과 비평', level: '200선택', grade: '2,3' },
+                { name: '현대 국어 문법의 이해', level: '300전문I', grade: '2,3' },
+                { name: '고전의 향기', level: '300전문I', grade: '2,3' },
+                { name: '현대 문학의 감상과 이해', level: '300전문I', grade: '2,3' },
+            ],
+            '영어': [
+                { name: '공통영어1', level: '100공통', grade: '1' },
+                { name: '공통영어2', level: '100공통', grade: '1' },
+                { name: '영어 독해와 작문', level: '200선택', grade: '2,3' },
+                { name: '영미 문학 읽기', level: '200선택', grade: '전학년' },
+                { name: '영어 발표와 토론', level: '200선택', grade: '2,3' },
+                { name: '심화 영어', level: '200선택', grade: '2,3' },
+                { name: '심화 영어 독해와 작문', level: '300전문I', grade: '2,3' },
+                { name: '세계 문화와 영어', level: '200선택', grade: '2,3' },
+                { name: '심화 영어 I', level: '300전문I', grade: '2,3' },
+                { name: '심화 영어 II', level: '300전문I', grade: '2,3' },
+                { name: '심화 영어 회화 I', level: '300전문I', grade: '2,3' },
+                { name: '심화 영어 회화 II', level: '300전문I', grade: '2,3' },
+                { name: '심화 영어 독해 I', level: '300전문I', grade: '2,3' },
+                { name: '심화 영어 독해 II', level: '300전문I', grade: '2,3' },
+                { name: '심화 영어 작문 I', level: '300전문I', grade: '2,3' },
+                { name: '심화 영어 작문 II', level: '300전문I', grade: '2,3' },
+                { name: 'AP 영문학 I', level: '400전문II', grade: '2' },
+                { name: 'AP 영문학 II', level: '400전문II', grade: '3' },
+                { name: 'AP 영어학 I', level: '400전문II', grade: '2,3' },
+                { name: 'AP 영어학 II', level: '400전문II', grade: '2,3' },
+                { name: '미국 문학 I', level: '300전문I', grade: '2,3' },
+                { name: '미국 문학 II', level: '300전문I', grade: '2,3' },
+                { name: '영어 대중 연설과 발표', level: '300전문I', grade: '2,3' },
+                { name: '영어 토론 I', level: '200선택', grade: '2,3' },
+                { name: '영어 토론 II', level: '200선택', grade: '2,3' },
+                { name: '자서전 연구', level: '400전문II', grade: '2,3' },
+                { name: '심화 영어 토론', level: '300전문I', grade: '2,3' },
+                { name: '창의적 영어 글쓰기와 독서', level: '300전문I', grade: '2,3' },
+                { name: '문학에세이 쓰기', level: '400전문II', grade: '2,3' },
+                { name: '세계 문학 I', level: '300전문I', grade: '2,3' },
+                { name: '세계 문학 II', level: '300전문I', grade: '2,3' },
+                { name: '영국 문학 I', level: '300전문I', grade: '2,3' },
+                { name: '영국 문학 II', level: '300전문I', grade: '2,3' },
+                { name: '영어권 문학 I', level: '300전문I', grade: '2,3' },
+                { name: '고급 영어 토론과 작문', level: '300전문I', grade: '2,3' },
+                { name: '영어 비평적 읽기와 쓰기', level: '200선택', grade: '2,3' },
+            ],
+            '수학': [
+                { name: '공통수학1', level: '100공통', grade: '1' },
+                { name: '공통수학2', level: '100공통', grade: '1' },
+                { name: '대수', level: '200선택', grade: '2,3' },
+                { name: '미적분I', level: '200선택', grade: '2,3' },
+                { name: '확률과 통계', level: '200선택', grade: '2,3' },
+                { name: '기하', level: '200선택', grade: '2,3' },
+                { name: '미적분II', level: '200선택', grade: '2,3' },
+                { name: '경제 수학', level: '200선택', grade: '2,3' },
+                { name: '인공지능 수학', level: '200선택', grade: '전학년' },
+                { name: '실용 통계', level: '200선택', grade: '2,3' },
+                { name: '수학과제 탐구', level: '200선택', grade: '2,3' },
+                { name: '이산 수학', level: '300전문I', grade: '2,3' },
+                { name: '고급 기하', level: '300전문I', grade: '2,3' },
+                { name: '고급 대수', level: '300전문I', grade: '2,3' },
+                { name: '고급 미적분', level: '300전문I', grade: '2,3' },
+                { name: 'AP 미적분학 BC-I', level: '400전문II', grade: '2,3' },
+                { name: 'AP 미적분학 BC-II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 미적분학 BC-III', level: '400전문II', grade: '2,3' },
+                { name: '미분 방정식', level: '400전문II', grade: '2,3' },
+                { name: '벡터 미적분학', level: '400전문II', grade: '2,3' },
+                { name: 'AP 통계학 I', level: '400전문II', grade: '1,2' },
+                { name: 'AP 통계학 II', level: '400전문II', grade: '2,3' },
+                { name: '선형대수학', level: '400전문II', grade: '2,3' },
+                { name: '응용수학탐구', level: '400전문II', grade: '2,3' },
+                { name: '전문 수학', level: '300전문I', grade: '2,3' },
+            ],
+            '사회': [
+                { name: '한국사1', level: '100공통', grade: '1' },
+                { name: '한국사2', level: '100공통', grade: '1' },
+                { name: '통합사회1', level: '100공통', grade: '1' },
+                { name: '통합사회2', level: '100공통', grade: '1' },
+                { name: '세계시민과 지리', level: '200선택', grade: '전학년' },
+                { name: '세계사', level: '200선택', grade: '전학년' },
+                { name: '사회와 문화', level: '200선택', grade: '전학년' },
+                { name: '현대사회와 윤리', level: '200선택', grade: '전학년' },
+                { name: '한국지리 탐구', level: '200선택', grade: '2,3' },
+                { name: '도시의 미래 탐구', level: '200선택', grade: '2,3' },
+                { name: '정치', level: '200선택', grade: '전학년' },
+                { name: '법과 사회', level: '200선택', grade: '전학년' },
+                { name: '경제', level: '200선택', grade: '전학년' },
+                { name: '윤리와 사상', level: '200선택', grade: '전학년' },
+                { name: '국제 관계의 이해', level: '200선택', grade: '전학년' },
+                { name: '여행지리', level: '200선택', grade: '2,3' },
+                { name: '사회문제 탐구', level: '200선택', grade: '2,3' },
+                { name: '국제 정치', level: '200선택', grade: '2,3' },
+                { name: '국제 관계와 국제기구', level: '200선택', grade: '2,3' },
+                { name: 'AP 미국사 I', level: '400전문II', grade: '2,3' },
+                { name: 'AP 미국사 II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 미국정치 I', level: '400전문II', grade: '2,3' },
+                { name: 'AP 미국정치 II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 비교정치 I', level: '400전문II', grade: '2,3' },
+                { name: 'AP 비교정치 II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 세계사 I', level: '400전문II', grade: '2,3' },
+                { name: 'AP 세계사 II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 심리학 I', level: '400전문II', grade: '2,3' },
+                { name: 'AP 심리학 II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 유럽사 I', level: '400전문II', grade: '2,3' },
+                { name: 'AP 유럽사 II', level: '400전문II', grade: '2,3' },
+                { name: 'U.S. History', level: '200선택', grade: '전학년' },
+                { name: '경제학고전강독', level: '400전문II', grade: '2,3' },
+                { name: '고고학', level: '300전문I', grade: '2,3' },
+                { name: '다산 연구', level: '300전문I', grade: '2,3' },
+                { name: '사회과학 방법론', level: '300전문I', grade: '2,3' },
+                { name: '서양철학 개론', level: '300전문I', grade: '2,3' },
+                { name: '역사연구 방법', level: '200선택', grade: '전학년' },
+                { name: '임진왜란 연구', level: '300전문I', grade: '2,3' },
+                { name: '중급 미시경제학', level: '400전문II', grade: '2,3' },
+                { name: '긍정 심리학', level: '400전문II', grade: '2,3' },
+                { name: '성격과 자기 이해', level: '400전문II', grade: '2,3' },
+                { name: 'AP 미시경제', level: '400전문II', grade: '2,3' },
+                { name: 'AP 거시경제', level: '400전문II', grade: '2,3' },
+                { name: '서양근대철학의 이해', level: '300전문I', grade: '2,3' },
+                { name: '서양현대철학의 이해', level: '300전문I', grade: '2,3' },
+                { name: '국제법', level: '300전문I', grade: '2,3' },
+                { name: '현대사회와 철학', level: '300전문I', grade: '2,3' },
+                { name: '동아시아 역사 기행', level: '200선택', grade: '2,3' },
+                { name: '인문학과 윤리', level: '200선택', grade: '2,3' },
+                { name: '역사로 탐구하는 현대 세계', level: '200선택', grade: '2,3' },
+                { name: '금융과 경제생활', level: '200선택', grade: '2,3' },
+                { name: '윤리문제 탐구', level: '200선택', grade: '2,3' },
+                { name: '기후변화와 지속가능한 세계', level: '200선택', grade: '2,3' },
+            ],
+            '과학': [
+                { name: '통합과학1', level: '100공통', grade: '1' },
+                { name: '통합과학2', level: '100공통', grade: '1' },
+                { name: '과학탐구실험1', level: '100공통', grade: '1' },
+                { name: '과학탐구실험2', level: '100공통', grade: '1' },
+                { name: '물리학', level: '200선택', grade: '전학년' },
+                { name: '화학', level: '200선택', grade: '전학년' },
+                { name: '생명과학', level: '200선택', grade: '전학년' },
+                { name: '지구과학', level: '200선택', grade: '전학년' },
+                { name: '역학과 에너지', level: '200선택', grade: '전학년' },
+                { name: '전자기와 양자', level: '200선택', grade: '2,3' },
+                { name: '물질과 에너지', level: '200선택', grade: '전학년' },
+                { name: '화학 반응의 세계', level: '200선택', grade: '2,3' },
+                { name: '세포와 물질대사', level: '200선택', grade: '2,3' },
+                { name: '생물의 유전', level: '200선택', grade: '전학년' },
+                { name: '지구시스템과학', level: '200선택', grade: '2,3' },
+                { name: '행성우주과학', level: '200선택', grade: '전학년' },
+                { name: '과학의 역사와 문화', level: '200선택', grade: '2,3' },
+                { name: '기후변화와 환경생태', level: '200선택', grade: '2,3' },
+                { name: '융합과학 탐구', level: '200선택', grade: '2,3' },
+                { name: '고급 물리학', level: '400전문II', grade: '2,3' },
+                { name: '고급 생명과학', level: '400전문II', grade: '2,3' },
+                { name: '고급 지구과학', level: '400전문II', grade: '2,3' },
+                { name: '과학과제 연구', level: '300전문I', grade: '2,3' },
+                { name: '물리학 실험', level: '300전문I', grade: '전학년' },
+                { name: '화학 실험', level: '300전문I', grade: '전학년' },
+                { name: '생명과학 실험', level: '300전문I', grade: '2,3' },
+                { name: '지구과학 실험', level: '300전문I', grade: '전학년' },
+                { name: 'AP 물리학 C: 역학', level: '400전문II', grade: '2,3' },
+                { name: 'AP 물리학 C: 전자기학', level: '400전문II', grade: '2,3' },
+                { name: 'AP 물리학 I', level: '400전문II', grade: '전학년' },
+                { name: 'AP 물리학 II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 생물학 I', level: '400전문II', grade: '전학년' },
+                { name: 'AP 생물학 II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 화학 I', level: '400전문II', grade: '전학년' },
+                { name: 'AP 화학 II', level: '400전문II', grade: '2,3' },
+                { name: 'AP 환경과학', level: '400전문II', grade: '2,3' },
+                { name: 'Biology I', level: '200선택', grade: '전학년' },
+                { name: 'Chemistry I', level: '200선택', grade: '전학년' },
+                { name: 'Physics I', level: '200선택', grade: '전학년' },
+                { name: '관측 천문학', level: '300전문I', grade: '2,3' },
+                { name: '분자생물학의 이해', level: '400전문II', grade: '2,3' },
+                { name: '빛과 화학', level: '400전문II', grade: '2,3' },
+                { name: '생명의 화학', level: '400전문II', grade: '2,3' },
+                { name: '세포생물학의 이해', level: '400전문II', grade: '2,3' },
+                { name: '첨단 기기와 화학', level: '400전문II', grade: '2,3' },
+                { name: '탄소의 화학 기초', level: '400전문II', grade: '2,3' },
+                { name: '탄소의 화학 심화', level: '400전문II', grade: '2,3' },
+                { name: '해석역학 I', level: '400전문II', grade: '2,3' },
+                { name: '해석역학 II', level: '400전문II', grade: '2,3' },
+                { name: '현대 물리학 I', level: '400전문II', grade: '2,3' },
+                { name: '현대 물리학 II', level: '400전문II', grade: '2,3' },
+                { name: '결정의 화학', level: '400전문II', grade: '2,3' },
+                { name: '중급 화학 실험', level: '400전문II', grade: '2,3' },
+                { name: '기초 생태학', level: '400전문II', grade: '2,3' },
+                { name: '생명과학세미나', level: '400전문II', grade: '2,3' },
+                { name: '생체모방공학', level: '400전문II', grade: '2,3' },
+                { name: '일반화학 I', level: '400전문II', grade: '전학년' },
+                { name: '일반화학 II', level: '400전문II', grade: '2,3' },
+                { name: '지질학 및 실험', level: '300전문I', grade: '2,3' },
+                { name: '항성 천문학', level: '400전문II', grade: '2,3' },
+                { name: '은하와 우주론', level: '400전문II', grade: '2,3' },
+                { name: '컴퓨터로 과학하기', level: '300전문I', grade: '2,3' },
+                { name: '과학철학입문', level: '300전문I', grade: '2,3' },
+                { name: '시뮬레이션 화학', level: '400전문II', grade: '2,3' },
+                { name: '화학 세미나', level: '400전문II', grade: '3' },
+            ],
+            '제2외국어': [
+                { name: '프랑스어', level: '100공통', grade: '1' },
+                { name: '스페인어', level: '100공통', grade: '1' },
+                { name: '중국어', level: '100공통', grade: '1' },
+                { name: '한문', level: '100공통', grade: '1' },
+                { name: '심화 프랑스어', level: '300전문I', grade: '3' },
+                { name: '심화 스페인어', level: '300전문I', grade: '3' },
+                { name: '심화 중국어', level: '300전문I', grade: '3' },
+                { name: '한문 고전 읽기', level: '200선택', grade: '2,3' },
+                { name: '프랑스어권 문화', level: '300전문I', grade: '3' },
+                { name: '스페인어권 문화', level: '300전문I', grade: '3' },
+                { name: '중국 문화', level: '300전문I', grade: '3' },
+                { name: '언어생활과 한자', level: '200선택', grade: '2,3' },
+                { name: '프랑스어 독해와 작문 I', level: '200선택', grade: '2' },
+                { name: '프랑스어 독해와 작문 II', level: '200선택', grade: '2' },
+                { name: '스페인어 독해와 작문 I', level: '200선택', grade: '2' },
+                { name: '스페인어 독해와 작문 II', level: '200선택', grade: '2' },
+                { name: '중국어 독해와 작문 I', level: '200선택', grade: '2' },
+                { name: '중국어 독해와 작문 II', level: '200선택', grade: '2' },
+            ],
+            '정보': [
+                { name: '로봇과 공학세계', level: '200선택', grade: '2,3' },
+                { name: '생활과학 탐구', level: '200선택', grade: '2,3' },
+                { name: '인공지능 기초', level: '200선택', grade: '2,3' },
+                { name: '데이터 과학', level: '200선택', grade: '2,3' },
+                { name: '창의 공학 설계', level: '200선택', grade: '2,3' },
+                { name: '소프트웨어와 생활', level: '100공통', grade: '2,3' },
+                { name: 'AP 컴퓨터과학 A', level: '400전문II', grade: '2,3' },
+                { name: '컴퓨터 시스템 일반', level: '100공통', grade: '전학년' },
+                { name: '프로그래밍기초', level: '100공통', grade: '전학년' },
+                { name: '프로그래밍', level: '200선택', grade: '전학년' },
+                { name: '수학과 인공지능', level: '300전문I', grade: '1,2' },
+                { name: '인공지능과 미래사회', level: '300전문I', grade: '2,3' },
+            ],
+            '교양': [
+                { name: '진로와 직업', level: '200선택', grade: '전학년' },
+                { name: '연극과 삶', level: '300전문I', grade: '2,3' },
+                { name: '영화와 삶', level: '300전문I', grade: '2,3' },
+                { name: '생태와 환경', level: '200선택', grade: '2,3' },
+                { name: '교육의 이해', level: '200선택', grade: '2,3' },
+                { name: '논술', level: '200선택', grade: '2,3' },
+                { name: '주제 탐구(R&E) 기초', level: '300전문I', grade: '' },
+                { name: '주제 탐구(R&E) 심화', level: '300전문I', grade: '' },
+                { name: '창의융합 과제연구', level: '300전문I', grade: '' },
+                { name: '탐구 프로젝트(R&E)Ⅰ', level: '300전문I', grade: '' },
+                { name: '탐구 프로젝트(R&E)Ⅱ', level: '300전문I', grade: '' },
+                { name: '자기 주도적인 삶과 미래 역량 탐구', level: '100공통', grade: '' },
+                { name: '진로·직업 탐구', level: '100공통', grade: '' },
+                { name: '지속가능한 삶과 공동체 생활 탐구', level: '100공통', grade: '' },
+            ],
+        };
+        const SUBJECT_LEVEL_ORDER = { '100공통': 1, '200선택': 2, '300전문I': 3, '400전문II': 4 };
+        const SUBJECT_LEVEL_LABELS = { '100공통': '공통', '200선택': '선택', '300전문I': '전문Ⅰ', '400전문II': '전문Ⅱ' };
+
+        // 특정 교과는 세부 영역(트랙)으로 나누어 표시
+        const SUBJECT_TRACK_CONFIG = {
+            '과학': {
+                displayOrder: ['공통', '물리', '화학', '생명과학', '지구과학'],
+                matchOrder: ['공통', '물리', '화학', '생명과학', '지구과학'],
+                match: {
+                    '공통': ['통합과학', '과학탐구실험'],
+                    '물리': ['물리', '역학', '전자기', '양자', 'Physics'],
+                    '화학': ['화학', 'Chemistry', '탄소', '결정', '물질과 에너지'],
+                    '생명과학': ['생명', '생물', 'Biology', '세포', '유전', '대사', '생태', '생체모방'],
+                    '지구과학': ['지구', '천문', '우주', '행성', '지질', '기후', '은하', '항성', '관측', '환경과학']
+                }
+            },
+            '사회': {
+                displayOrder: ['공통', '정치', '사회', '지리', '경제', '역사', '심리', '철학'],
+                matchOrder: ['공통', '정치', '경제', '역사', '심리', '철학', '지리', '사회'],
+                match: {
+                    '공통': ['통합사회', '한국사'],
+                    '정치': ['정치', '국제 관계', '국제기구', '국제법', '법과 사회'],
+                    '경제': ['경제', '금융', '미시', '거시'],
+                    '역사': ['역사', '세계사', '미국사', '유럽사', '임진왜란', '고고학', '다산', 'History'],
+                    '심리': ['심리', '성격과 자기'],
+                    '철학': ['철학', '윤리', '사상'],
+                    '지리': ['지리', '도시', '기후변화와 지속'],
+                    '사회': ['사회', '문화']
+                }
+            },
+            '제2외국어': {
+                displayOrder: ['프랑스어', '스페인어', '중국어', '한문', '기타'],
+                matchOrder: ['프랑스어', '스페인어', '중국어', '한문'],
+                match: {
+                    '프랑스어': ['프랑스어'],
+                    '스페인어': ['스페인어'],
+                    '중국어': ['중국어', '중국 문화'],
+                    '한문': ['한문', '한자']
+                }
+            }
+        };
+
+        function classifySubjectTrack(config, name) {
+            for (const track of config.matchOrder) {
+                if ((config.match[track] || []).some(kw => name.includes(kw))) return track;
+            }
+            return '기타';
+        }
+
+        const SUBJECT_LEVEL_COLUMNS = [
+            { key: '100공통', label: '공통', idx: 1 },
+            { key: '200선택', label: '선택', idx: 2 },
+            { key: '300전문I', label: '전문Ⅰ', idx: 3 },
+            { key: '400전문II', label: '전문Ⅱ', idx: 4 }
+        ];
+
+        let subjectModalState = { category: null, groups: null, config: null, track: null };
+
+        function renderSubjectColumns(list) {
+            const cols = SUBJECT_LEVEL_COLUMNS.map(col => {
+                const courses = list
+                    .filter(s => s.level === col.key)
+                    .sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+                if (!courses.length) return '';
+                const items = courses
+                    .map(s => '<span class="subject-col-item">' + s.name + '</span>')
+                    .join('');
+                return '<div class="subject-column subject-col-' + col.idx + '">' +
+                    '<div class="subject-column-head">' + col.label + '<em>' + courses.length + '</em></div>' +
+                    items +
+                '</div>';
+            }).filter(Boolean).join('');
+            if (!cols) return '<p class="subject-empty">등록된 과목이 없습니다.</p>';
+            return '<div class="subject-columns">' + cols + '</div>';
+        }
+
+        function openSubjectCatalog(category) {
+            const subjects = SUBJECT_CATALOG[category] || [];
+
+            const config = SUBJECT_TRACK_CONFIG[category] || null;
+            let groups = null;
+            let track = null;
+            let shownCount = subjects.length;
+            if (config) {
+                groups = {};
+                subjects.forEach(s => {
+                    const t = classifySubjectTrack(config, s.name);
+                    (groups[t] = groups[t] || []).push(s);
+                });
+                track = config.displayOrder.find(t => (groups[t] || []).length) || null;
+                shownCount = config.displayOrder.reduce((n, t) => n + ((groups[t] || []).length), 0);
+            }
+            document.getElementById('subject-modal-title').textContent = category + ' 개설 과목 (' + shownCount + '개)';
+            subjectModalState = { category, groups, config, track, subjects };
+            renderSubjectModalBody();
+
+            document.getElementById('subject-modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function selectSubjectTrack(track) {
+            subjectModalState.track = track;
+            renderSubjectModalBody();
+        }
+
+        function renderSubjectModalBody() {
+            const { config, groups, track, subjects } = subjectModalState;
+            const body = document.getElementById('subject-modal-body');
+
+            if (!subjects || !subjects.length) {
+                body.innerHTML = '<p class="subject-empty">등록된 과목이 없습니다.</p>';
+                return;
+            }
+
+            if (config) {
+                const tabs = config.displayOrder
+                    .filter(t => (groups[t] || []).length)
+                    .map(t => '<button type="button" class="subject-track-tab' + (t === track ? ' active' : '') +
+                        '" onclick="selectSubjectTrack(\'' + t + '\')">' + t +
+                        ' (' + groups[t].length + ')</button>')
+                    .join('');
+                body.innerHTML = '<div class="subject-track-tabs">' + tabs + '</div>' +
+                    renderSubjectColumns(groups[track] || []);
+                return;
+            }
+
+            body.innerHTML = renderSubjectColumns(subjects);
+        }
+
+        function closeSubjectCatalog(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('subject-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSubjectCatalog();
+        });
+
         function showPage(pageId) {
             if (pageId === 'result-page') {
                 renderResultsPage();
@@ -3953,11 +4615,6 @@
 
                 const semesterKey = getSemesterKeyForStep(step);
                 userData.selections[semesterKey] = selectionsInStep.map(select => select.value);
-                const sequenceConflict = findSequentialSelectionConflict(userData.selections);
-                if (sequenceConflict) {
-                    setValidationMessage(`"${sequenceConflict.courseName}"을(를) 선택하려면 먼저 "${sequenceConflict.prerequisiteCandidates[0]}"을(를) 선택해야 합니다.`);
-                    return;
-                }
             }
 
             clearValidationMessage();
@@ -3986,11 +4643,6 @@
                 return;
             }
             userData.selections['3-2'] = selectionsInStep.map(select => select.value);
-            const sequenceConflict = findSequentialSelectionConflict(userData.selections);
-            if (sequenceConflict) {
-                setValidationMessage(`"${sequenceConflict.courseName}"을(를) 선택하려면 먼저 "${sequenceConflict.prerequisiteCandidates[0]}"을(를) 선택해야 합니다.`);
-                return;
-            }
 
             clearValidationMessage();
             userData.isFinished = true;
@@ -4230,59 +4882,6 @@
             attachSelectionEnhancements(select.closest('.selection-group'), select);
             renderSelectOptions(select);
         }
-
-        function getPrerequisiteCourseCandidates(courseName) {
-            const raw = String(courseName || '').trim();
-            const candidates = new Set();
-
-            const digitMatch = raw.match(/^(.*?)(\s?)2$/);
-            if (digitMatch) {
-                const prefix = digitMatch[1];
-                const space = digitMatch[2];
-                candidates.add(`${prefix}${space}1`);
-                candidates.add(space ? `${prefix}1` : `${prefix} 1`);
-            }
-
-            const romanMatch = raw.match(/^(.*?)(\s?)Ⅱ$/);
-            if (romanMatch) {
-                const prefix = romanMatch[1];
-                const space = romanMatch[2];
-                candidates.add(`${prefix}${space}Ⅰ`);
-                candidates.add(space ? `${prefix}Ⅰ` : `${prefix} Ⅰ`);
-            }
-
-            return [...candidates].filter(Boolean);
-        }
-
-        function isSequentialSecondCourse(courseName) {
-            return getPrerequisiteCourseCandidates(courseName).length > 0;
-        }
-
-        function hasRequiredFirstCourse(courseName, selectedCourses) {
-            const prerequisiteCandidates = getPrerequisiteCourseCandidates(courseName);
-            if (!prerequisiteCandidates.length) return true;
-            return prerequisiteCandidates.some(candidate => selectedCourses.has(candidate));
-        }
-
-        function findSequentialSelectionConflict(selections) {
-            const selectedCourses = new Set([
-                ...requiredCourses1_1,
-                ...Object.values(selections || {}).flat()
-            ]);
-
-            for (const courses of Object.values(selections || {})) {
-                for (const courseName of courses || []) {
-                    if (!hasRequiredFirstCourse(courseName, selectedCourses)) {
-                        return {
-                            courseName,
-                            prerequisiteCandidates: getPrerequisiteCourseCandidates(courseName)
-                        };
-                    }
-                }
-            }
-
-            return null;
-        }
         
         function updateAllDisabledStates() {
             // 1. Get all currently selected courses from ALL steps.
@@ -4290,7 +4889,6 @@
             Object.values(userData.selections).forEach(courses => {
                 courses.forEach(course => allSelectedCourses.add(course));
             });
-            requiredCourses1_1.forEach(course => allSelectedCourses.add(course));
 
             // 2. Iterate through ALL <select> elements in the builder
             document.querySelectorAll('#builder-page .choice-select').forEach(select => {
@@ -4301,10 +4899,7 @@
                     if (courseName === "") return; // Skip placeholder
 
                     // 3. A course is disabled if it's in the selected set, BUT it's not the one currently selected in THIS dropdown.
-                    const isDuplicateElsewhere = allSelectedCourses.has(courseName) && courseName !== currentSelection;
-                    const isBlockedByPrerequisite = isSequentialSecondCourse(courseName) && !hasRequiredFirstCourse(courseName, allSelectedCourses) && courseName !== currentSelection;
-
-                    if (isDuplicateElsewhere || isBlockedByPrerequisite) {
+                    if (allSelectedCourses.has(courseName) && courseName !== currentSelection) {
                         option.disabled = true;
                     } else {
                         option.disabled = false;
@@ -4436,7 +5031,7 @@
             }
 
             // 1. 시스템 프롬프트를 백엔드 함수로 전송합니다.
-            const systemPrompt = "당신은 민족사관고등학교(KMLA)의 교육과정에 정통한 교육과정 분석가입니다. 학생이 선택한 과목들과 학생의 희망 분야 사이의 관련성만 분석해야 합니다. 강점은 이미 수강한 과목이 희망 분야와 어떻게 연결되는지 중심으로 설명하세요. 보완 및 제언은 아직 수강하지 않았거나 부족한 과목 영역, 또는 향후 선택하면 좋은 과목 방향만 제시하세요. 동아리, 봉사, 캠프, 인턴, 독서활동, 탐구활동, 대회, 비교과 활동, 생활기록부 활동 등 과목 선택과 직접 관련 없는 내용은 절대 언급하지 마세요. 답변은 반드시 제공된 JSON 스키마만 따르고, 모든 문장은 한국어로 간결하고 구체적으로 작성하세요.";
+            const systemPrompt = "당신은 민족사관고등학교(KMLA)의 교육과정과 대학 입시 전략에 매우 정통한 최고의 진로 진학 컨설턴트입니다. 학생이 선택한 과목들을 바탕으로, 학생의 진로 희망에 맞춰 교육과정의 강점, 보완점, 그리고 종합적인 총평을 한국어로 체계적으로 분석해주세요. 답변은 반드시 제공된 JSON 스키마에 따라야 합니다. 분석은 긍정적이고 격려하는 어조로 작성해주세요. 중요: '보완 및 제언' 항목에서는 교외 봉사활동, 병원 인턴, 캠프 활동 등 대학 입시에 반영될 수 없는 활동은 절대 제안해서는 안 됩니다. 모든 제안은 학교생활기록부에 기재 가능한 교내 활동(예: 교내 봉사활동)에 한정되어야 합니다.";
             
             // 2. API 키를 삭제하고 Netlify 백엔드 함수 주소를 사용합니다.
             const apiUrl = "/.netlify/functions/analyze";
@@ -4484,10 +5079,11 @@
         }
         
         // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAdminOverrides();
             loadAdminAuth();
+            loadAdminCredentials();
             loadSavedPlans();
-            await loadAdminOverrides();
 
              // Add a single, global event listener for handling selections
             document.getElementById('builder-page').addEventListener('change', (e) => {
@@ -4529,11 +5125,10 @@
                 }
             });
             document.getElementById('curriculum-import-input').addEventListener('change', importCurriculumData);
-            document.getElementById('admin-course-import-input').addEventListener('change', importAdminCourseData);
             document.getElementById('admin-home-btn').addEventListener('click', () => showPage('home-page'));
+            document.getElementById('admin-credentials-save-btn').addEventListener('click', saveAdminCredentials);
+            document.getElementById('admin-credentials-reset-btn').addEventListener('click', resetAdminCredentials);
             document.getElementById('admin-save-btn').addEventListener('click', saveAdminSemester);
-            document.getElementById('admin-export-btn').addEventListener('click', exportAdminCourseData);
-            document.getElementById('admin-import-btn').addEventListener('click', triggerAdminCourseImport);
             document.getElementById('admin-reset-semester-btn').addEventListener('click', resetAdminSemester);
             document.getElementById('admin-reset-all-btn').addEventListener('click', resetAllAdminData);
 
@@ -4589,6 +5184,7 @@
 
             document.getElementById('major-selector').addEventListener('change', updateAnalysis);
             renderAdminPage();
+            fillAdminCredentialsForm();
             document.getElementById('admin-login-id').value = adminCredentials.id;
             updateAdminAuthUI();
             updateHeaderAdminState();
