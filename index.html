@@ -604,6 +604,16 @@
             box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
         }
 
+        .subject-catalog-menu.catalog-tone-a {
+            background: #eef4fb;
+            border-color: rgba(147, 197, 253, 0.4);
+        }
+
+        .subject-catalog-menu.catalog-tone-b {
+            background: #f1f6ee;
+            border-color: rgba(163, 199, 152, 0.4);
+        }
+
         .subject-catalog-title {
             display: block;
             font-weight: 700;
@@ -857,6 +867,604 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
+
+        /* --- 타학교 교육과정 비교 --- */
+        .xschool-modal { max-width: min(97vw, 1080px); max-height: none; overflow: visible; }
+        .xschool-modal .subject-modal-body { overflow-y: visible; }
+        #compare-modal-overlay, #info-modal-overlay { overflow-y: auto; }
+        #compare-modal-overlay.open, #info-modal-overlay.open { display: block; }
+        #compare-modal-overlay .xschool-modal, #info-modal-overlay .xschool-modal { margin: 24px auto; }
+
+        .xschool-subject-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .xschool-subject-tab {
+            flex: 0 0 auto;
+            border: 1px solid rgba(191, 219, 254, 0.95);
+            background: #ffffff;
+            color: #334155;
+            padding: 7px 15px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .xschool-subject-tab.active {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #ffffff;
+        }
+
+        .xschool-summary {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .xschool-summary-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 44px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .xschool-summary-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .xschool-summary-track {
+            height: 12px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #60a5fa, #1d4ed8);
+            min-width: 4px;
+        }
+
+        .xschool-summary-rail {
+            height: 12px;
+            border-radius: 999px;
+            background: #eef2f7;
+            overflow: hidden;
+        }
+
+        .xschool-summary-count {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #1d4ed8;
+            text-align: right;
+        }
+
+        .xschool-summary-row.home .xschool-summary-name { color: #4338ca; }
+        .xschool-summary-row.home .xschool-summary-track { background: linear-gradient(90deg, #818cf8, #4338ca); }
+        .xschool-summary-row.home .xschool-summary-count { color: #4338ca; }
+
+        .xschool-grid-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+        }
+
+        .xschool-table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 760px;
+            font-size: 0.75rem;
+        }
+
+        .xschool-table th,
+        .xschool-table td {
+            border: 1px solid #e2e8f0;
+            padding: 7px 8px;
+            vertical-align: top;
+            line-height: 1.4;
+        }
+
+        .xschool-table thead th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 800;
+            font-size: 0.76rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .xschool-name {
+            width: 96px;
+            text-align: center;
+            font-weight: 800;
+            color: #0f172a;
+            background: #f8fafc;
+        }
+
+        .xschool-tracklabel {
+            width: 66px;
+            text-align: center;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* 트랙(과정)별 행 배경/라벨 색 */
+        .xschool-trow.t1 td { background: #eaeef9; }
+        .xschool-trow.t1 .xschool-tracklabel { background: #dbe4f7; color: #1d4ed8; }
+        .xschool-trow.t2 td { background: #fdece0; }
+        .xschool-trow.t2 .xschool-tracklabel { background: #fbdcc6; color: #c2410c; }
+        .xschool-trow.t3 td { background: #efeafc; }
+        .xschool-trow.t3 .xschool-tracklabel { background: #e2d9f6; color: #6d28d9; }
+        .xschool-trow.t4 td { background: #e6f6f0; }
+        .xschool-trow.t4 .xschool-tracklabel { background: #d0ebe0; color: #047857; }
+
+        .xschool-table .lvl {
+            display: block;
+            margin: 2px 0;
+            padding: 3px 6px;
+            border-radius: 6px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 3px solid #94a3b8;
+            word-break: keep-all;
+        }
+        .xschool-table .lvl.adv { border-left-color: #ef4444; }
+        .xschool-table .lvl.mid { border-left-color: #f59e0b; }
+
+        .xschool-cellcount {
+            display: block;
+            text-align: right;
+            font-size: 0.66rem;
+            font-weight: 800;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+        .xschool-none { color: #94a3b8; }
+
+        .xschool-or {
+            display: block;
+            text-align: center;
+            font-size: 0.66rem;
+            font-weight: 800;
+            color: #64748b;
+            margin: 3px 0;
+            letter-spacing: 0.05em;
+        }
+
+        .xschool-lg {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 800;
+        }
+        .xschool-lg.t1 { background: #dbe4f7; color: #1d4ed8; }
+        .xschool-lg.t2 { background: #fbdcc6; color: #c2410c; }
+
+        .xschool-note {
+            margin: 14px 0 0;
+            font-size: 0.74rem;
+            color: var(--muted-color);
+        }
+
+        .xschool-chart-tabs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 18px 0 12px;
+        }
+
+        .xschool-chart-select-label {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        .xschool-chart-select {
+            flex: 1 1 auto;
+            max-width: 260px;
+            padding: 8px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.45);
+            border-radius: 10px;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .xschool-chart-box {
+            position: relative;
+            height: 320px;
+            width: 100%;
+        }
+
+        .xschool-chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+        }
+
+        .xschool-chart-mini {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .xschool-chart-mini-title {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .xschool-chart-mini canvas {
+            height: 200px !important;
+        }
+
+        /* --- 교육과정 안내 --- */
+        .info-launch {
+            margin-top: 20px;
+            padding: 18px;
+            background: #eef4fb;
+            border: 1px solid rgba(147, 197, 253, 0.4);
+            border-radius: 16px;
+        }
+
+        .info-launch-title {
+            display: block;
+            font-weight: 800;
+            font-size: 0.98rem;
+            color: var(--text-color);
+        }
+
+        .info-launch-caption {
+            margin: 6px 0 12px;
+            font-size: 0.82rem;
+            color: var(--muted-color);
+        }
+
+        .info-launch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .info-launch-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 8px;
+            border-radius: 14px;
+            border: 1px solid rgba(191, 219, 254, 0.95);
+            background: #ffffff;
+            color: #1e3a8a;
+            font-weight: 700;
+            font-size: 0.82rem;
+            line-height: 1.35;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .info-launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.12);
+        }
+
+        .info-launch-icon { font-size: 1.5rem; }
+
+        @media (max-width: 520px) {
+            .info-launch-grid { grid-template-columns: 1fr; }
+            .info-launch-btn { flex-direction: row; justify-content: flex-start; text-align: left; }
+        }
+
+        .info-section { margin-bottom: 22px; }
+        .info-section:last-child { margin-bottom: 0; }
+
+        .info-section h4 {
+            margin: 0 0 12px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-color);
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .info-h4-sub { font-size: 0.76rem; font-weight: 600; color: #94a3b8; }
+
+        .info-lead {
+            margin: 0 0 14px;
+            font-size: 0.9rem;
+            color: var(--muted-color);
+            line-height: 1.65;
+        }
+
+        /* 콜아웃 */
+        .info-callout {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #eef4ff 0%, #f5f9ff 100%);
+            border: 1px solid rgba(147, 197, 253, 0.5);
+            margin-bottom: 22px;
+        }
+        .info-callout.soft { background: #f8fafc; border-color: var(--border-color); margin: 4px 0 0; }
+        .info-callout-ic { font-size: 1.5rem; line-height: 1; }
+        .info-callout p { margin: 0; font-size: 0.88rem; color: #334155; line-height: 1.6; }
+
+        /* 위계 사다리 */
+        .info-ladder { position: relative; padding-left: 4px; }
+        .info-ladder::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 16px;
+            bottom: 16px;
+            width: 3px;
+            border-radius: 3px;
+            background: linear-gradient(#22c55e, #3b82f6, #f59e0b, #ef4444);
+        }
+
+        .info-ladder-step {
+            display: grid;
+            grid-template-columns: 34px 1fr;
+            column-gap: 12px;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        .info-ladder-step:last-child { margin-bottom: 0; }
+
+        .info-ladder-num {
+            justify-self: center;
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 0 0 4px #ffffff;
+        }
+        .t1 .info-ladder-num { background: #22c55e; }
+        .t2 .info-ladder-num { background: #3b82f6; }
+        .t3 .info-ladder-num { background: #f59e0b; }
+        .t4 .info-ladder-num { background: #ef4444; }
+
+        .info-ladder-body {
+            border: 1px solid #e2e8f0;
+            border-left-width: 5px;
+            border-radius: 14px;
+            padding: 12px 14px;
+            background: #ffffff;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+        }
+        .t1 .info-ladder-body { border-left-color: #22c55e; }
+        .t2 .info-ladder-body { border-left-color: #3b82f6; }
+        .t3 .info-ladder-body { border-left-color: #f59e0b; }
+        .t4 .info-ladder-body { border-left-color: #ef4444; }
+
+        .info-ladder-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .info-ladder-head b { font-size: 0.92rem; color: #0f172a; }
+        .info-ladder-tag {
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .t1 .info-ladder-tag { background: #dcfce7; color: #166534; }
+        .t2 .info-ladder-tag { background: #dbeafe; color: #1e40af; }
+        .t3 .info-ladder-tag { background: #fef3c7; color: #b45309; }
+        .t4 .info-ladder-tag { background: #fee2e2; color: #b91c1c; }
+
+        .info-tier-line { display: block; font-size: 0.84rem; color: #334155; margin: 4px 0 2px; line-height: 1.5; }
+        .info-tier-ex { font-size: 0.76rem; color: #94a3b8; }
+
+        .info-ladder-cap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-left: 42px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+        .info-ladder-cap.start { margin-bottom: 4px; }
+        .info-ladder-cap.start::before { content: '▲'; font-size: 0.6rem; color: #22c55e; }
+        .info-ladder-cap.end { margin-top: 4px; }
+        .info-ladder-cap.end::before { content: '▼'; font-size: 0.6rem; color: #ef4444; }
+
+        .info-glossary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+        @media (max-width: 560px) { .info-glossary { grid-template-columns: 1fr; } }
+
+        .info-gl {
+            border: 1px solid #e2e8f0;
+            border-left: 3px solid #93c5fd;
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: #f8fafc;
+        }
+        .info-gl b { color: #1d4ed8; font-size: 0.84rem; }
+        .info-gl span { display: block; margin-top: 3px; font-size: 0.8rem; color: #475569; line-height: 1.55; }
+
+        .info-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+        @media (max-width: 520px) { .info-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+        .info-stat {
+            position: relative;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px 10px 12px;
+            text-align: center;
+            background: #ffffff;
+        }
+        .info-stat.hi {
+            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 60%);
+            border-color: rgba(147, 197, 253, 0.9);
+        }
+        .info-stat-ic { font-size: 1.15rem; display: block; }
+        .info-stat strong { display: block; margin-top: 2px; font-size: 1.6rem; font-weight: 800; color: #1d4ed8; line-height: 1.1; }
+        .info-stat.hi strong { color: #1d4ed8; }
+        .info-stat:not(.hi) strong { color: #334155; }
+        .info-stat-label { display: block; margin-top: 4px; font-size: 0.74rem; color: #475569; }
+
+        /* 특징 카드 */
+        .info-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+        @media (max-width: 520px) { .info-feature-grid { grid-template-columns: 1fr; } }
+
+        .info-feature {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+        .info-feature-ic {
+            font-size: 1.4rem;
+            line-height: 1;
+            flex: 0 0 auto;
+        }
+        .info-feature b { display: block; font-size: 0.88rem; color: #0f172a; margin-bottom: 3px; }
+        .info-feature span { display: block; font-size: 0.8rem; color: #475569; line-height: 1.55; }
+
+        .info-path-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+        @media (max-width: 520px) { .info-path-grid { grid-template-columns: 1fr; } }
+
+        .info-path-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(191, 219, 254, 0.95);
+            background: #ffffff;
+            cursor: pointer;
+            text-align: left;
+        }
+        .info-path-card:hover { background: #eff6ff; }
+        .info-path-card .ic { font-size: 1.6rem; }
+        .info-path-card b { display: block; font-size: 0.9rem; color: #0f172a; }
+        .info-path-card span { font-size: 0.78rem; color: #64748b; }
+
+        .info-back-btn {
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: #334155;
+            padding: 7px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 14px;
+        }
+
+        .info-path-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .info-path-timeline {
+            list-style: none;
+            margin: 0;
+            padding: 0 0 0 6px;
+        }
+
+        .info-path-step {
+            position: relative;
+            padding: 0 0 20px 24px;
+            border-left: 2px solid #e2e8f0;
+        }
+        .info-path-step:last-child { border-left-color: transparent; padding-bottom: 4px; }
+
+        .info-path-step.y1 { border-left-color: #bfdbfe; }
+        .info-path-step.y2 { border-left-color: #93c5fd; }
+        .info-path-step.y3 { border-left-color: #60a5fa; }
+
+        .info-path-node {
+            position: absolute;
+            left: -8px;
+            top: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #3b82f6;
+        }
+        .info-path-step.y1 .info-path-node { border-color: #93c5fd; }
+        .info-path-step.y2 .info-path-node { border-color: #3b82f6; }
+        .info-path-step.y3 .info-path-node { border-color: #1d4ed8; }
+
+        .info-path-content { padding-top: 0; }
+
+        .info-path-sem {
+            display: inline-block;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .info-path-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .info-path-chip {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            background: #eef2f7;
+            color: #334155;
+        }
+        .info-path-chip.common { background: #dcfce7; border-color: #86efac; color: #166534; }
+        .info-path-chip.basic  { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+        .info-path-chip.high   { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+        .info-path-chip.none   { background: #f1f5f9; color: #94a3b8; font-weight: 500; }
 
         .navigation {
             display: flex;
@@ -2272,6 +2880,25 @@
                             <p class="text-sm text-green-700 mt-1 mb-0">민사고만의 민족주체성, 글로벌리더, 영재교육 인증 교육과정을 운영합니다.</p>
                         </div>
                     </div>
+
+                    <div class="info-launch">
+                        <span class="info-launch-title">교육과정 자세히 보기</span>
+                        <p class="info-launch-caption">설명회에 오신 학생·학부모님을 위한 안내입니다. 궁금한 항목을 눌러보세요.</p>
+                        <div class="info-launch-grid">
+                            <button type="button" class="info-launch-btn" onclick="openInfoModal('system')">
+                                <span class="info-launch-icon">🎓</span>
+                                <span class="info-launch-label">고교학점제와<br>과목 위계 이해하기</span>
+                            </button>
+                            <button type="button" class="info-launch-btn" onclick="openInfoModal('pathways')">
+                                <span class="info-launch-icon">🧭</span>
+                                <span class="info-launch-label">진로별<br>교육과정 이수</span>
+                            </button>
+                            <button type="button" class="info-launch-btn" onclick="openInfoModal('strength')">
+                                <span class="info-launch-icon">✨</span>
+                                <span class="info-launch-label">민사고<br>교육과정 특징</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -2321,7 +2948,7 @@
                         <button type="button" onclick="setCareerGoal('정치 / 외교')">정치 / 외교</button>
                         <button type="button" onclick="setCareerGoal('자율 전공')">자율 전공</button>
                     </div>
-                    <div class="subject-catalog-menu">
+                    <div class="subject-catalog-menu catalog-tone-a">
                         <span class="subject-catalog-title">교과별 개설 과목 확인하기</span>
                         <p class="subject-catalog-caption">2022 개정 교육과정 기준 개설 과목입니다. 교과를 누르면 학년별 과목 목록을 확인할 수 있습니다.</p>
                         <div class="subject-catalog-grid">
@@ -2333,6 +2960,21 @@
                             <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('제2외국어')">제2외국어</button>
                             <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('정보')">정보</button>
                             <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('교양')">교양</button>
+                        </div>
+                    </div>
+                    <div class="subject-catalog-menu catalog-tone-b">
+                        <span class="subject-catalog-title">타학교 교육과정 비교하기</span>
+                        <p class="subject-catalog-caption">주요 교과의 학기별(1-1 ~ 3-2) 개설 과목을 타학교와 시계열로 비교합니다. 교과를 누르면 비교표가 열립니다.</p>
+                        <div class="subject-catalog-grid">
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('수학')">수학</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('물리')">물리</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('화학')">화학</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('생명')">생명</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('경제')">경제</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('정치.사회')">정치·사회</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('역사')">역사</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('철학')">철학</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('심리학')">심리학</button>
                         </div>
                     </div>
                     <div class="navigation">
@@ -2657,6 +3299,34 @@
                     <button type="button" class="subject-modal-close" onclick="closeSubjectCatalog()" aria-label="닫기">✕</button>
                 </div>
                 <div id="subject-modal-body" class="subject-modal-body"></div>
+            </div>
+        </div>
+
+        <!-- 타학교 교육과정 비교 팝업 -->
+        <div id="compare-modal-overlay" class="subject-modal-overlay" onclick="closeSchoolCompare(event)">
+            <div class="subject-modal xschool-modal surface-card" role="dialog" aria-modal="true" aria-labelledby="compare-modal-title">
+                <div class="subject-modal-head">
+                    <div>
+                        <h3 id="compare-modal-title" class="subject-modal-title">타학교 교육과정 비교</h3>
+                        <p class="subject-modal-sub">학기별(1-1 ~ 3-2) 주요 교과 개설 과목 비교</p>
+                    </div>
+                    <button type="button" class="subject-modal-close" onclick="closeSchoolCompare()" aria-label="닫기">✕</button>
+                </div>
+                <div id="compare-modal-body" class="subject-modal-body"></div>
+            </div>
+        </div>
+
+        <!-- 교육과정 안내 팝업 -->
+        <div id="info-modal-overlay" class="subject-modal-overlay" onclick="closeInfoModal(event)">
+            <div class="subject-modal xschool-modal surface-card" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+                <div class="subject-modal-head">
+                    <div>
+                        <h3 id="info-modal-title" class="subject-modal-title">교육과정 안내</h3>
+                        <p id="info-modal-sub" class="subject-modal-sub">2022 개정 교육과정 기준</p>
+                    </div>
+                    <button type="button" class="subject-modal-close" onclick="closeInfoModal()" aria-label="닫기">✕</button>
+                </div>
+                <div id="info-modal-body" class="subject-modal-body"></div>
             </div>
         </div>
     </div>
@@ -4559,6 +5229,787 @@
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') closeSubjectCatalog();
+        });
+
+        /* =========================================================
+           타학교 교육과정 비교 (주요 교과 · 학기별 시계열)
+           ---------------------------------------------------------
+           데이터 형식 안내 (사용자가 아래 SCHOOL_COMPARE_DATA를 채워주세요):
+             SCHOOL_COMPARE_DATA[교과] = [
+               {
+                 name: "민족사관고",        // 학교명
+                 home: true,                 // 우리 학교면 true (강조 표시), 나머지는 생략
+                 sem: {
+                   "1-1": [ "공통수학1", { n: "AP 미적분학 BC-I", lv: "adv" } ],
+                   "1-2": [ ... ],
+                   "2-1": [ ... ], "2-2": [ ... ], "3-1": [ ... ], "3-2": [ ... ]
+                 }
+               },
+               { name: "A 자사고", sem: { ... } },
+               ...
+             ]
+           - 과목은 문자열만 써도 되고, 심화도를 표시하려면 { n:"과목명", lv:"adv"|"mid" }
+             (adv=전문/AP/고급 → 빨간 표시, mid=선택심화 → 주황 표시, 미지정 → 회색)
+           - 교과 키: '수학','물리','화학','생명','경제','정치'
+           ========================================================= */
+        const XSCHOOL_SUBJECTS = ['수학', '물리', '화학', '생명', '경제', '정치.사회', '역사', '철학', '심리학'];
+        const XSCHOOL_SEMESTERS = [
+            { key: '1-1', label: '1학년 1학기' },
+            { key: '1-2', label: '1학년 2학기' },
+            { key: '2-1', label: '2학년 1학기' },
+            { key: '2-2', label: '2학년 2학기' },
+            { key: '3-1', label: '3학년 1학기' },
+            { key: '3-2', label: '3학년 2학기' }
+        ];
+
+        // TODO: 실제 학교별 데이터로 교체하세요. 아래는 표시 형식 예시입니다.
+        const SCHOOL_COMPARE_DATA = {
+            '수학': [
+                { name: '민족사관고', home: true, sem: {
+                    '1-1': ['공통수학1'], '1-2': ['공통수학2'],
+                    '2-1': ['대수', '미적분I'],
+                    '2-2': ['미적분II', '확률과 통계'],
+                    '3-1': [{ n: '고급 미적분', lv: 'mid' }, { n: '미분 방정식', lv: 'adv' }, { n: '벡터 미적분학', lv: 'adv' }],
+                    '3-2': [{ n: '선형대수학', lv: 'adv' }, '수학과제 탐구']
+                }},
+                { name: 'A자공고', sem: {
+                    '1-1': ['공통수학1'], '1-2': ['공통수학2'],
+                    '2-1': ['대수', '기하'],
+                    '2-2': ['미적분1'],
+                    '3-1': ['미적분II', '확률과 통계'],
+                    '3-2': ['수학과제 탐구']
+                }}
+            ],
+            '물리': [
+                { name: '민족사관고', home: true, tracks: [
+                    { label: '선택1', sem: {
+                        '1-1': ['통합과학1', '물리학'],
+                        '1-2': ['통합과학2', { n: '역학과 에너지', lv: 'mid' }],
+                        '2-1': [{ n: '전자기와 양자', lv: 'mid' }],
+                        '2-2': [{ n: '고급 물리학', lv: 'adv' }],
+                        '3-1': [{ n: '현대 물리학 1', lv: 'mid' }],
+                        '3-2': [{ n: '현대 물리학 2', lv: 'mid' }]
+                    }},
+                    { label: '선택2', sem: {
+                        '1-1': ['통합과학1', 'Physics 1'],
+                        '1-2': ['통합과학2', { n: 'AP Physics 1', lv: 'adv' }],
+                        '2-1': [{ n: 'AP Physics 2', lv: 'adv' }],
+                        '2-2': [{ n: 'AP Physics C: 전자기학', lv: 'adv' }],
+                        '3-1': [{ n: '해석역학 1', lv: 'adv' }],
+                        '3-2': [{ n: '해석역학 2', lv: 'adv' }]
+                    }}
+                ]},
+                { name: 'A자공고', sem: {
+                    '1-1': ['통합과학1'],
+                    '1-2': ['통합과학2'],
+                    '2-1': ['물리학'],
+                    '2-2': [{ n: '역학과 에너지', lv: 'mid' }],
+                    '3-1': [{ n: '전자기와 양자', lv: 'mid' }, { or: true }, { n: '고급 물리학', lv: 'mid' }],
+                    '3-2': []
+                }}
+            ],
+            '화학': [
+                { name: '민족사관고', home: true, tracks: [
+                    { label: '선택1', sem: {
+                        '1-1': ['통합과학1', '화학'],
+                        '1-2': ['통합과학2', { n: '물질과 세계', lv: 'mid' }],
+                        '2-1': [{ n: '화학 반응의 세계', lv: 'mid' }],
+                        '2-2': [{ n: '일반 화학1', lv: 'adv' }],
+                        '3-1': [{ n: '일반 화학2', lv: 'adv' }],
+                        '3-2': [{ n: '화학 세미나', lv: 'adv' }]
+                    }},
+                    { label: '선택2', sem: {
+                        '1-1': ['통합과학1', 'Chemistry1'],
+                        '1-2': ['통합과학2', { n: 'AP Chemistry1', lv: 'adv' }],
+                        '2-1': [{ n: 'AP Chemistry2', lv: 'adv' }],
+                        '2-2': [{ n: '탄소의 화학 기초(유기화학1)', lv: 'adv' }],
+                        '3-1': [{ n: '탄소의 화학 심화(유기화학2)', lv: 'adv' }],
+                        '3-2': [{ n: '화학 세미나', lv: 'adv' }]
+                    }}
+                ]},
+                { name: 'A자공고', sem: {
+                    '1-1': ['통합과학1'],
+                    '1-2': ['통합과학2'],
+                    '2-1': ['화학'],
+                    '2-2': [{ n: '물질과 세계', lv: 'mid' }],
+                    '3-1': [{ n: '화학 반응의 세계', lv: 'mid' }, { or: true }, { n: '고급 화학', lv: 'adv' }],
+                    '3-2': []
+                }}
+            ],
+            '생명': [
+                { name: '민족사관고', home: true, tracks: [
+                    { label: '선택1', sem: {
+                        '1-1': ['통합과학1', '생명과학'],
+                        '1-2': ['통합과학2', { n: '세포와 물질대사', lv: 'mid' }],
+                        '2-1': [{ n: '생물의 유전', lv: 'mid' }],
+                        '2-2': [{ n: '세포생물학의 이해', lv: 'adv' }],
+                        '3-1': [{ n: '분자생물학의 이해', lv: 'adv' }],
+                        '3-2': [{ n: '생체모방공학', lv: 'adv' }]
+                    }},
+                    { label: '선택2', sem: {
+                        '1-1': ['통합과학1', 'Biology I'],
+                        '1-2': ['통합과학2', { n: 'AP Biology 1', lv: 'adv' }],
+                        '2-1': [{ n: 'AP Biology 2', lv: 'adv' }],
+                        '2-2': [{ n: '세포생물학의 이해', lv: 'adv' }],
+                        '3-1': [{ n: '분자생물학의 이해', lv: 'adv' }],
+                        '3-2': [{ n: '생명과학세미나', lv: 'adv' }]
+                    }}
+                ]},
+                { name: 'A자공고', sem: {
+                    '1-1': ['통합과학1'],
+                    '1-2': ['통합과학2'],
+                    '2-1': ['생명과학'],
+                    '2-2': [{ n: '세포와 물질대사', lv: 'mid' }],
+                    '3-1': [{ n: '생물의 유전', lv: 'mid' }, { or: true }, { n: '고급 생명과학', lv: 'adv' }],
+                    '3-2': []
+                }}
+            ],
+            '경제': [
+                { name: '민족사관고', home: true, sem: {
+                    '1-1': ['통합사회1', '경제'],
+                    '1-2': ['통합사회2', { n: 'AP 미시경제', lv: 'adv' }],
+                    '2-1': [{ n: 'AP 거시경제', lv: 'adv' }],
+                    '2-2': [{ n: 'AP 중급 미시경제학', lv: 'adv' }],
+                    '3-1': [{ n: '경제학 고전강독', lv: 'adv' }],
+                    '3-2': []
+                }},
+                { name: 'A자공고', sem: {
+                    '1-1': ['통합사회1'],
+                    '1-2': ['통합사회2'],
+                    '2-1': ['경제'],
+                    '2-2': [], '3-1': [], '3-2': []
+                }}
+            ],
+            '정치.사회': [
+                { name: '민족사관고', home: true, tracks: [
+                    { label: '선택1', sem: {
+                        '1-1': ['통합사회1', '정치'],
+                        '1-2': ['통합사회2', { n: '국제 정치', lv: 'mid' }],
+                        '2-1': [{ n: 'AP 미국정치1', lv: 'adv' }, '사회와 문화'],
+                        '2-2': [{ n: 'AP 미국정치2', lv: 'adv' }, '법과 사회'],
+                        '3-1': [{ n: '사회과학 방법론', lv: 'mid' }, { n: '국제 정치', lv: 'mid' }],
+                        '3-2': []
+                    }},
+                    { label: '선택2', sem: {
+                        '1-1': ['통합사회1', '정치'],
+                        '1-2': ['통합사회2', { n: '국제 관계의 이해', lv: 'mid' }],
+                        '2-1': [{ n: 'AP 비교정치1', lv: 'adv' }, { n: '국제 정치', lv: 'mid' }],
+                        '2-2': [{ n: 'AP 비교정치2', lv: 'adv' }, '법과 사회'],
+                        '3-1': [{ n: '사회과학 방법론', lv: 'mid' }, { n: '국제법', lv: 'mid' }],
+                        '3-2': []
+                    }}
+                ]},
+                { name: 'A자공고', sem: {
+                    '1-1': ['통합사회1'],
+                    '1-2': ['통합사회2'],
+                    '2-1': ['정치'],
+                    '2-2': ['사회와 문화'],
+                    '3-1': ['법과 사회'],
+                    '3-2': []
+                }}
+            ],
+            '역사': [
+                { name: '민족사관고', home: true, tracks: [
+                    { label: '선택1', sem: {
+                        '1-1': ['한국사1', '역사연구 방법'],
+                        '1-2': ['한국사2', '세계사'],
+                        '2-1': [{ n: '다산 연구', lv: 'mid' }],
+                        '2-2': [{ n: '임진왜란 연구', lv: 'mid' }],
+                        '3-1': ['동아시아 역사기행'],
+                        '3-2': []
+                    }},
+                    { label: '선택2', sem: {
+                        '1-1': ['한국사1', '역사연구 방법'],
+                        '1-2': ['한국사2', { n: 'AP 미국사1', lv: 'adv' }],
+                        '2-1': [{ n: 'AP 미국사2', lv: 'adv' }],
+                        '2-2': [{ n: 'AP 세계사1', lv: 'adv' }, { or: true }, { n: 'AP 유럽사1', lv: 'adv' }],
+                        '3-1': [{ n: 'AP 세계사2', lv: 'adv' }, { or: true }, { n: 'AP 유럽사2', lv: 'adv' }],
+                        '3-2': []
+                    }}
+                ]},
+                { name: 'A자공고', sem: {
+                    '1-1': ['한국사1'],
+                    '1-2': ['한국사2'],
+                    '2-1': ['동아시아 역사 기행'],
+                    '2-2': ['세계사'],
+                    '3-1': ['역사로 탐구하는 현대세계'],
+                    '3-2': []
+                }}
+            ],
+            '철학': [
+                { name: '민족사관고', home: true, sem: {
+                    '1-1': ['통합사회1', '윤리와 사상'],
+                    '1-2': ['통합사회2', '현대사회와 윤리'],
+                    '2-1': [{ n: '서양철학 개론', lv: 'mid' }],
+                    '2-2': [{ n: '서양근대철학의 이해', lv: 'mid' }],
+                    '3-1': [{ n: '서양현대철학의 이해', lv: 'mid' }],
+                    '3-2': []
+                }},
+                { name: 'A자공고', sem: {
+                    '1-1': ['통합사회1'],
+                    '1-2': ['통합사회2'],
+                    '2-1': ['현대사회와 윤리'],
+                    '2-2': ['윤리와 사상'],
+                    '3-1': ['인문학과 윤리'],
+                    '3-2': []
+                }}
+            ],
+            '심리학': [
+                { name: '민족사관고', home: true, sem: {
+                    '1-1': ['통합사회1'],
+                    '1-2': ['통합사회2', { n: 'AP 심리학1', lv: 'adv' }],
+                    '2-1': [{ n: 'AP 심리학2', lv: 'adv' }],
+                    '2-2': [{ n: '긍정 심리학', lv: 'mid' }],
+                    '3-1': [{ n: '성격과 자기이해', lv: 'mid' }],
+                    '3-2': []
+                }},
+                { name: 'A자공고', sem: {
+                    '1-1': ['통합사회1'],
+                    '1-2': ['통합사회2'],
+                    '2-1': [], '2-2': [], '3-1': [], '3-2': []
+                }}
+            ]
+        };
+
+        let xschoolState = { subject: XSCHOOL_SUBJECTS[0], chart: 'bar' };
+        let xschoolCharts = [];
+
+        const XSCHOOL_LEVELS = [
+            { key: 'common', label: '공통', color: '#94a3b8' },
+            { key: 'basic', label: '기초', color: '#60a5fa' },
+            { key: 'high', label: '심화·고급', color: '#f97316' }
+        ];
+        const XSCHOOL_LEVEL_RANK = { common: 0, basic: 1, high: 2 };
+        const XSCHOOL_CHART_MODES = [
+            { key: 'bar', label: '수준 구성(누적 막대)' },
+            { key: 'line', label: '학기별 수준 추이' },
+            { key: 'multiple', label: '학기별 구성(학교별)' },
+            { key: 'radar', label: '심화·고급 방사형' }
+        ];
+        const XSCHOOL_ROW_COLORS = ['#2563eb', '#f97316', '#10b981', '#8b5cf6', '#e11d48', '#0891b2'];
+
+        function openSchoolCompare(subject) {
+            xschoolState.subject = XSCHOOL_SUBJECTS.includes(subject) ? subject : XSCHOOL_SUBJECTS[0];
+            renderSchoolCompare();
+            document.getElementById('compare-modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSchoolCompare(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('compare-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+            xschoolDestroyCharts();
+        }
+
+        function selectCompareSubject(subject) {
+            xschoolState.subject = subject;
+            renderSchoolCompare();
+        }
+
+        /* ===== 교육과정 안내 (설명회용) ===== */
+        const INFO_TIERS = [
+            { cls: 't1', step: '1', name: '공통 과목', tag: '기초 · 전원 이수', line: '모든 학생이 함께 듣는 국가 공통 필수', ex: '공통국어1, 통합과학1, 한국사1' },
+            { cls: 't2', step: '2', name: '선택 과목', tag: '진로 탐색', line: '진로·흥미에 따라 학생이 직접 고르는 과목 (일반·진로·융합선택)', ex: '물리학, 경제, 세계사, 프로그래밍' },
+            { cls: 't3', step: '3', name: '전문 교과 Ⅰ', tag: '심화', line: '한 분야를 깊이 파고드는 심화 과목', ex: '물리학 실험, 서양철학 개론, 수학과제 탐구' },
+            { cls: 't4', step: '4', name: '전문 교과 Ⅱ', tag: '대학 수준', line: '대학 1~2학년 수준 · AP·고급 과목', ex: 'AP 물리학 C, 고급 미적분, 분자생물학의 이해' }
+        ];
+        const INFO_FEATURES = [
+            { ic: '🗂️', t: '넓은 선택의 폭', d: '일반고가 한 과목만 여는 자리에, 기초부터 대학 수준(AP·전문Ⅱ)까지 여러 단계를 함께 개설합니다.' },
+            { ic: '📈', t: '학년이 오를수록 깊어지는 설계', d: '2·3학년에는 대학 1~2학년 수준 과목을 이수하며 전공 기초를 미리 다집니다.' },
+            { ic: '🔬', t: '세부 전공까지 탐색', d: '과학은 물리·화학·생명·지구로, 사회는 정치·경제·역사·철학·심리로 나뉘어 진로를 구체적으로 준비합니다.' },
+            { ic: '🌍', t: '언어 역량', d: '프랑스어·스페인어·중국어·한문을 심화 단계까지 운영합니다.' }
+        ];
+        const INFO_STAT_META = [
+            { key: 'total', ic: '📚', label: '전체 개설 과목', hi: true },
+            { key: 'ap', ic: '🏛️', label: 'AP(대학과목)', hi: true },
+            { key: 't2', ic: '🎯', label: '전문Ⅱ · 대학 수준', hi: true },
+            { key: 't1', ic: '🔎', label: '전문Ⅰ · 심화', hi: false },
+            { key: 'sci', ic: '🧪', label: '탐구 과목', hi: false },
+            { key: 'lang', ic: '🗣️', label: '제2외국어 · 한문', hi: false }
+        ];
+        const INFO_GLOSSARY = [
+            { t: '고교학점제', d: '대학처럼 원하는 과목을 골라 듣고, 필요한 학점을 채우면 졸업하는 제도. 민사고는 1996년 개교 때부터 학생 스스로 과목을 설계하는 방식을 운영해 왔습니다.' },
+            { t: '학점', d: '한 과목을 이수했을 때 받는 단위. 3년 동안 정해진 학점 이상을 채워야 졸업합니다.' },
+            { t: 'AP', d: 'Advanced Placement. 대학 과목 선이수제로, 대학 1~2학년 수준의 내용을 고교에서 배우고 평가받습니다.' },
+            { t: 'R&E', d: 'Research & Education. 교수·전문가의 지도 아래 진행하는 소논문·탐구 프로젝트 과목.' },
+            { t: '전문 교과 Ⅰ·Ⅱ', d: '특정 학문 분야를 깊이 배우는 심화 과목. 전문Ⅱ는 대학 전공 기초 수준에 해당합니다.' },
+            { t: 'K-Diploma', d: '민사고 고유의 인증 교육과정으로, 민족주체성·글로벌리더·영재교육 영역으로 구성됩니다.' }
+        ];
+        const MODEL_PATHWAYS = [
+            { key: '의예 / 생명과학', ic: '🧬', desc: '생명·화학 중심, 의학·생명과학 계열', sem: {
+                '1-1': ['생명과학', '화학', '프로그래밍 기초'],
+                '1-2': ['세포와 물질대사(AP 생물학 1)', '물질과 에너지(AP 화학 1)', '컴퓨터 시스템 일반'],
+                '2-1': ['대수', '미적분I', '생물의 유전(AP 생물학 2)', '화학 반응의 세계(AP 화학 2)', 'Physics I', 'AP 심리학 I'],
+                '2-2': ['미적분II', '선형대수학', '세포생물학의 이해', '탄소의 화학 기초', 'AP 물리학 I'],
+                '3-1': ['확률과 통계', '벡터 미적분학', '분자생물학의 이해', '탄소의 화학 심화', '생명과학 실험'],
+                '3-2': ['미분 방정식', '생명과학세미나', '화학 세미나', '고급 생명과학']
+            }},
+            { key: '공학 / 물리', ic: '⚙️', desc: '물리·수학 중심, 공학·자연과학 계열', sem: {
+                '1-1': ['물리학', '화학', '프로그래밍 기초'],
+                '1-2': ['AP 물리학 I', 'AP 화학 I', '컴퓨터 시스템 일반'],
+                '2-1': ['대수', '미적분I', 'AP 물리학 II', '역학과 에너지', '데이터 과학'],
+                '2-2': ['AP 물리학 C: 전자기학', '미적분II', '선형대수학', '전자기와 양자', 'AP 통계학 I'],
+                '3-1': ['해석역학 I', '확률과 통계', '벡터 미적분학', '현대 물리학 I', 'AP 컴퓨터과학 A'],
+                '3-2': ['해석역학 II', '미분 방정식', '이산 수학', '현대 물리학 II', '인공지능 수학']
+            }},
+            { key: '컴퓨터과학 / AI', ic: '💻', desc: '수학·정보 중심, 컴퓨터·AI 계열', sem: {
+                '1-1': ['프로그래밍기초', '물리학'],
+                '1-2': ['컴퓨터 시스템 일반', '인공지능 기초'],
+                '2-1': ['대수', '미적분I', '데이터 과학', '프로그래밍'],
+                '2-2': ['미적분II', '확률과 통계', '인공지능 수학', 'AP 컴퓨터과학 A'],
+                '3-1': ['이산 수학', '선형대수학', '머신러닝', '수학과 인공지능'],
+                '3-2': ['벡터 미적분학', '인공지능과 미래사회', 'AP 미적분학 BC-III']
+            }},
+            { key: '경제 / 경영', ic: '📈', desc: '수학·경제 중심, 상경 계열', sem: {
+                '1-1': ['경제', '프로그래밍 기초'],
+                '1-2': ['AP 미시경제', 'AP 통계학 I', '컴퓨터 시스템 일반'],
+                '2-1': ['대수', '미적분I', 'AP 거시경제', '경제 수학', '데이터 과학'],
+                '2-2': ['미적분II', 'AP 통계학 II', '중급 미시경제학', '실용 통계', '프로그래밍'],
+                '3-1': ['확률과 통계', '경제학고전강독', '금융과 경제생활', 'AP 컴퓨터과학 A'],
+                '3-2': ['선형대수학', '미분 방정식', '머신러닝', '사회문제 탐구']
+            }},
+            { key: '정치 / 국제', ic: '🌐', desc: '사회·국제·언어 중심, 정치외교·국제학 계열', sem: {
+                '1-1': ['정치', '세계시민과 지리'],
+                '1-2': ['국제 관계의 이해', '사회와 문화'],
+                '2-1': ['세계사', '법과 사회', 'AP 미국정치 I', '프랑스어 독해와 작문 I'],
+                '2-2': ['AP 미국정치 II', 'AP 비교정치 I', '국제 정치', '현대사회와 윤리'],
+                '3-1': ['사회과학 방법론', '국제법', 'AP 비교정치 II', '국제 관계와 국제기구'],
+                '3-2': ['역사로 탐구하는 현대 세계', '윤리문제 탐구', '심화 프랑스어']
+            }},
+            { key: '인문 / 철학', ic: '📚', desc: '국어·철학·역사 중심, 인문 계열', sem: {
+                '1-1': ['문학', '윤리와 사상'],
+                '1-2': ['현대사회와 윤리', '세계사'],
+                '2-1': ['주제 탐구 독서', '서양철학 개론', '한문 고전 읽기', '고전문학의 감상과 비평'],
+                '2-2': ['현대 국어 문법의 이해', '서양근대철학의 이해', '동아시아 역사 기행'],
+                '3-1': ['고전의 향기', '서양현대철학의 이해', '다산 연구', '인문학과 윤리'],
+                '3-2': ['현대 문학의 감상과 이해', '현대사회와 철학', '문학에세이 쓰기']
+            }}
+        ];
+        const INFO_SEM_LABELS = { '1-1': '1학년 1학기', '1-2': '1학년 2학기', '2-1': '2학년 1학기', '2-2': '2학년 2학기', '3-1': '3학년 1학기', '3-2': '3학년 2학기' };
+
+        function openInfoModal(kind) {
+            renderInfoModal(kind);
+            document.getElementById('info-modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeInfoModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('info-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function renderInfoModal(kind) {
+            const titleEl = document.getElementById('info-modal-title');
+            const subEl = document.getElementById('info-modal-sub');
+            const body = document.getElementById('info-modal-body');
+
+            if (kind === 'system') {
+                titleEl.textContent = '고교학점제와 과목 위계 이해하기';
+                subEl.textContent = '고교학점제 · 과목의 4단계 위계 · 자주 나오는 용어';
+                body.innerHTML =
+                    '<div class="info-callout">' +
+                        '<span class="info-callout-ic">🎓</span>' +
+                        '<p>고교학점제는 학생이 <b>진로와 흥미에 따라 과목을 직접 골라 듣고</b>, 필요한 학점을 채우면 졸업하는 제도입니다. ' +
+                        '민사고는 <b>30년 가까이</b> 이 방식으로 학생 한 명 한 명의 교육과정을 설계해 왔습니다.</p>' +
+                    '</div>' +
+                    '<section class="info-section">' +
+                        '<h4>과목의 4단계 위계 <span class="info-h4-sub">쉬운 것부터 대학 수준까지</span></h4>' +
+                        '<div class="info-ladder-cap start">가장 기초 · 전원 이수</div>' +
+                        '<div class="info-ladder">' +
+                        INFO_TIERS.map(t =>
+                            '<div class="info-ladder-step ' + t.cls + '">' +
+                                '<span class="info-ladder-num">' + t.step + '</span>' +
+                                '<div class="info-ladder-body">' +
+                                    '<div class="info-ladder-head"><b>' + t.name + '</b><span class="info-ladder-tag">' + t.tag + '</span></div>' +
+                                    '<span class="info-tier-line">' + t.line + '</span>' +
+                                    '<span class="info-tier-ex">예) ' + t.ex + '</span>' +
+                                '</div>' +
+                            '</div>').join('') +
+                        '</div>' +
+                        '<div class="info-ladder-cap end">대학 1~2학년 수준 · 가장 심화</div>' +
+                    '</section>' +
+                    '<section class="info-section">' +
+                        '<h4>자주 나오는 용어</h4>' +
+                        '<div class="info-glossary">' +
+                        INFO_GLOSSARY.map(g => '<div class="info-gl"><b>' + g.t + '</b><span>' + g.d + '</span></div>').join('') +
+                        '</div>' +
+                    '</section>';
+                return;
+            }
+
+            if (kind === 'strength') {
+                titleEl.textContent = '민사고 교육과정 특징';
+                subEl.textContent = '2022 개정 교육과정 기준 개설 과목 분석';
+                const all = Object.values(SUBJECT_CATALOG).reduce((a, l) => a.concat(l), []);
+                const total = all.length;
+                const ap = all.filter(s => /^AP/.test(s.name)).length;
+                const t2 = all.filter(s => s.level === '400전문II').length;
+                const t1 = all.filter(s => s.level === '300전문I').length;
+                const lang = (SUBJECT_CATALOG['제2외국어'] || []).length;
+                const sci = (SUBJECT_CATALOG['과학'] || []).length + (SUBJECT_CATALOG['사회'] || []).length;
+                const statVals = { total: total, ap: ap, t2: t2, t1: t1, sci: sci, lang: lang };
+                body.innerHTML =
+                    '<section class="info-section">' +
+                        '<h4>숫자로 보는 교육과정 <span class="info-h4-sub">2022 개정 · 개설 과목 기준</span></h4>' +
+                        '<div class="info-stat-grid">' +
+                        INFO_STAT_META.map(m =>
+                            '<div class="info-stat' + (m.hi ? ' hi' : '') + '">' +
+                                '<span class="info-stat-ic">' + m.ic + '</span>' +
+                                '<strong>' + statVals[m.key] + '</strong>' +
+                                '<span class="info-stat-label">' + m.label + '</span>' +
+                            '</div>').join('') +
+                        '</div>' +
+                    '</section>' +
+                    '<section class="info-section">' +
+                        '<h4>일반고와 무엇이 다른가</h4>' +
+                        '<div class="info-feature-grid">' +
+                        INFO_FEATURES.map(f =>
+                            '<div class="info-feature">' +
+                                '<span class="info-feature-ic">' + f.ic + '</span>' +
+                                '<div><b>' + f.t + '</b><span>' + f.d + '</span></div>' +
+                            '</div>').join('') +
+                        '</div>' +
+                    '</section>' +
+                    '<div class="info-callout soft">' +
+                        '<span class="info-callout-ic">📊</span>' +
+                        '<p>학기별·학교별 구체적인 비교는 <b>과정 설계 → 타학교 교육과정 비교하기</b>에서 확인할 수 있습니다.</p>' +
+                    '</div>';
+                return;
+            }
+
+            // pathways
+            titleEl.textContent = '진로별 교육과정 이수';
+            subEl.textContent = '진로에 맞춰 3년간 과목을 이렇게 이수합니다 (예시)';
+            body.innerHTML =
+                '<p class="info-lead">대표 진로별로 학생이 어떤 과목을 골라 이수하는지 보여주는 <b>예시</b>입니다. 카드를 누르면 학기 흐름을 볼 수 있습니다. (실제 개설·시간표에 따라 달라질 수 있습니다.)</p>' +
+                '<div class="info-path-grid">' +
+                MODEL_PATHWAYS.map((p, i) =>
+                    '<button type="button" class="info-path-card" onclick="showModelPathway(' + i + ')">' +
+                        '<span class="ic">' + p.ic + '</span>' +
+                        '<span><b>' + p.key + '</b><span>' + p.desc + '</span></span>' +
+                    '</button>').join('') +
+                '</div>';
+        }
+
+        // 모델 이수경로 과목 → 수준 (공통/기초/심화·고급)
+        let _infoLevelByName = null;
+        function infoCourseLevel(name) {
+            if (!_infoLevelByName) {
+                _infoLevelByName = {};
+                Object.values(SUBJECT_CATALOG).forEach(list => list.forEach(s => { _infoLevelByName[s.name] = s.level; }));
+            }
+            if (/통합|공통|한국사/.test(name)) return 'common';
+            const lv = _infoLevelByName[name];
+            if (lv === '300전문I' || lv === '400전문II' || /AP|고급|심화|전문/.test(name)) return 'high';
+            return 'basic';
+        }
+
+        function showModelPathway(i) {
+            const p = MODEL_PATHWAYS[i];
+            if (!p) return;
+            document.getElementById('info-modal-title').textContent = p.ic + ' ' + p.key;
+            document.getElementById('info-modal-sub').textContent = p.desc + ' · 3년 교육과정 이수 흐름 (예시)';
+
+            const yearOf = { '1-1': 1, '1-2': 1, '2-1': 2, '2-2': 2, '3-1': 3, '3-2': 3 };
+            const steps = Object.keys(INFO_SEM_LABELS).map(k => {
+                const list = p.sem[k] || [];
+                const chips = list.length
+                    ? list.map(c => '<span class="info-path-chip ' + infoCourseLevel(c) + '">' + c + '</span>').join('')
+                    : '<span class="info-path-chip none">공통 과목 이수</span>';
+                return '<li class="info-path-step y' + yearOf[k] + '">' +
+                    '<div class="info-path-node"></div>' +
+                    '<div class="info-path-content">' +
+                        '<span class="info-path-sem">' + INFO_SEM_LABELS[k] + '</span>' +
+                        '<div class="info-path-chips">' + chips + '</div>' +
+                    '</div>' +
+                '</li>';
+            }).join('');
+
+            document.getElementById('info-modal-body').innerHTML =
+                '<button type="button" class="info-back-btn" onclick="renderInfoModal(\'pathways\')">← 진로 목록</button>' +
+                '<div class="info-path-legend">' +
+                    '<span class="info-path-chip common">공통</span>' +
+                    '<span class="info-path-chip basic">선택·기초</span>' +
+                    '<span class="info-path-chip high">심화·고급 / AP</span>' +
+                '</div>' +
+                '<ol class="info-path-timeline">' + steps + '</ol>' +
+                '<p class="info-lead" style="margin-top:14px;">※ 1학년은 공통 과목(공통국어·통합과학·한국사 등)을 함께 이수하며, 위 흐름은 진로 관련 선택 과목 위주로 정리한 예시입니다.</p>';
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeInfoModal();
+        });
+
+        function xschoolCourseName(c) { return typeof c === 'string' ? c : (c && c.n) || ''; }
+        function xschoolCourseLv(c) { return (c && typeof c === 'object' && c.lv) ? c.lv : ''; }
+        // 학교를 트랙 배열로 정규화 (단일 과정은 label 없는 트랙 1개)
+        function xschoolTracks(sc) {
+            if (Array.isArray(sc.tracks) && sc.tracks.length) return sc.tracks;
+            return [{ label: null, sem: sc.sem || {} }];
+        }
+        function xschoolTrackTotal(tr) {
+            return XSCHOOL_SEMESTERS.reduce((n, sem) => n + xschoolUnits(tr.sem[sem.key] || []).length, 0);
+        }
+
+        // 과목 수준 판정: 공통 / 기초 / 심화·고급
+        function xschoolCourseLevel(c) {
+            const name = xschoolCourseName(c);
+            if (/통합|공통|한국사/.test(name)) return 'common';
+            const lv = xschoolCourseLv(c);
+            if (lv === 'adv' || lv === 'mid') return 'high';
+            return 'basic';
+        }
+
+        // 한 학기 과목 목록 → 수준 배열 (or로 묶인 택1 그룹은 상위 수준 1개로 계산)
+        function xschoolUnits(list) {
+            const units = [];
+            let orNext = false;
+            list.forEach(c => {
+                if (c && typeof c === 'object' && c.or) { orNext = true; return; }
+                const lvl = xschoolCourseLevel(c);
+                if (orNext && units.length) {
+                    if (XSCHOOL_LEVEL_RANK[lvl] > XSCHOOL_LEVEL_RANK[units[units.length - 1]]) {
+                        units[units.length - 1] = lvl;
+                    }
+                    orNext = false;
+                } else {
+                    units.push(lvl);
+                }
+            });
+            return units;
+        }
+
+        // 비교 대상 행 목록: {name, home, sem}
+        function xschoolRows(schools) {
+            const rows = [];
+            schools.forEach(sc => {
+                const trs = xschoolTracks(sc);
+                const multi = trs.length > 1;
+                trs.forEach((tr, ti) => {
+                    rows.push({
+                        name: multi ? (sc.name + ' ' + (tr.label || ('선택' + (ti + 1)))) : sc.name,
+                        home: !!sc.home,
+                        sem: tr.sem || {}
+                    });
+                });
+            });
+            return rows;
+        }
+
+        function xschoolDestroyCharts() {
+            xschoolCharts.forEach(ch => { try { ch.destroy(); } catch (e) {} });
+            xschoolCharts = [];
+        }
+
+        function setXschoolChart(mode) {
+            xschoolState.chart = mode;
+            renderXschoolChart();
+        }
+
+        function renderXschoolChart() {
+            xschoolDestroyCharts();
+            const host = document.getElementById('xschool-chart-host');
+            if (!host || typeof Chart === 'undefined') return;
+            const rows = xschoolRows(SCHOOL_COMPARE_DATA[xschoolState.subject] || []);
+            const mode = xschoolState.chart;
+
+            // 행별 · 학기별 수준 카운트
+            const data = rows.map((r, ri) => {
+                const perSem = XSCHOOL_SEMESTERS.map(sem => {
+                    const units = xschoolUnits(r.sem[sem.key] || []);
+                    const counts = { common: 0, basic: 0, high: 0 };
+                    units.forEach(u => counts[u]++);
+                    return counts;
+                });
+                const totals = { common: 0, basic: 0, high: 0 };
+                perSem.forEach(c => { totals.common += c.common; totals.basic += c.basic; totals.high += c.high; });
+                return { row: r, color: XSCHOOL_ROW_COLORS[ri % XSCHOOL_ROW_COLORS.length], perSem, totals };
+            });
+
+            if (mode === 'bar') {
+                host.innerHTML = '<div class="xschool-chart-box"><canvas id="xschool-canvas"></canvas></div>';
+                xschoolCharts.push(new Chart(document.getElementById('xschool-canvas'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => d.row.name),
+                        datasets: XSCHOOL_LEVELS.map(lv => ({
+                            label: lv.label,
+                            data: data.map(d => d.totals[lv.key]),
+                            backgroundColor: lv.color
+                        }))
+                    },
+                    options: {
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                        scales: { x: { stacked: true, ticks: { precision: 0 } }, y: { stacked: true } },
+                        plugins: { legend: { position: 'bottom' }, title: { display: true, text: '학교별 과목 수준 구성 (전체 학기 합계)' } }
+                    }
+                }));
+            } else if (mode === 'line') {
+                host.innerHTML = '<div class="xschool-chart-box"><canvas id="xschool-canvas"></canvas></div>';
+                xschoolCharts.push(new Chart(document.getElementById('xschool-canvas'), {
+                    type: 'line',
+                    data: {
+                        labels: XSCHOOL_SEMESTERS.map(s => s.key),
+                        datasets: data.map(d => ({
+                            label: d.row.name,
+                            borderColor: d.color,
+                            backgroundColor: d.color,
+                            tension: 0.3,
+                            spanGaps: true,
+                            data: d.perSem.map(c => {
+                                const n = c.common + c.basic + c.high;
+                                if (!n) return null;
+                                return (c.common * 1 + c.basic * 2 + c.high * 3) / n;
+                            })
+                        }))
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { y: { min: 1, max: 3, ticks: { stepSize: 1, callback: v => ({1:'공통',2:'기초',3:'심화·고급'}[v] || '') } } },
+                        plugins: { legend: { position: 'bottom' }, title: { display: true, text: '학기별 평균 과목 수준 (1 공통 → 3 심화·고급)' } }
+                    }
+                }));
+            } else if (mode === 'radar') {
+                host.innerHTML = '<div class="xschool-chart-box"><canvas id="xschool-canvas"></canvas></div>';
+                xschoolCharts.push(new Chart(document.getElementById('xschool-canvas'), {
+                    type: 'radar',
+                    data: {
+                        labels: XSCHOOL_SEMESTERS.map(s => s.key),
+                        datasets: data.map(d => ({
+                            label: d.row.name,
+                            borderColor: d.color,
+                            backgroundColor: d.color + '33',
+                            data: d.perSem.map(c => c.high)
+                        }))
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { r: { beginAtZero: true, ticks: { precision: 0 } } },
+                        plugins: { legend: { position: 'bottom' }, title: { display: true, text: '학기별 심화·고급 과목 수' } }
+                    }
+                }));
+            } else if (mode === 'multiple') {
+                host.innerHTML = '<div class="xschool-chart-grid">' +
+                    data.map((d, i) => '<div class="xschool-chart-mini"><span class="xschool-chart-mini-title">' +
+                        d.row.name + '</span><canvas id="xschool-canvas-' + i + '"></canvas></div>').join('') +
+                    '</div>';
+                data.forEach((d, i) => {
+                    xschoolCharts.push(new Chart(document.getElementById('xschool-canvas-' + i), {
+                        type: 'bar',
+                        data: {
+                            labels: XSCHOOL_SEMESTERS.map(s => s.key),
+                            datasets: XSCHOOL_LEVELS.map(lv => ({
+                                label: lv.label,
+                                data: d.perSem.map(c => c[lv.key]),
+                                backgroundColor: lv.color
+                            }))
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            scales: { x: { stacked: true }, y: { stacked: true, ticks: { precision: 0, stepSize: 1 } } },
+                            plugins: { legend: { display: i === 0, position: 'bottom' } }
+                        }
+                    }));
+                });
+            }
+        }
+
+        function renderSchoolCompare() {
+            const subject = xschoolState.subject;
+            const schools = SCHOOL_COMPARE_DATA[subject] || [];
+            document.getElementById('compare-modal-title').textContent = subject.replace('.', '·') + ' 교육과정 비교';
+
+            const tabs = XSCHOOL_SUBJECTS.map(s =>
+                '<button type="button" class="xschool-subject-tab' + (s === subject ? ' active' : '') +
+                '" onclick="selectCompareSubject(\'' + s + '\')">' + s.replace('.', '·') + '</button>'
+            ).join('');
+
+            if (!schools.length) {
+                xschoolDestroyCharts();
+                document.getElementById('compare-modal-body').innerHTML =
+                    '<div class="xschool-subject-tabs">' + tabs + '</div>' +
+                    '<p class="subject-empty">아직 ' + subject + ' 교과의 비교 데이터가 입력되지 않았습니다.</p>';
+                return;
+            }
+
+            // 학교별(트랙 최대치 기준) 총 개설 과목 수
+            const schoolTotals = schools.map(sc => {
+                const trs = xschoolTracks(sc);
+                return { trackTotals: trs.map(xschoolTrackTotal) };
+            });
+            const maxTotal = Math.max(1, ...schoolTotals.map(t => Math.max(...t.trackTotals)));
+
+            const summary = schools.map((sc, i) => {
+                const tt = schoolTotals[i].trackTotals;
+                const pct = Math.round((Math.max(...tt) / maxTotal) * 100);
+                const countText = tt.length > 1 ? tt.join(' / ') : String(tt[0]);
+                return '<div class="xschool-summary-row' + (sc.home ? ' home' : '') + '">' +
+                    '<span class="xschool-summary-name">' + sc.name + '</span>' +
+                    '<span class="xschool-summary-rail"><span class="xschool-summary-track" style="width:' + pct + '%"></span></span>' +
+                    '<span class="xschool-summary-count">' + countText + '</span>' +
+                '</div>';
+            }).join('');
+
+            // 시계열 비교표 (학교 = rowspan, 과정(선택)별로 행 분리)
+            const semHead = XSCHOOL_SEMESTERS.map(sem => '<th>' + sem.key + '</th>').join('');
+
+            const cellHtml = (list) => {
+                if (!list.length) return '<span class="xschool-none">-</span>';
+                return list.map(c => {
+                        if (c && typeof c === 'object' && c.or) return '<span class="xschool-or">or</span>';
+                        const lv = xschoolCourseLv(c);
+                        return '<span class="lvl ' + (lv === 'adv' ? 'adv' : (lv === 'mid' ? 'mid' : '')) + '">' +
+                            xschoolCourseName(c) + '</span>';
+                    }).join('');
+            };
+
+            let tbody = '';
+            schools.forEach(sc => {
+                const trs = xschoolTracks(sc);
+                const multi = trs.length > 1;
+                trs.forEach((tr, ti) => {
+                    const colorCls = multi ? ('t' + (ti + 1)) : (sc.home ? 't1' : 't3');
+                    const label = tr.label || (multi ? ('선택' + (ti + 1)) : '선택');
+                    const tds = XSCHOOL_SEMESTERS
+                        .map(sem => '<td>' + cellHtml(tr.sem[sem.key] || []) + '</td>')
+                        .join('');
+                    const nameCell = ti === 0
+                        ? '<th class="xschool-name" rowspan="' + trs.length + '">' + sc.name + '</th>'
+                        : '';
+                    tbody += '<tr class="xschool-trow ' + colorCls + '">' + nameCell +
+                        '<th class="xschool-tracklabel">' + label + '</th>' + tds + '</tr>';
+                });
+            });
+
+            const table = '<table class="xschool-table"><thead><tr><th colspan="2">학교</th>' +
+                semHead + '</tr></thead><tbody>' + tbody + '</tbody></table>';
+
+            // 그래프 비교는 모든 교과에 적용
+            const showChart = true;
+            const chartHtml = showChart
+                ? '<div class="xschool-chart-tabs">' +
+                    '<label class="xschool-chart-select-label" for="xschool-chart-select">그래프 형태</label>' +
+                    '<select id="xschool-chart-select" class="xschool-chart-select" onchange="setXschoolChart(this.value)">' +
+                    XSCHOOL_CHART_MODES.map(m =>
+                        '<option value="' + m.key + '"' + (m.key === xschoolState.chart ? ' selected' : '') + '>' + m.label + '</option>'
+                    ).join('') +
+                    '</select>' +
+                  '</div><div id="xschool-chart-host"></div>'
+                : '';
+
+            xschoolDestroyCharts();
+            document.getElementById('compare-modal-body').innerHTML =
+                '<div class="xschool-subject-tabs">' + tabs + '</div>' +
+                '<div class="xschool-summary">' + summary + '</div>' +
+                '<div class="xschool-grid-wrap">' + table + '</div>' +
+                chartHtml;
+
+            if (showChart) renderXschoolChart();
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSchoolCompare();
         });
 
         function showPage(pageId) {
