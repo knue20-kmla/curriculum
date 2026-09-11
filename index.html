@@ -615,6 +615,11 @@
             border-color: rgba(163, 199, 152, 0.4);
         }
 
+        .subject-catalog-menu.catalog-tone-c {
+            background: #f6f1fb;
+            border-color: rgba(196, 181, 253, 0.5);
+        }
+
         .subject-catalog-title {
             display: block;
             font-weight: 700;
@@ -699,6 +704,9 @@
             color: var(--muted-color);
         }
 
+        .subject-modal-headtext { flex: 1; min-width: 0; }
+        .subject-modal-back { order: -1; }
+
         .subject-modal-close {
             border: 1px solid var(--border-color);
             background: #ffffff;
@@ -779,6 +787,8 @@
 
         .subject-track-tab {
             flex: 0 0 auto;
+            min-width: 84px;
+            text-align: center;
             border: 1px solid rgba(191, 219, 254, 0.95);
             background: #ffffff;
             color: #334155;
@@ -887,6 +897,8 @@
 
         .xschool-subject-tab {
             flex: 0 0 auto;
+            min-width: 84px;
+            text-align: center;
             border: 1px solid rgba(191, 219, 254, 0.95);
             background: #ffffff;
             color: #334155;
@@ -903,6 +915,7 @@
             border-color: #1d4ed8;
             color: #ffffff;
         }
+        .xschool-subject-tab em { font-style: normal; opacity: 0.75; margin-left: 2px; }
 
         .xschool-summary {
             display: grid;
@@ -998,6 +1011,16 @@
             white-space: nowrap;
         }
 
+        .pw-table .xschool-name { width: 84px; font-size: 0.78rem; }
+        .pw-table td { text-align: center; vertical-align: top; }
+        .pw-table .pw-empty { color: #cbd5e1; text-align: center; vertical-align: middle; }
+        .pw-table .qc-chip { white-space: nowrap; }
+        .pw-chip-list {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
         /* 트랙(과정)별 행 배경/라벨 색 */
         .xschool-trow.t1 td { background: #eaeef9; }
         .xschool-trow.t1 .xschool-tracklabel { background: #dbe4f7; color: #1d4ed8; }
@@ -1009,17 +1032,23 @@
         .xschool-trow.t4 .xschool-tracklabel { background: #d0ebe0; color: #047857; }
 
         .xschool-table .lvl {
-            display: block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
             margin: 2px 0;
-            padding: 3px 6px;
-            border-radius: 6px;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-left: 3px solid #94a3b8;
+            padding: 4px 7px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #3730a3;
+            border: none;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(99, 102, 241, 0.18);
+            font-weight: 700;
             word-break: keep-all;
         }
-        .xschool-table .lvl.adv { border-left-color: #ef4444; }
-        .xschool-table .lvl.mid { border-left-color: #f59e0b; }
+        .xschool-table .lvl.mid { background: #fef3c7; color: #92400e; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(245, 158, 11, 0.28); }
+        .xschool-table .lvl.adv { background: #fee2e2; color: #991b1b; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(239, 68, 68, 0.3); }
 
         .xschool-cellcount {
             display: block;
@@ -1146,29 +1175,142 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            padding: 14px 8px;
+            padding: 16px 8px 14px;
             border-radius: 14px;
-            border: 1px solid rgba(191, 219, 254, 0.95);
-            background: #ffffff;
-            color: #1e3a8a;
+            border: none;
+            background: linear-gradient(155deg, #3b82f6, #4338ca);
+            color: #ffffff;
             font-weight: 700;
             font-size: 0.82rem;
             line-height: 1.35;
             text-align: center;
             cursor: pointer;
+            position: relative;
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.32);
             transition: transform 0.15s, box-shadow 0.15s;
+            animation: info-launch-pulse 2.2s ease-in-out infinite;
+        }
+        .info-launch-btn:nth-child(2) { animation-delay: 0.25s; }
+        .info-launch-btn:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes info-launch-pulse {
+            0%, 100% { box-shadow: 0 8px 18px rgba(37, 99, 235, 0.32); }
+            50% { box-shadow: 0 10px 26px rgba(37, 99, 235, 0.55); }
+        }
+
+        .info-launch-btn::after {
+            content: '눌러보기 ›';
+            display: inline-block;
+            margin-top: 2px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.22);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.01em;
         }
 
         .info-launch-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.12);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+            animation-play-state: paused;
+        }
+        .info-launch-btn:active { transform: translateY(0) scale(0.97); }
+
+        .info-launch-icon { font-size: 1.6rem; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.18)); }
+
+        .qc-btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .qc-btn {
+            border: 1px solid rgba(147, 197, 253, 0.6);
+            background: #ffffff;
+            color: #1d4ed8;
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .qc-btn:hover { background: #eff6ff; }
+
+        .qc-group { margin-bottom: 18px; }
+        .qc-group:last-child { margin-bottom: 0; }
+        .qc-group h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 8px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #1e3a8a;
+        }
+        .qc-group h4 em {
+            font-style: normal;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.1);
+            color: #1d4ed8;
+        }
+        .qc-chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .qc-chip {
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 700;
         }
 
-        .info-launch-icon { font-size: 1.5rem; }
+        /* 과목명 칩 다색 팔레트 (교과 영역 라벨은 아래에서 통일) */
+        .qc-c0  { background: #fecaca; color: #7f1d1d; }
+        .qc-c1  { background: #fed7aa; color: #7c2d12; }
+        .qc-c2  { background: #fde68a; color: #78350f; }
+        .qc-c3  { background: #bbf7d0; color: #14532d; }
+        .qc-c4  { background: #99f6e4; color: #134e4a; }
+        .qc-c5  { background: #a5f3fc; color: #164e63; }
+        .qc-c6  { background: #bfdbfe; color: #1e3a8a; }
+        .qc-c7  { background: #c7d2fe; color: #3730a3; }
+        .qc-c8  { background: #ddd6fe; color: #4c1d95; }
+        .qc-c9  { background: #f5d0fe; color: #701a75; }
+        .qc-c10 { background: #fbcfe8; color: #831843; }
+        .qc-c11 { background: #e2e8f0; color: #334155; }
+
+        .qc-table { min-width: 0; }
+        .qc-row-head {
+            white-space: nowrap;
+            text-align: center;
+            font-weight: 800;
+            padding: 12px 16px;
+            vertical-align: middle;
+            color: #0f172a;
+        }
+        .qc-row-head em {
+            display: block;
+            font-style: normal;
+            font-size: 0.68rem;
+            font-weight: 700;
+            opacity: 0.75;
+            margin-top: 2px;
+        }
+
+        /* 교과 영역별 행 배경색 (라벨 칸과 과목 칸 모두 동일하게, 표 안에서 구간 구분) */
+        .qc-row-kor   th.qc-row-head, .qc-row-kor   td.qc-row-cell { background: #fff1f2; }
+        .qc-row-eng   th.qc-row-head, .qc-row-eng   td.qc-row-cell { background: #eff6ff; }
+        .qc-row-math  th.qc-row-head, .qc-row-math  td.qc-row-cell { background: #f0fdf4; }
+        .qc-row-soc   th.qc-row-head, .qc-row-soc   td.qc-row-cell { background: #fffbeb; }
+        .qc-row-sci   th.qc-row-head, .qc-row-sci   td.qc-row-cell { background: #f5f3ff; }
+        .qc-row-lang2 th.qc-row-head, .qc-row-lang2 td.qc-row-cell { background: #fdf2f8; }
+        .qc-row-cs    th.qc-row-head, .qc-row-cs    td.qc-row-cell { background: #ecfeff; }
+        .qc-row-etc   th.qc-row-head, .qc-row-etc   td.qc-row-cell { background: #f8fafc; }
+        .qc-row-cell { vertical-align: middle; }
 
         @media (max-width: 520px) {
             .info-launch-grid { grid-template-columns: 1fr; }
             .info-launch-btn { flex-direction: row; justify-content: flex-start; text-align: left; }
+            .info-launch-btn::after { margin: 0 0 0 auto; }
         }
 
         .info-section { margin-bottom: 22px; }
@@ -1227,8 +1369,15 @@
             column-gap: 12px;
             align-items: start;
             margin-bottom: 10px;
+            cursor: pointer;
         }
         .info-ladder-step:last-child { margin-bottom: 0; }
+        .info-ladder-step:hover .info-ladder-body,
+        .info-ladder-step:focus-visible .info-ladder-body {
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+            transform: translateY(-1px);
+        }
+        .info-ladder-body { transition: box-shadow 0.15s, transform 0.15s; }
 
         .info-ladder-num {
             justify-self: center;
@@ -2921,6 +3070,475 @@
             color: var(--muted-color);
             line-height: 1.55;
         }
+
+        /* ===== 교과 계열화 비교 ===== */
+        .seq-legend {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: -4px 0 14px;
+        }
+        .seq-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .seq-legend-item .seq-chip {
+            flex: 0 0 auto;
+            white-space: nowrap;
+            padding: 2px 8px;
+            font-size: 0.66rem;
+        }
+        .seq-legend-copy-text {
+            font-size: 0.68rem;
+            color: var(--muted-color);
+        }
+        .seq-legend-highlight { color: #1d4ed8; font-weight: 800; }
+        .seq-legend-highlight-alt { color: #ea580c; font-weight: 800; }
+
+        .seq-ladder { position: relative; padding-left: 4px; margin-bottom: 16px; }
+        .seq-ladder:last-child { margin-bottom: 0; }
+        .seq-ladder::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 16px;
+            bottom: 2px;
+            width: 3px;
+            border-radius: 3px;
+        }
+        .seq-ladder-common::before { background: #22c55e; }
+        .seq-ladder-track::before { background: linear-gradient(#3b82f6, #f59e0b, #ef4444); }
+        /* 공통(1)~전문교과Ⅱ(4)까지 하나의 선으로 끊김 없이 이어지는 버전 */
+        .seq-ladder-full::before {
+            background: linear-gradient(
+                #22c55e 0%, #22c55e 25%,
+                #3b82f6 25%, #3b82f6 50%,
+                #f59e0b 50%, #f59e0b 75%,
+                #ef4444 75%, #ef4444 100%
+            );
+        }
+
+        .seq-track-caption {
+            margin: 0 0 10px 4px;
+            font-size: 0.78rem;
+            color: var(--muted-color);
+        }
+
+        .seq-track-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            margin: 0 0 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .seq-track-tab {
+            flex: 0 0 auto;
+            min-width: 84px;
+            text-align: center;
+            border: 1px solid rgba(196, 181, 253, 0.6);
+            background: #ffffff;
+            color: #6d28d9;
+            padding: 7px 13px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .seq-track-tab em { font-style: normal; opacity: 0.7; }
+        .seq-track-tab.active {
+            background: #6d28d9;
+            border-color: #6d28d9;
+            color: #ffffff;
+        }
+
+        .seq-tier-row {
+            display: grid;
+            grid-template-columns: 34px 1fr;
+            column-gap: 12px;
+            margin-bottom: 16px;
+            border-radius: 14px;
+            transition: box-shadow 0.3s ease;
+        }
+        .seq-tier-row:last-child { margin-bottom: 0; }
+        .seq-tier-row.seq-highlight {
+            box-shadow: 0 0 0 3px #a78bfa, 0 8px 20px rgba(109, 40, 217, 0.18);
+            animation: seqFlash 1.8s ease;
+        }
+        @keyframes seqFlash {
+            0%, 100% { background: transparent; }
+            25% { background: rgba(167, 139, 250, 0.14); }
+        }
+
+        .seq-tier-num {
+            justify-self: center;
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 0 0 4px #ffffff;
+        }
+        .t1 .seq-tier-num { background: #22c55e; }
+        .t2 .seq-tier-num { background: #3b82f6; }
+        .t3 .seq-tier-num { background: #f59e0b; }
+        .t4 .seq-tier-num { background: #ef4444; }
+
+        .seq-tier-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 0.94rem;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        .seq-tier-title-badge {
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+        .t1 .seq-tier-title-badge { background: #dcfce7; color: #166534; }
+        .t2 .seq-tier-title-badge { background: #dbeafe; color: #1e40af; }
+        .t3 .seq-tier-title-badge { background: #fef3c7; color: #b45309; }
+        .t4 .seq-tier-title-badge { background: #fee2e2; color: #b91c1c; }
+
+        .seq-tier-count {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .seq-chip-list { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .seq-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: #ffffff;
+            border: 1px solid transparent;
+        }
+        .seq-chip.t1 { color: #166534; border-color: #bbf7d0; }
+        .seq-chip.t2 { color: #1e40af; border-color: #bfdbfe; }
+        .seq-chip.t3 { color: #b45309; border-color: #fde68a; }
+        .seq-chip.t4 { color: #b91c1c; border-color: #fecaca; }
+        .seq-chip.seq-chip-exclusive { font-weight: 800; border-color: transparent; }
+        .seq-chip.seq-chip-exclusive.t1 { background: #dcfce7; }
+        .seq-chip.seq-chip-exclusive.t2 { background: #dbeafe; }
+        .seq-chip.seq-chip-exclusive.t3 { background: #fef3c7; }
+        .seq-chip.seq-chip-exclusive.t4 { background: #fee2e2; }
+        .seq-star { color: #6d28d9; font-weight: 900; }
+        .seq-none { font-size: 0.78rem; color: #94a3b8; }
+
+        /* ===== 키오스크 자동 프레젠테이션 ===== */
+        .pres-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            background: linear-gradient(160deg, #0b1220 0%, #1e3a8a 45%, #1d4ed8 100%);
+        }
+        .pres-overlay.open { display: flex; flex-direction: column; }
+
+        .pres-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5vh 5vw;
+            min-height: 0;
+        }
+
+        .pres-slide {
+            width: 100%;
+            max-width: 1000px;
+            /* max-height/overflow를 두지 않는다: 레이아웃 단계에서 내용이 잘리면
+               JS로 계산한 --fit-scale 축소가 적용되기 전에 이미 잘려버리기 때문.
+               대신 el을 자연 높이 그대로 두고 전체를 transform: scale로 축소한다. */
+            background: rgba(255, 255, 255, 0.98);
+            color: #0f172a;
+            border-radius: 28px;
+            padding: 40px 44px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            transform: scale(var(--fit-scale, 1)) translateY(14px);
+            transform-origin: center center;
+        }
+        .pres-slide.pres-in {
+            opacity: 1;
+            transform: scale(var(--fit-scale, 1)) translateY(0);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        /* 일시정지 / 종료 컨트롤 */
+        .pres-overlay.paused .pres-pause-badge { display: flex; }
+        .pres-pause-badge {
+            display: none;
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 410;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.72);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+        .pres-exit-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 410;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.55);
+            color: #fff;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+        }
+        .pres-exit-btn:active { background: rgba(15, 23, 42, 0.8); }
+        .pres-speed-ctrl {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 410;
+            display: flex;
+            gap: 3px;
+            padding: 4px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.55);
+        }
+        .pres-speed-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.75);
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+        .pres-speed-btn.active { background: #ffffff; color: #1d4ed8; }
+        .pres-tap-hint {
+            display: inline-block;
+            text-align: center;
+            color: #ffffff;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 7px 16px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            margin-top: 12px;
+            pointer-events: none;
+        }
+        @media (max-width: 480px) {
+            .pres-tap-hint { font-size: 0.72rem; padding: 6px 12px; }
+        }
+
+        .pres-eyebrow {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #1d4ed8;
+            font-weight: 800;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+        .pres-title { font-size: 2.1rem; font-weight: 800; margin: 4px 0 8px; color: #0f172a; }
+        .pres-sub { font-size: 1.1rem; color: #475569; margin: 0 0 22px; }
+
+        /* 교과 계열화 슬라이드: "교과 계열화" 배지 옆에 과목/계열명을 버튼 형태로 붙여서 표시,
+           오른쪽에는 팝업과 동일한 범례("과목명* 민사고 심화·전문 과목" 등)를 배치 */
+        .pres-seq-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            margin-bottom: 18px;
+        }
+        .pres-seq-header-left {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .pres-seq-header .pres-eyebrow { margin-bottom: 0; }
+        .pres-seq-header .seq-legend { margin: 0; justify-content: flex-end; }
+        .pres-seq-name {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 20px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: -0.005em;
+            box-shadow: 0 8px 18px rgba(29, 78, 216, 0.32);
+        }
+
+        .pres-hero { text-align: center; padding: 50px 10px; }
+        .pres-hero-logo { width: 84px; height: 84px; object-fit: contain; margin-bottom: 20px; }
+        .pres-hero h1 { font-size: 2.6rem; font-weight: 800; margin: 0 0 14px; color: #0f172a; }
+        .pres-hero p { font-size: 1.25rem; color: #475569; margin: 0; }
+
+        /* 인트로 슬라이드 확대 연출 */
+        .pres-hero-intro {
+            padding: 30px 10px 40px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .pres-hero-logo-wrap {
+            display: flex; align-items: center; justify-content: center;
+            width: 200px; height: 200px; margin: 0 auto 22px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #eef2ff 55%, rgba(238, 242, 255, 0) 100%);
+        }
+        .pres-hero-logo-big {
+            display: block; margin: 0 auto;
+            width: 168px; height: 168px; object-fit: contain;
+            filter: drop-shadow(0 18px 34px rgba(29, 78, 216, 0.35));
+        }
+        .pres-hero-badge {
+            display: inline-block; padding: 8px 20px; margin-bottom: 18px;
+            border-radius: 999px; font-weight: 800; font-size: 1rem; letter-spacing: 0.02em;
+            background: linear-gradient(90deg, #1d4ed8, #7c3aed); color: #fff;
+            box-shadow: 0 10px 24px rgba(29, 78, 216, 0.3);
+        }
+        .pres-hero-title-big {
+            font-size: 4rem; font-weight: 900; margin: 0 0 16px; letter-spacing: -0.01em;
+            background: linear-gradient(90deg, #1e3a8a, #1d4ed8 45%, #7c3aed);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+
+        .pres-chart-box { position: relative; height: 46vh; min-height: 320px; }
+        .pres-chart-box.pres-chart-box-compact { height: 16vh; min-height: 110px; margin-top: 14px; }
+        .pres-title-count { font-size: 1.2rem; color: #1d4ed8; font-weight: 800; margin-left: 6px; }
+
+        /* 교육과정 특징 슬라이드 배너 */
+        .pres-strength-banner {
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 16px 22px; margin-bottom: 20px; border-radius: 18px;
+            background: linear-gradient(90deg, #1d4ed8, #4f46e5, #7c3aed); color: #fff;
+        }
+        .pres-strength-banner span { font-size: 0.95rem; opacity: 0.9; }
+        .pres-strength-banner strong { font-size: 1.15rem; font-weight: 800; }
+
+        /* 계열화 슬라이드 - 사회/과학 트랙별 소제목 */
+        .pres-subtrack { margin-top: 22px; }
+        .pres-subtrack:first-of-type { margin-top: 14px; }
+        .pres-subtrack-title {
+            font-size: 1.05rem; font-weight: 800; color: #1d4ed8; margin: 0 0 8px;
+            padding-left: 10px; border-left: 4px solid #1d4ed8;
+        }
+
+        /* 표가 많은 슬라이드는 넓게, 가로 스크롤 없이 한 화면에 표시 */
+        .pres-slide.pres-wide { max-width: min(96vw, 1360px); }
+        .pres-slide.pres-wide .xschool-grid-wrap { overflow-x: visible; }
+        .pres-slide.pres-wide .xschool-table,
+        .pres-slide.pres-wide .qc-table,
+        .pres-slide.pres-wide .pw-table { width: 100%; min-width: 0; table-layout: fixed; }
+        .pres-slide.pres-wide .xschool-table th,
+        .pres-slide.pres-wide .xschool-table td,
+        .pres-slide.pres-wide .qc-table th,
+        .pres-slide.pres-wide .qc-table td,
+        .pres-slide.pres-wide .pw-table th,
+        .pres-slide.pres-wide .pw-table td { min-width: 0; }
+        .pres-slide.pres-wide .xschool-tracklabel,
+        .pres-slide.pres-wide .xschool-name { white-space: normal; width: auto; }
+        .pres-slide.pres-wide .xschool-table .lvl { word-break: break-all; }
+        .pres-slide.pres-wide .qc-table th.qc-row-head { width: 92px; white-space: normal; }
+        .pres-slide.pres-wide .qc-chip-list,
+        .pres-slide.pres-wide .seq-chip-list { flex-direction: row; flex-wrap: wrap; white-space: normal; max-width: 100%; }
+        /* 진로별 교육과정: 과목은 기본 한 줄, 같은 학기에 여러 개면 줄바꿈해서 나열 */
+        .pres-slide.pres-wide .pw-chip-list { flex-direction: column; align-items: stretch; white-space: normal; max-width: 100%; }
+        .pres-slide.pres-wide .qc-chip,
+        .pres-slide.pres-wide .pw-table .qc-chip,
+        .pres-slide.pres-wide .seq-chip { white-space: normal; word-break: keep-all; overflow-wrap: anywhere; max-width: 100%; }
+        .pres-slide.pres-wide .pw-table .qc-chip { font-size: 0.72rem; padding: 4px 7px; }
+        .pres-slide.pres-wide .pw-table th.xschool-name,
+        .pres-slide.pres-wide .pw-table td { font-size: 0.72rem; padding: 5px 4px; }
+        .pres-slide.pres-wide .xschool-table thead th { position: static; }
+
+        .pres-footer {
+            padding: 16px 0 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .pres-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 92vw; }
+        .pres-dot {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pres-dot::before {
+            content: '';
+            display: block;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            transition: all 0.3s ease;
+        }
+        .pres-dot:hover::before { background: rgba(255, 255, 255, 0.65); }
+        .pres-dot.active::before { width: 22px; border-radius: 999px; background: #ffffff; }
+
+        /* 슬라이드 내부 컴포넌트 확대 (재사용된 info-* 요소용) */
+        .pres-slide .info-ladder-body { padding: 14px 16px; }
+        .pres-slide .info-ladder-head b { font-size: 1.02rem; }
+        .pres-slide .info-tier-line { font-size: 0.98rem; }
+        .pres-slide .info-tier-ex { font-size: 0.86rem; }
+        .pres-slide .info-path-sem { font-size: 1rem; }
+        .pres-slide .info-path-chip { font-size: 0.92rem; padding: 7px 13px; }
+        .pres-slide .info-stat strong { font-size: 2rem; }
+        .pres-slide .info-stat-label { font-size: 0.82rem; }
+        .pres-slide .info-feature span { font-size: 0.9rem; }
+        .pres-slide .info-feature b { font-size: 0.96rem; }
+
+        @media (max-width: 640px) {
+            .pres-slide { padding: 28px 22px; border-radius: 22px; }
+            .pres-title { font-size: 1.6rem; }
+            .pres-hero h1 { font-size: 1.9rem; }
+            .pres-hero p { font-size: 1.02rem; }
+            .pres-chart-box { height: 40vh; min-height: 260px; }
+        }
     </style>
 </head>
 <body>
@@ -2997,7 +3615,7 @@
 
                     <div class="info-launch">
                         <span class="info-launch-title">교육과정 자세히 보기</span>
-                        <p class="info-launch-caption">설명회에 오신 학생·학부모님을 위한 안내입니다. 궁금한 항목을 눌러보세요.</p>
+                        <p class="info-launch-caption">👆 아래 3개 버튼을 눌러보세요! 설명회에 오신 학생·학부모님을 위한 안내입니다.</p>
                         <div class="info-launch-grid">
                             <button type="button" class="info-launch-btn" onclick="openInfoModal('system')">
                                 <span class="info-launch-icon">🎓</span>
@@ -3089,6 +3707,17 @@
                             <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('역사')">역사</button>
                             <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('철학')">철학</button>
                             <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('심리학')">심리학</button>
+                        </div>
+                    </div>
+                    <div class="subject-catalog-menu catalog-tone-c">
+                        <span class="subject-catalog-title">교과목 계열화 비교</span>
+                        <p class="subject-catalog-caption">국어·영어·수학·사회·과학 과목을 공통→선택→전문Ⅰ→전문Ⅱ 순으로 수직 계열화하고, 일반고 편성과 나란히 비교합니다.</p>
+                        <div class="subject-catalog-grid">
+                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('국어')">국어</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('영어')">영어</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('수학')">수학</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('사회')">사회</button>
+                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('과학')">과학</button>
                         </div>
                     </div>
                     <div class="navigation">
@@ -3492,6 +4121,39 @@
                     </div>
                     <p class="display-mode-hint">발표자 모드: 글자·여백 확대, 관리자 버튼 숨김. 키오스크 모드: 위 효과 + 진행 내용 초기화 + 미조작 90초 후 자동으로 홈 복귀. 화면 좌하단 배지를 탭하면 언제든 종료할 수 있습니다.</p>
                 </div>
+            </div>
+        </div>
+
+        <!-- 교과목 계열화 비교 팝업 -->
+        <div id="seq-modal-overlay" class="subject-modal-overlay" onclick="closeSeqModal(event)">
+            <div class="subject-modal xschool-modal surface-card" role="dialog" aria-modal="true" aria-labelledby="seq-modal-title">
+                <div class="subject-modal-head">
+                    <button type="button" id="seq-modal-back" class="subject-modal-close subject-modal-back" style="display:none" onclick="seqGoBack()" aria-label="뒤로">←</button>
+                    <div class="subject-modal-headtext">
+                        <h3 id="seq-modal-title" class="subject-modal-title">교과 계열화 비교</h3>
+                        <p id="seq-modal-sub" class="subject-modal-sub">공통 → 선택 → 전문Ⅰ → 전문Ⅱ 순 수직 계열화</p>
+                    </div>
+                    <button type="button" class="subject-modal-close" onclick="closeSeqModal()" aria-label="닫기">✕</button>
+                </div>
+                <div id="seq-modal-body" class="subject-modal-body"></div>
+            </div>
+        </div>
+
+        <!-- 키오스크 자동 프레젠테이션 -->
+        <div id="presentation-overlay" class="pres-overlay">
+            <button type="button" class="pres-exit-btn" onclick="event.stopPropagation(); presExit();">■ 종료</button>
+            <div class="pres-speed-ctrl">
+                <button type="button" class="pres-speed-btn" data-speed="0.5" onclick="event.stopPropagation(); presSetSpeed(0.5);">0.5x</button>
+                <button type="button" class="pres-speed-btn active" data-speed="1" onclick="event.stopPropagation(); presSetSpeed(1);">1x</button>
+                <button type="button" class="pres-speed-btn" data-speed="1.5" onclick="event.stopPropagation(); presSetSpeed(1.5);">1.5x</button>
+            </div>
+            <div class="pres-pause-badge">⏸ 일시정지 · 탭하면 계속</div>
+            <div class="pres-body">
+                <div id="pres-slide" class="pres-slide"></div>
+            </div>
+            <div class="pres-footer">
+                <div id="pres-dots" class="pres-dots"></div>
+                <div class="pres-tap-hint">탭 1번: 일시정지/계속 · 빠르게 2번 탭: 종료</div>
             </div>
         </div>
 
@@ -5268,7 +5930,7 @@
                     '공통': ['통합과학', '과학탐구실험'],
                     '물리': ['물리', '역학', '전자기', '양자', 'Physics'],
                     '화학': ['화학', 'Chemistry', '탄소', '결정', '물질과 에너지'],
-                    '생명과학': ['생명', '생물', 'Biology', '세포', '유전', '대사', '생태', '생체모방'],
+                    '생명과학': ['생명', '생물', 'Biology', '세포', '유전', '물질대사', '생태', '생체모방'],
                     '지구과학': ['지구', '천문', '우주', '행성', '지질', '기후', '은하', '항성', '관측', '환경과학']
                 }
             },
@@ -5331,6 +5993,391 @@
             if (!cols) return '<p class="subject-empty">등록된 과목이 없습니다.</p>';
             return '<div class="subject-columns">' + cols + '</div>';
         }
+
+        /* ===== 교과 계열화 비교 (국어·영어·수학·사회·과학, 민사고 전용 과목 표시) ===== */
+        const SEQ_SUBJECTS = ['국어', '영어', '수학', '사회', '과학'];
+        const SEQ_TIER_DEFS = [
+            { key: 'common', level: '100공통', cls: 't1', label: '공통', num: '1' },
+            { key: 'basic', level: '200선택', cls: 't2', label: '선택', num: '2' },
+            { key: 'adv1', level: '300전문I', cls: 't3', label: '전문 교과 Ⅰ', num: '3' },
+            { key: 'adv2', level: '400전문II', cls: 't4', label: '전문 교과 Ⅱ', num: '4' }
+        ];
+
+        // 민족사관고가 자체 개발해 운영하는 전용(고시 외) 과목 — 표시 없는 나머지는
+        // 2022 개정 교육과정 고시 과목으로, 일반고에서도 개설 가능한 과목입니다.
+        const KMLA_EXCLUSIVE_COURSES = new Set([
+            // 국어
+            '고전문학의 감상과 비평', '현대 국어 문법의 이해', '고전의 향기', '현대 문학의 감상과 이해',
+            // 영어
+            'AP 영문학 I', 'AP 영문학 II', 'AP 영어학 I', 'AP 영어학 II', '미국 문학 I', '미국 문학 II',
+            '영어 대중 연설과 발표', '영어 토론 I', '영어 토론 II', '자서전 연구', '심화 영어 토론',
+            '창의적 영어 글쓰기와 독서', '문학에세이 쓰기', '세계 문학 I', '세계 문학 II', '영국 문학 I', '영국 문학 II',
+            '영어권 문학 I', '고급 영어 토론과 작문', '영어 비평적 읽기와 쓰기',
+            // 수학
+            'AP 미적분학 BC-I', 'AP 미적분학 BC-II', 'AP 미적분학 BC-III', '미분 방정식', '벡터 미적분학',
+            'AP 통계학 I', 'AP 통계학 II', '선형대수학', '응용수학탐구',
+            '고급 기하', '고급 대수', '고급 미적분', '이산 수학', '전문 수학',
+            // 사회
+            'AP 미국사 I', 'AP 미국사 II', 'AP 미국정치 I', 'AP 미국정치 II', 'AP 비교정치 I', 'AP 비교정치 II',
+            'AP 세계사 I', 'AP 세계사 II', 'AP 심리학 I', 'AP 심리학 II', 'AP 유럽사 I', 'AP 유럽사 II',
+            'U.S. History', '경제학고전강독', '고고학', '다산 연구', '사회과학 방법론', '서양철학 개론',
+            '국제 관계와 국제기구', '국제 관계의 이해', '국제 정치', '국제법',
+            '역사연구 방법', '임진왜란 연구', '중급 미시경제학', '긍정 심리학', '성격과 자기 이해',
+            'AP 미시경제', 'AP 거시경제', '서양근대철학의 이해', '서양현대철학의 이해', '현대사회와 철학',
+            // 과학
+            'AP 물리학 C: 역학', 'AP 물리학 C: 전자기학', 'AP 물리학 I', 'AP 물리학 II', 'AP 생물학 I', 'AP 생물학 II',
+            'AP 화학 I', 'AP 화학 II', 'AP 환경과학', 'Biology I', 'Chemistry I', 'Physics I', '관측 천문학',
+            '분자생물학의 이해', '빛과 화학', '생명의 화학', '세포생물학의 이해', '첨단 기기와 화학',
+            '탄소의 화학 기초', '탄소의 화학 심화', '해석역학 I', '해석역학 II', '현대 물리학 I', '현대 물리학 II',
+            '결정의 화학', '중급 화학 실험', '기초 생태학', '생명과학세미나', '생체모방공학', '일반화학 I', '일반화학 II',
+            '지질학 및 실험', '항성 천문학', '은하와 우주론', '컴퓨터로 과학하기', '과학철학입문', '시뮬레이션 화학', '화학 세미나'
+        ]);
+
+        function seqKmlaTierCourses(subject) {
+            const list = SUBJECT_CATALOG[subject] || [];
+            const out = {};
+            SEQ_TIER_DEFS.forEach(t => {
+                out[t.key] = list
+                    .filter(s => s.level === t.level)
+                    .map(s => s.name)
+                    .sort((a, b) => a.localeCompare(b, 'ko'));
+            });
+            return out;
+        }
+
+        // 과학·사회는 세부 영역별로 나눠 위계를 보여줌 (공통 과목은 영역 구분 없이 공용)
+        const SEQ_TRACK_CONFIG = {
+            '과학': {
+                order: ['물리', '화학', '생명과학', '지구과학'],
+                match: {
+                    '물리': ['물리', '역학', '전자기', '양자', 'Physics'],
+                    '화학': ['화학', 'Chemistry', '탄소', '결정', '물질과 에너지'],
+                    '생명과학': ['생명', '생물', 'Biology', '세포', '유전', '물질대사', '생태', '생체모방'],
+                    '지구과학': ['지구', '천문', '우주', '행성', '지질', '기후', '은하', '항성', '관측', '환경과학']
+                }
+            },
+            '사회': {
+                order: ['정치사회', '경제', '역사', '철학', '심리학'],
+                match: {
+                    '경제': ['경제', '금융', '미시', '거시'],
+                    '역사': ['역사', '한국사', '세계사', '미국사', '유럽사', '임진왜란', '고고학', '다산', 'History'],
+                    '심리학': ['심리', '성격과 자기'],
+                    '철학': ['철학', '윤리', '사상']
+                }
+            }
+        };
+
+        function seqClassifyTrack(subject, name) {
+            const cfg = SEQ_TRACK_CONFIG[subject];
+            if (!cfg) return null;
+            for (const track of cfg.order) {
+                const kws = cfg.match[track];
+                if (kws && kws.some(k => name.includes(k))) return track;
+            }
+            // 매칭되는 세부 키워드가 없으면 각 교과의 기본(포괄) 영역으로 분류
+            return subject === '사회' ? '정치사회' : '기타';
+        }
+
+        // 과학·사회의 세부 영역(트랙)별 · 위계별 과목 분류 (공통 제외)
+        function seqTrackTierCourses(subject) {
+            const cfg = SEQ_TRACK_CONFIG[subject];
+            if (!cfg) return null;
+            const tracks = cfg.order.concat(subject === '과학' ? ['기타'] : []);
+            const out = {};
+            tracks.forEach(tr => { out[tr] = { basic: [], adv1: [], adv2: [] }; });
+            (SUBJECT_CATALOG[subject] || []).forEach(s => {
+                const tierDef = SEQ_TIER_DEFS.find(t => t.level === s.level);
+                if (!tierDef || tierDef.key === 'common') return;
+                const track = seqClassifyTrack(subject, s.name);
+                if (!out[track]) out[track] = { basic: [], adv1: [], adv2: [] };
+                out[track][tierDef.key].push(s.name);
+            });
+            Object.values(out).forEach(byTier => {
+                Object.keys(byTier).forEach(k => byTier[k].sort((a, b) => a.localeCompare(b, 'ko')));
+            });
+            return out;
+        }
+
+        let seqState = { subject: SEQ_SUBJECTS[0], track: null };
+
+        // 팝업 간 "뒤로가기" — 다른 팝업에서 이 팝업(seq-modal)을 열 때 돌아갈 곳을 지정
+        let _seqBackHandler = null;
+        function updateSeqBackButton() {
+            const btn = document.getElementById('seq-modal-back');
+            if (btn) btn.style.display = _seqBackHandler ? 'inline-flex' : 'none';
+        }
+        function seqGoBack() {
+            const fn = _seqBackHandler;
+            _seqBackHandler = null;
+            closeSeqModal();
+            if (fn) fn();
+        }
+
+        function openSeqModal(subject, opts) {
+            opts = opts || {};
+            seqState.subject = SEQ_SUBJECTS.includes(subject) ? subject : SEQ_SUBJECTS[0];
+            seqState.track = null;
+            _seqBackHandler = opts.backTo || null;
+            renderSeqModal();
+            updateSeqBackButton();
+            document.getElementById('seq-modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSeqModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('seq-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+            _seqBackHandler = null;
+        }
+        function selectSeqSubject(subject) {
+            seqState.subject = subject;
+            seqState.track = null;
+            renderSeqModal();
+        }
+        function selectSeqTrack(track) {
+            seqState.track = track;
+            renderSeqModal();
+        }
+
+        // 홈 화면의 '고교학점제와 과목 위계 이해하기' 팝업에서 위계 카드를 누르면 실제 과목 구조로 이동
+        // (어느 카드를 누르든 동일하게 전체 계열화 화면을 보여줌) — 뒤로가기로 다시 그 팝업으로 복귀 가능
+        function openSeqFromInfo() {
+            closeInfoModal();
+            openSeqModal('국어', { backTo: () => openInfoModal('system') });
+        }
+
+        // AP / 전문 교과 Ⅰ·Ⅱ / R&E 과목을 교과 구분 없이 한눈에 모아보기
+        const QUICK_CATEGORIES = {
+            ap: {
+                title: 'AP 과목',
+                sub: '국어·영어·수학·사회·과학·정보 전체에서 개설되는 AP(대학과목 선이수) 과목입니다.',
+                test: (name) => /^AP(\s|-)/.test(name)
+            },
+            adv1: {
+                title: '전문 교과 Ⅰ 과목',
+                sub: '2022 개정 교육과정 기준, 모든 교과의 전문 교과 Ⅰ(300전문I) 과목입니다.',
+                level: '300전문I'
+            },
+            adv2: {
+                title: '전문 교과 Ⅱ 과목',
+                sub: '2022 개정 교육과정 기준, 모든 교과의 전문 교과 Ⅱ(400전문II) 과목입니다.',
+                level: '400전문II'
+            },
+            re: {
+                title: 'R&E · 탐구 프로젝트 과목',
+                sub: '교수·전문가의 지도 아래 진행하는 연구·탐구 중심 프로젝트형 과목입니다.',
+                fixed: ['창의융합 과제연구', '주제 탐구(R&E) 기초', '주제 탐구(R&E) 심화', '탐구 프로젝트(R&E)Ⅰ', '탐구 프로젝트(R&E)Ⅱ']
+            }
+        };
+        const QUICK_CATEGORY_ORDER = ['국어', '영어', '수학', '사회', '과학', '제2외국어', '정보', '교양'];
+        // 과목 칩에 순환 적용할 다색 팔레트 (교과 영역 라벨은 통일, 과목명 칩만 다양한 색으로 구분)
+        const QC_CHIP_PALETTE_SIZE = 12;
+        // 행(교과 영역) 배경색 — 표 안에서 영역별 구간이 옅은 색으로 구분되도록
+        const QC_AREA_STYLE = {
+            '국어': 'kor', '영어': 'eng', '수학': 'math', '사회': 'soc',
+            '과학': 'sci', '제2외국어': 'lang2', '정보': 'cs', '교양': 'etc'
+        };
+        // 사회·과학은 섞어서 나열하지 않고 세부 영역별로 가로 행을 나눔
+        const QC_TRACK_CONFIG = {
+            '과학': {
+                order: ['물리', '화학', '생명과학', '지구과학'],
+                match: {
+                    '물리': ['물리', '역학', '전자기', '양자', 'Physics'],
+                    '화학': ['화학', 'Chemistry', '탄소', '결정', '물질과 에너지'],
+                    '생명과학': ['생명', '생물', 'Biology', '세포', '유전', '물질대사', '생태', '생체모방'],
+                    '지구과학': ['지구', '천문', '우주', '행성', '지질', '기후', '은하', '항성', '관측', '환경과학']
+                },
+                fallback: '지구과학'
+            },
+            '사회': {
+                order: ['정치사회', '지리', '철학', '역사', '심리학'],
+                match: {
+                    '지리': ['지리', '도시'],
+                    '철학': ['철학', '윤리', '사상'],
+                    '역사': ['역사', '한국사', '세계사', '미국사', '유럽사', '임진왜란', '고고학', '다산', 'History'],
+                    '심리학': ['심리', '성격과 자기']
+                },
+                fallback: '정치사회'
+            }
+        };
+        function qcClassifyTrack(subject, name) {
+            const cfg = QC_TRACK_CONFIG[subject];
+            if (!cfg) return null;
+            for (const track of cfg.order) {
+                const kws = cfg.match[track];
+                if (kws && kws.some(k => name.includes(k))) return track;
+            }
+            return cfg.fallback;
+        }
+
+        function qcCollect(kind) {
+            const cfg = QUICK_CATEGORIES[kind];
+            const groups = {};
+            Object.keys(SUBJECT_CATALOG).forEach(cat => {
+                (SUBJECT_CATALOG[cat] || []).forEach(s => {
+                    let match = false;
+                    if (cfg.fixed) match = cfg.fixed.includes(s.name);
+                    else if (cfg.level) match = s.level === cfg.level;
+                    else if (cfg.test) match = cfg.test(s.name);
+                    if (match) (groups[cat] = groups[cat] || []).push(s);
+                });
+            });
+            return groups;
+        }
+
+        function openQuickCategory(kind) {
+            if (!QUICK_CATEGORIES[kind]) return;
+            closeInfoModal();
+            renderQuickCategory(kind);
+            _seqBackHandler = () => openInfoModal('system');
+            updateSeqBackButton();
+            document.getElementById('seq-modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // AP/전문교과/R&E 표 HTML — 팝업과 프레젠테이션이 함께 재사용
+        function buildQcTableHTML(kind) {
+            const groups = qcCollect(kind);
+            const cats = QUICK_CATEGORY_ORDER.filter(c => groups[c] && groups[c].length);
+            const total = cats.reduce((n, c) => n + groups[c].length, 0);
+
+            let chipIndex = 0;
+            const rowHtml = (label, areaCls, list) => {
+                const chips = list.map(s => {
+                    const cls = 'qc-c' + (chipIndex % QC_CHIP_PALETTE_SIZE);
+                    chipIndex++;
+                    return '<span class="qc-chip ' + cls + '">' + s.name + '</span>';
+                }).join('');
+                return '<tr class="' + areaCls + '">' +
+                    '<th class="qc-row-head">' + label + '</th>' +
+                    '<td class="qc-row-cell"><div class="qc-chip-list">' + chips + '</div></td>' +
+                '</tr>';
+            };
+
+            const rows = cats.map(c => {
+                const areaCls = 'qc-row-' + (QC_AREA_STYLE[c] || 'etc');
+                const trackCfg = QC_TRACK_CONFIG[c];
+                if (!trackCfg) {
+                    const list = groups[c].slice().sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+                    return rowHtml(c, areaCls, list);
+                }
+                const byTrack = {};
+                trackCfg.order.forEach(t => { byTrack[t] = []; });
+                groups[c].forEach(s => {
+                    const t = qcClassifyTrack(c, s.name) || trackCfg.fallback;
+                    (byTrack[t] = byTrack[t] || []).push(s);
+                });
+                return trackCfg.order
+                    .filter(t => byTrack[t] && byTrack[t].length)
+                    .map(t => rowHtml(t, areaCls, byTrack[t].slice().sort((a, b) => a.name.localeCompare(b.name, 'ko'))))
+                    .join('');
+            }).join('');
+
+            return {
+                total: total,
+                html: rows
+                    ? '<div class="xschool-grid-wrap"><table class="xschool-table qc-table"><tbody>' + rows + '</tbody></table></div>'
+                    : '<p class="seq-none">해당하는 과목이 없습니다.</p>'
+            };
+        }
+
+        function renderQuickCategory(kind) {
+            const cfg = QUICK_CATEGORIES[kind];
+            const built = buildQcTableHTML(kind);
+
+            document.getElementById('seq-modal-title').textContent = cfg.title + ' (' + built.total + '개)';
+            document.getElementById('seq-modal-sub').textContent = '교과 영역별 색으로 한 번에 보기';
+            document.getElementById('seq-modal-body').innerHTML =
+                '<p class="info-lead">' + cfg.sub + '</p>' +
+                built.html;
+        }
+
+        function seqChips(list, tierCls) {
+            if (!list.length) return '<span class="seq-none">개설 과목 없음</span>';
+            return list.map(n => {
+                const isExclusive = KMLA_EXCLUSIVE_COURSES.has(n);
+                return '<span class="seq-chip ' + tierCls + (isExclusive ? ' seq-chip-exclusive' : '') + '">' +
+                    n + (isExclusive ? '<span class="seq-star">*</span>' : '') +
+                '</span>';
+            }).join('');
+        }
+
+        function seqTierRow(t, kList, highlight) {
+            return '<div class="seq-tier-row ' + t.cls + (highlight ? ' seq-highlight' : '') + '">' +
+                '<span class="seq-tier-num">' + t.num + '</span>' +
+                '<div>' +
+                    '<div class="seq-tier-title">' + t.label + '</div>' +
+                    '<div class="seq-chip-list">' + seqChips(kList, t.cls) + '</div>' +
+                '</div>' +
+            '</div>';
+        }
+
+        // 범례("과목명* 민사고 개설 과목" / "과목명 민사고+일반고 개설 과목") — 팝업·프레젠테이션 공용
+        function seqLegendHTML() {
+            return '<div class="seq-legend">' +
+                    '<div class="seq-legend-item">' +
+                        '<span class="seq-chip t2 seq-chip-exclusive">과목명<span class="seq-star">*</span></span>' +
+                        '<span class="seq-legend-copy-text"><b class="seq-legend-highlight">민사고</b> 개설 과목</span>' +
+                    '</div>' +
+                    '<div class="seq-legend-item">' +
+                        '<span class="seq-chip t2">과목명</span>' +
+                        '<span class="seq-legend-copy-text"><b class="seq-legend-highlight">민사고</b>+<b class="seq-legend-highlight-alt">일반고</b> 개설 과목</span>' +
+                    '</div>' +
+                '</div>';
+        }
+
+        function renderSeqModal() {
+            const subject = seqState.subject;
+            const highlightTier = seqState.highlightTier;
+            seqState.highlightTier = null;
+            document.getElementById('seq-modal-title').textContent = subject + ' 교과 계열화';
+            document.getElementById('seq-modal-sub').textContent = '공통 → 선택 → 전문Ⅰ → 전문Ⅱ 순 수직 계열화';
+
+            const tabs = SEQ_SUBJECTS.map(s =>
+                '<button type="button" class="xschool-subject-tab' + (s === subject ? ' active' : '') +
+                '" onclick="selectSeqSubject(\'' + s + '\')">' + s + '</button>'
+            ).join('');
+
+            const legend = seqLegendHTML();
+
+            const kmla = seqKmlaTierCourses(subject);
+            const commonRow = seqTierRow(SEQ_TIER_DEFS[0], kmla.common, highlightTier === 'common');
+
+            const trackCfg = SEQ_TRACK_CONFIG[subject];
+            let body;
+            if (!trackCfg) {
+                const rows = SEQ_TIER_DEFS.slice(1).map(t =>
+                    seqTierRow(t, kmla[t.key], highlightTier === t.key)
+                ).join('');
+                body = '<div class="seq-ladder seq-ladder-full">' + commonRow + rows + '</div>';
+            } else {
+                const byTrack = seqTrackTierCourses(subject);
+                const tracks = Object.keys(byTrack).filter(tr =>
+                    byTrack[tr].basic.length || byTrack[tr].adv1.length || byTrack[tr].adv2.length
+                );
+                if (!seqState.track || !tracks.includes(seqState.track)) seqState.track = tracks[0];
+                const trackTabs = tracks.map(tr => {
+                    const cnt = byTrack[tr].basic.length + byTrack[tr].adv1.length + byTrack[tr].adv2.length;
+                    return '<button type="button" class="seq-track-tab' + (tr === seqState.track ? ' active' : '') +
+                        '" onclick="selectSeqTrack(\'' + tr + '\')">' + tr + ' <em>' + cnt + '</em></button>';
+                }).join('');
+                const cur = byTrack[seqState.track] || { basic: [], adv1: [], adv2: [] };
+                const rows = SEQ_TIER_DEFS.slice(1).map(t =>
+                    seqTierRow(t, cur[t.key], highlightTier === t.key)
+                ).join('');
+                body = '<div class="seq-ladder seq-ladder-common">' + commonRow + '</div>' +
+                    '<p class="seq-track-caption">위 공통 과목 이후, 세부 영역별로 선택·전문 과목이 나뉩니다.</p>' +
+                    '<div class="seq-track-tabs">' + trackTabs + '</div>' +
+                    '<div class="seq-ladder seq-ladder-track">' + rows + '</div>';
+            }
+
+            document.getElementById('seq-modal-body').innerHTML =
+                '<div class="xschool-subject-tabs">' + tabs + '</div>' + legend + body;
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSeqModal();
+        });
 
         function openSubjectCatalog(category) {
             const subjects = SUBJECT_CATALOG[category] || [];
@@ -5682,7 +6729,7 @@
             { ic: '🗂️', t: '넓은 선택의 폭', d: '일반고가 한 과목만 여는 자리에, 기초부터 대학 수준(AP·전문Ⅱ)까지 여러 단계를 함께 개설합니다.' },
             { ic: '📈', t: '학년이 오를수록 깊어지는 설계', d: '2·3학년에는 대학 1~2학년 수준 과목을 이수하며 전공 기초를 미리 다집니다.' },
             { ic: '🔬', t: '세부 전공까지 탐색', d: '과학은 물리·화학·생명·지구로, 사회는 정치·경제·역사·철학·심리로 나뉘어 진로를 구체적으로 준비합니다.' },
-            { ic: '🌍', t: '언어 역량', d: '프랑스어·스페인어·중국어·한문을 심화 단계까지 운영합니다.' }
+            { ic: '🌍', t: '언어 역량', d: '영어 이외에 제2외국어(스페인어, 프랑스어, 중국어, 한문)를 심화 단계까지 운영합니다.' }
         ];
         const INFO_STAT_META = [
             { key: 'total', ic: '📚', label: '전체 개설 과목', hi: true },
@@ -5703,49 +6750,49 @@
                 '1-1': ['생명과학', '화학', '프로그래밍 기초'],
                 '1-2': ['세포와 물질대사(AP 생물학 1)', '물질과 에너지(AP 화학 1)', '컴퓨터 시스템 일반'],
                 '2-1': ['대수', '미적분I', '생물의 유전(AP 생물학 2)', '화학 반응의 세계(AP 화학 2)', 'Physics I', 'AP 심리학 I'],
-                '2-2': ['미적분II', '선형대수학', '세포생물학의 이해', '탄소의 화학 기초', 'AP 물리학 I'],
-                '3-1': ['확률과 통계', '벡터 미적분학', '분자생물학의 이해', '탄소의 화학 심화', '생명과학 실험'],
+                '2-2': ['미적분II', '선형대수학', '세포생물학의 이해', '탄소의 화학 기초', 'AP 물리학 I', 'AP 심리학 II'],
+                '3-1': ['확률과 통계', '벡터 미적분학', '분자생물학의 이해', '탄소의 화학 심화', '생명과학 실험', 'AP 물리학 II', '긍정 심리학'],
                 '3-2': ['미분 방정식', '생명과학세미나', '화학 세미나', '고급 생명과학']
             }},
             { key: '공학 / 물리', ic: '⚙️', desc: '물리·수학 중심, 공학·자연과학 계열', sem: {
                 '1-1': ['물리학', '화학', '프로그래밍 기초'],
-                '1-2': ['AP 물리학 I', 'AP 화학 I', '컴퓨터 시스템 일반'],
-                '2-1': ['대수', '미적분I', 'AP 물리학 II', '역학과 에너지', '데이터 과학'],
-                '2-2': ['AP 물리학 C: 전자기학', '미적분II', '선형대수학', '전자기와 양자', 'AP 통계학 I'],
-                '3-1': ['해석역학 I', '확률과 통계', '벡터 미적분학', '현대 물리학 I', 'AP 컴퓨터과학 A'],
-                '3-2': ['해석역학 II', '미분 방정식', '이산 수학', '현대 물리학 II', '인공지능 수학']
+                '1-2': ['AP 화학 I', '컴퓨터 시스템 일반', 'AP 물리학1', 'AP 물리학2'],
+                '2-1': ['대수', '미적분I', '프로그래밍', 'AP 화학 II'],
+                '2-2': ['AP 물리학 C: 전자기학', '미적분II', '선형대수학', 'AP 컴퓨터과학 A', '탄소의 화학 기초(유기화학1)'],
+                '3-1': ['해석역학 I(현대 물리학 1)', '확률과 통계', '벡터 미적분학', '데이터 과학', '탄소의 화학 심화(유기화학2)'],
+                '3-2': ['해석역학 II(현대 물리학 2)', '미분 방정식', '이산 수학']
             }},
             { key: '컴퓨터과학 / AI', ic: '💻', desc: '수학·정보 중심, 컴퓨터·AI 계열', sem: {
-                '1-1': ['프로그래밍기초', '물리학'],
-                '1-2': ['컴퓨터 시스템 일반', '인공지능 기초'],
-                '2-1': ['대수', '미적분I', '데이터 과학', '프로그래밍'],
-                '2-2': ['미적분II', '확률과 통계', '인공지능 수학', 'AP 컴퓨터과학 A'],
-                '3-1': ['이산 수학', '선형대수학', '머신러닝', '수학과 인공지능'],
-                '3-2': ['벡터 미적분학', '인공지능과 미래사회', 'AP 미적분학 BC-III']
+                '1-1': ['프로그래밍기초', 'Physics I'],
+                '1-2': ['컴퓨터 시스템 일반', 'AP 물리학 I'],
+                '2-1': ['대수', '미적분I', '데이터 과학', '프로그래밍', 'AP 물리학 II'],
+                '2-2': ['미적분II', 'AP 컴퓨터과학 A', '선형대수학', 'AP 물리학 C: 역학'],
+                '3-1': ['머신러닝', '확률과 통계', '벡터 미적분학', 'AP 물리학 C: 전자기학'],
+                '3-2': ['인공지능과 미래사회', '인공지능 수학', '이산 수학', '미분 방정식']
             }},
             { key: '경제 / 경영', ic: '📈', desc: '수학·경제 중심, 상경 계열', sem: {
-                '1-1': ['경제', '프로그래밍 기초'],
-                '1-2': ['AP 미시경제', 'AP 통계학 I', '컴퓨터 시스템 일반'],
-                '2-1': ['대수', '미적분I', 'AP 거시경제', '경제 수학', '데이터 과학'],
-                '2-2': ['미적분II', 'AP 통계학 II', '중급 미시경제학', '실용 통계', '프로그래밍'],
-                '3-1': ['확률과 통계', '경제학고전강독', '금융과 경제생활', 'AP 컴퓨터과학 A'],
+                '1-1': ['경제', '프로그래밍 기초', '사회와 문화'],
+                '1-2': ['AP 미시경제', '컴퓨터 시스템 일반', '법과 사회'],
+                '2-1': ['대수', '미적분I', 'AP 거시경제', '데이터 과학'],
+                '2-2': ['미적분II', '중급 미시경제학', '프로그래밍'],
+                '3-1': ['확률과 통계', '경제학고전강독', 'AP 컴퓨터과학 A'],
                 '3-2': ['선형대수학', '미분 방정식', '머신러닝', '사회문제 탐구']
             }},
             { key: '정치 / 국제', ic: '🌐', desc: '사회·국제·언어 중심, 정치외교·국제학 계열', sem: {
-                '1-1': ['정치', '세계시민과 지리'],
-                '1-2': ['국제 관계의 이해', '사회와 문화'],
-                '2-1': ['세계사', '법과 사회', 'AP 미국정치 I', '프랑스어 독해와 작문 I'],
-                '2-2': ['AP 미국정치 II', 'AP 비교정치 I', '국제 정치', '현대사회와 윤리'],
-                '3-1': ['사회과학 방법론', '국제법', 'AP 비교정치 II', '국제 관계와 국제기구'],
-                '3-2': ['역사로 탐구하는 현대 세계', '윤리문제 탐구', '심화 프랑스어']
+                '1-1': ['정치', '사회와 문화'],
+                '1-2': ['국제 관계의 이해', '법과 사회'],
+                '2-1': ['세계사', 'AP 미국정치 I', '프랑스어 독해와 작문 I', '서양철학 개론', '국제 정치'],
+                '2-2': ['AP 미국정치 II', 'AP 비교정치 I', '서양현대철학의 이해', '국제법', 'AP 미국사 I'],
+                '3-1': ['사회과학 방법론', 'AP 비교정치 II', '국제 관계와 국제기구', 'AP 미국사 II'],
+                '3-2': ['윤리문제 탐구', '심화 프랑스어']
             }},
             { key: '인문 / 철학', ic: '📚', desc: '국어·철학·역사 중심, 인문 계열', sem: {
-                '1-1': ['문학', '윤리와 사상'],
+                '1-1': ['문학', '윤리와 사상', '역사연구 방법'],
                 '1-2': ['현대사회와 윤리', '세계사'],
-                '2-1': ['주제 탐구 독서', '서양철학 개론', '한문 고전 읽기', '고전문학의 감상과 비평'],
-                '2-2': ['현대 국어 문법의 이해', '서양근대철학의 이해', '동아시아 역사 기행'],
-                '3-1': ['고전의 향기', '서양현대철학의 이해', '다산 연구', '인문학과 윤리'],
-                '3-2': ['현대 문학의 감상과 이해', '현대사회와 철학', '문학에세이 쓰기']
+                '2-1': ['주제 탐구 독서', '서양철학 개론', '한문 고전 읽기', '고전문학의 감상과 비평', '정치', 'AP 미국사 I', '사회와 문화'],
+                '2-2': ['현대 국어 문법의 이해', '서양근대철학의 이해', '국제 정치', 'AP 미국사 II', '법과 사회'],
+                '3-1': ['고전의 향기', '서양현대철학의 이해', '다산 연구', '사회과학 방법론', 'AP 유럽사 I'],
+                '3-2': ['현대 문학의 감상과 이해', '현대사회와 철학', '문학에세이 쓰기', 'AP 유럽사 II']
             }}
         ];
         const INFO_SEM_LABELS = { '1-1': '1학년 1학기', '1-2': '1학년 2학기', '2-1': '2학년 1학기', '2-2': '2학년 2학기', '3-1': '3학년 1학기', '3-2': '3학년 2학기' };
@@ -5776,11 +6823,11 @@
                         '민사고는 <b>30년 가까이</b> 이 방식으로 학생 한 명 한 명의 교육과정을 설계해 왔습니다.</p>' +
                     '</div>' +
                     '<section class="info-section">' +
-                        '<h4>과목의 4단계 위계 <span class="info-h4-sub">쉬운 것부터 대학 수준까지</span></h4>' +
+                        '<h4>과목의 4단계 위계 <span class="info-h4-sub">쉬운 것부터 대학 수준까지 · 눌러서 실제 과목 구조 보기</span></h4>' +
                         '<div class="info-ladder-cap start">가장 기초 · 전원 이수</div>' +
                         '<div class="info-ladder">' +
                         INFO_TIERS.map(t =>
-                            '<div class="info-ladder-step ' + t.cls + '">' +
+                            '<div class="info-ladder-step ' + t.cls + '" onclick="openSeqFromInfo()" role="button" tabindex="0">' +
                                 '<span class="info-ladder-num">' + t.step + '</span>' +
                                 '<div class="info-ladder-body">' +
                                     '<div class="info-ladder-head"><b>' + t.name + '</b><span class="info-ladder-tag">' + t.tag + '</span></div>' +
@@ -5790,6 +6837,15 @@
                             '</div>').join('') +
                         '</div>' +
                         '<div class="info-ladder-cap end">대학 1~2학년 수준 · 가장 심화</div>' +
+                    '</section>' +
+                    '<section class="info-section">' +
+                        '<h4>빠르게 모아보기 <span class="info-h4-sub">교과 구분 없이 과목 종류별로 한눈에</span></h4>' +
+                        '<div class="qc-btn-row">' +
+                            '<button type="button" class="qc-btn" onclick="openQuickCategory(\'ap\')">AP 과목</button>' +
+                            '<button type="button" class="qc-btn" onclick="openQuickCategory(\'adv1\')">전문 교과 Ⅰ 과목</button>' +
+                            '<button type="button" class="qc-btn" onclick="openQuickCategory(\'adv2\')">전문 교과 Ⅱ 과목</button>' +
+                            '<button type="button" class="qc-btn" onclick="openQuickCategory(\'re\')">R&E · 탐구 프로젝트</button>' +
+                        '</div>' +
                     '</section>' +
                     '<section class="info-section">' +
                         '<div class="info-glossary">' +
@@ -5840,7 +6896,7 @@
             }
 
             // pathways
-            titleEl.textContent = '진로별 교육과정 이수';
+            titleEl.textContent = '진로별 교육과정 이수(예시)';
             subEl.textContent = '진로에 맞춰 3년간 과목을 이렇게 이수합니다 (예시)';
             body.innerHTML =
                 '<p class="info-lead">대표 진로별로 학생이 어떤 과목을 골라 이수하는지 보여주는 <b>예시</b>입니다. 카드를 누르면 학기 흐름을 볼 수 있습니다. (실제 개설·시간표에 따라 달라질 수 있습니다.)</p>' +
@@ -5866,36 +6922,83 @@
             return 'basic';
         }
 
+        // 모델 이수경로 과목 → 교과 영역 분류
+        // 분류 우선순위(겹치는 키워드 판정용)와 화면 표시 순서를 분리
+        const PATHWAY_AREA_MATCH_ORDER = ['수학', '생명과학', '물리', '화학', '정보', '심리학', '철학', '역사', '정치', '경제', '사회문화'];
+        const PATHWAY_AREA_ORDER = ['수학', '경제', '생명과학', '물리', '화학', '정치', '사회문화', '정보', '철학', '역사', '심리학'];
+        const PATHWAY_AREA_MATCH = {
+            '물리': ['물리', '역학', '전자기', '양자', 'Physics'],
+            '화학': ['화학', 'Chemistry', '탄소'],
+            '생명과학': ['생명', '생물', 'Biology', '세포', '유전', '물질대사', '생태'],
+            '정보': ['프로그래밍', '컴퓨터', '정보', '데이터', '머신러닝', '인공지능'],
+            '수학': ['수학', '미적분', '기하', '통계', '대수', '벡터', '미분', '선형대수', '이산'],
+            '심리학': ['심리', '성격과 자기'],
+            '철학': ['철학', '윤리', '사상'],
+            '역사': ['역사', '세계사', '한국사', '미국사', '유럽사', '다산', '동아시아'],
+            '정치': ['정치', '국제 관계', '국제기구', '국제법'],
+            '경제': ['경제', '금융', '미시', '거시'],
+            '사회문화': ['사회', '문화', '지리', '법과 사회']
+        };
+        function pathwayArea(name) {
+            for (const area of PATHWAY_AREA_MATCH_ORDER) {
+                const kws = PATHWAY_AREA_MATCH[area];
+                if (kws && kws.some(k => name.includes(k))) return area;
+            }
+            return '기타';
+        }
+
+        // 교과 영역 → 행 배경색 (빠르게 모아보기의 qc-row-* 팔레트 재사용)
+        const PATHWAY_AREA_STYLE = {
+            '수학': 'math', '경제': 'lang2', '생명과학': 'sci', '물리': 'sci', '화학': 'sci',
+            '정치': 'eng', '사회문화': 'soc', '정보': 'cs', '철학': 'lang2',
+            '역사': 'kor', '심리학': 'etc'
+        };
+
+        // 진로 이수 표(교과 영역 × 학기) HTML — 팝업과 키오스크 프레젠테이션이 함께 재사용
+        function buildPathwayTableHTML(p) {
+            const semKeys = Object.keys(INFO_SEM_LABELS);
+            const areaMap = {};
+            semKeys.forEach(k => {
+                (p.sem[k] || []).forEach(c => {
+                    const area = pathwayArea(c);
+                    areaMap[area] = areaMap[area] || {};
+                    (areaMap[area][k] = areaMap[area][k] || []).push(c);
+                });
+            });
+            const presentAreas = PATHWAY_AREA_ORDER.filter(a => areaMap[a]);
+
+            const headRow = '<th class="xschool-name">교과 영역</th>' +
+                semKeys.map(k => '<th>' + k + '</th>').join('');
+
+            let chipIndex = 0;
+            const rows = presentAreas.map(area => {
+                const areaCls = 'qc-row-' + (PATHWAY_AREA_STYLE[area] || 'etc');
+                const cells = semKeys.map(k => {
+                    const list = (areaMap[area] || {})[k] || [];
+                    if (!list.length) return '<td class="pw-empty qc-row-cell">–</td>';
+                    const chips = list.map(c => {
+                        const cls = 'qc-c' + (chipIndex % QC_CHIP_PALETTE_SIZE);
+                        chipIndex++;
+                        return '<span class="qc-chip ' + cls + '">' + c + '</span>';
+                    }).join('');
+                    return '<td class="qc-row-cell"><div class="qc-chip-list pw-chip-list">' + chips + '</div></td>';
+                }).join('');
+                return '<tr class="' + areaCls + '"><th class="xschool-name qc-row-head">' + area + '</th>' + cells + '</tr>';
+            }).join('');
+
+            return '<div class="xschool-grid-wrap"><table class="xschool-table pw-table"><thead><tr>' + headRow + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+        }
+
         function showModelPathway(i) {
             const p = MODEL_PATHWAYS[i];
             if (!p) return;
             document.getElementById('info-modal-title').textContent = p.ic + ' ' + p.key;
-            document.getElementById('info-modal-sub').textContent = p.desc + ' · 3년 교육과정 이수 흐름 (예시)';
-
-            const yearOf = { '1-1': 1, '1-2': 1, '2-1': 2, '2-2': 2, '3-1': 3, '3-2': 3 };
-            const steps = Object.keys(INFO_SEM_LABELS).map(k => {
-                const list = p.sem[k] || [];
-                const chips = list.length
-                    ? list.map(c => '<span class="info-path-chip ' + infoCourseLevel(c) + '">' + c + '</span>').join('')
-                    : '<span class="info-path-chip none">공통 과목 이수</span>';
-                return '<li class="info-path-step y' + yearOf[k] + '">' +
-                    '<div class="info-path-node"></div>' +
-                    '<div class="info-path-content">' +
-                        '<span class="info-path-sem">' + INFO_SEM_LABELS[k] + '</span>' +
-                        '<div class="info-path-chips">' + chips + '</div>' +
-                    '</div>' +
-                '</li>';
-            }).join('');
+            document.getElementById('info-modal-sub').textContent = p.desc + ' · 3년 교육과정 이수(예시)';
 
             document.getElementById('info-modal-body').innerHTML =
                 '<button type="button" class="info-back-btn" onclick="renderInfoModal(\'pathways\')">← 진로 목록</button>' +
-                '<div class="info-path-legend">' +
-                    '<span class="info-path-chip common">공통</span>' +
-                    '<span class="info-path-chip basic">선택·기초</span>' +
-                    '<span class="info-path-chip high">심화·고급 / AP</span>' +
-                '</div>' +
-                '<ol class="info-path-timeline">' + steps + '</ol>' +
-                '<p class="info-lead" style="margin-top:14px;">※ 1학년은 공통 과목(공통국어·통합과학·한국사 등)을 함께 이수하며, 위 흐름은 진로 관련 선택 과목 위주로 정리한 예시입니다.</p>';
+                buildPathwayTableHTML(p) +
+                '<p class="info-lead" style="margin-top:14px;">※ 1학년은 공통 과목(공통국어·통합과학·한국사 등)을 함께 이수하며, 위 표는 진로 관련 선택 과목을 교과 영역별로 정리한 예시입니다.</p>';
         }
 
         document.addEventListener('keydown', (event) => {
@@ -6123,25 +7226,11 @@
             }
         }
 
-        function renderSchoolCompare() {
-            const subject = xschoolState.subject;
+        // 학교 비교 표(요약 막대 + 학기별 표) HTML — 팝업과 프레젠테이션이 함께 재사용
+        function buildXschoolCompareHTML(subject) {
             const schools = SCHOOL_COMPARE_DATA[subject] || [];
-            document.getElementById('compare-modal-title').textContent = subject.replace('.', '·') + ' 교육과정 비교';
+            if (!schools.length) return null;
 
-            const tabs = XSCHOOL_SUBJECTS.map(s =>
-                '<button type="button" class="xschool-subject-tab' + (s === subject ? ' active' : '') +
-                '" onclick="selectCompareSubject(\'' + s + '\')">' + s.replace('.', '·') + '</button>'
-            ).join('');
-
-            if (!schools.length) {
-                xschoolDestroyCharts();
-                document.getElementById('compare-modal-body').innerHTML =
-                    '<div class="xschool-subject-tabs">' + tabs + '</div>' +
-                    '<p class="subject-empty">아직 ' + subject + ' 교과의 비교 데이터가 입력되지 않았습니다.</p>';
-                return;
-            }
-
-            // 학교별(트랙 최대치 기준) 총 개설 과목 수
             const schoolTotals = schools.map(sc => {
                 const trs = xschoolTracks(sc);
                 return { trackTotals: trs.map(xschoolTrackTotal) };
@@ -6159,7 +7248,6 @@
                 '</div>';
             }).join('');
 
-            // 시계열 비교표 (학교 = rowspan, 과정(선택)별로 행 분리)
             const semHead = XSCHOOL_SEMESTERS.map(sem => '<th>' + sem.key + '</th>').join('');
 
             const cellHtml = (list) => {
@@ -6193,27 +7281,45 @@
             const table = '<table class="xschool-table"><thead><tr><th colspan="2">학교</th>' +
                 semHead + '</tr></thead><tbody>' + tbody + '</tbody></table>';
 
-            // 그래프 비교는 모든 교과에 적용
-            const showChart = true;
-            const chartHtml = showChart
-                ? '<div class="xschool-chart-tabs">' +
+            return { summary: summary, table: table };
+        }
+
+        function renderSchoolCompare() {
+            const subject = xschoolState.subject;
+            document.getElementById('compare-modal-title').textContent = subject.replace('.', '·') + ' 교육과정 비교';
+
+            const tabs = XSCHOOL_SUBJECTS.map(s =>
+                '<button type="button" class="xschool-subject-tab' + (s === subject ? ' active' : '') +
+                '" onclick="selectCompareSubject(\'' + s + '\')">' + s.replace('.', '·') + '</button>'
+            ).join('');
+
+            const built = buildXschoolCompareHTML(subject);
+            if (!built) {
+                xschoolDestroyCharts();
+                document.getElementById('compare-modal-body').innerHTML =
+                    '<div class="xschool-subject-tabs">' + tabs + '</div>' +
+                    '<p class="subject-empty">아직 ' + subject + ' 교과의 비교 데이터가 입력되지 않았습니다.</p>';
+                return;
+            }
+
+            const chartHtml =
+                '<div class="xschool-chart-tabs">' +
                     '<label class="xschool-chart-select-label" for="xschool-chart-select">그래프 형태</label>' +
                     '<select id="xschool-chart-select" class="xschool-chart-select" onchange="setXschoolChart(this.value)">' +
                     XSCHOOL_CHART_MODES.map(m =>
                         '<option value="' + m.key + '"' + (m.key === xschoolState.chart ? ' selected' : '') + '>' + m.label + '</option>'
                     ).join('') +
                     '</select>' +
-                  '</div><div id="xschool-chart-host"></div>'
-                : '';
+                  '</div><div id="xschool-chart-host"></div>';
 
             xschoolDestroyCharts();
             document.getElementById('compare-modal-body').innerHTML =
                 '<div class="xschool-subject-tabs">' + tabs + '</div>' +
-                '<div class="xschool-summary">' + summary + '</div>' +
-                '<div class="xschool-grid-wrap">' + table + '</div>' +
+                '<div class="xschool-summary">' + built.summary + '</div>' +
+                '<div class="xschool-grid-wrap">' + built.table + '</div>' +
                 chartHtml;
 
-            if (showChart) renderXschoolChart();
+            renderXschoolChart();
         }
 
         document.addEventListener('keydown', (event) => {
@@ -6808,10 +7914,339 @@
             if (flag) flag.remove();
         }
 
+        /* ===== 키오스크 자동 프레젠테이션 (터치 없이 순환 소개) ===== */
+        let _presActive = false;
+        let _presIndex = 0;
+        let _presTimer = null;
+        let _presCharts = [];
+        let _presPaused = false;
+        let _presClickTimer = null;
+        let _presClickCount = 0;
+        let _presOverlayClickBound = false;
+        let _presSpeed = 1;
+
+        function presSetSpeed(speed) {
+            _presSpeed = speed;
+            document.querySelectorAll('.pres-speed-btn').forEach(b => {
+                b.classList.toggle('active', parseFloat(b.dataset.speed) === speed);
+            });
+            if (_presActive && !_presPaused) {
+                const slide = PRESENTATION_SLIDES[_presIndex];
+                clearTimeout(_presTimer);
+                _presTimer = setTimeout(presNextSlide, slide.duration / _presSpeed);
+            }
+        }
+
+        function presFitSlide(el) {
+            const body = document.querySelector('.pres-body');
+            if (!body || !el) return;
+            el.style.setProperty('--fit-scale', '1');
+            const availW = body.clientWidth - 4;
+            const availH = body.clientHeight - 4;
+            const natW = el.scrollWidth;
+            const natH = el.scrollHeight;
+            let scale = Math.min(availW / natW, availH / natH, 1);
+            if (!isFinite(scale) || scale <= 0) scale = 1;
+            el.style.setProperty('--fit-scale', scale.toFixed(3));
+        }
+
+        window.addEventListener('resize', () => {
+            if (!_presActive) return;
+            const el = document.getElementById('pres-slide');
+            if (el) presFitSlide(el);
+        });
+
+        function presDestroyCharts() {
+            _presCharts.forEach(c => { try { c.destroy(); } catch (e) {} });
+            _presCharts = [];
+        }
+
+        function presTierLadderHTML() {
+            return '<div class="pres-eyebrow">민사고 교과목 구조</div>' +
+                '<div class="info-ladder-cap start">가장 기초 · 전원 이수</div>' +
+                '<div class="info-ladder">' +
+                INFO_TIERS.map(t =>
+                    '<div class="info-ladder-step ' + t.cls + '">' +
+                        '<span class="info-ladder-num">' + t.step + '</span>' +
+                        '<div class="info-ladder-body">' +
+                            '<div class="info-ladder-head"><b>' + t.name + '</b><span class="info-ladder-tag">' + t.tag + '</span></div>' +
+                            '<span class="info-tier-line">' + t.line + '</span>' +
+                            '<span class="info-tier-ex">예) ' + t.ex + '</span>' +
+                        '</div>' +
+                    '</div>').join('') +
+                '</div>' +
+                '<div class="info-ladder-cap end">대학 1~2학년 수준 · 가장 심화</div>';
+        }
+
+        // 국어·영어·수학·사회·과학 개설 과목 계열화(교과 계열화 팝업과 동일 내용)
+        // track을 지정하면 사회/과학 과목의 해당 트랙 1개만 렌더링(트랙별로 슬라이드 분리)
+        function presSeqSubjectHTML(subject, track) {
+            const kmla = seqKmlaTierCourses(subject);
+            const commonRow = seqTierRow(SEQ_TIER_DEFS[0], kmla.common || [], false);
+            const trackCfg = SEQ_TRACK_CONFIG[subject];
+            let body, name;
+            if (!trackCfg) {
+                const rows = SEQ_TIER_DEFS.slice(1).map(t => seqTierRow(t, kmla[t.key] || [], false)).join('');
+                body = '<div class="seq-ladder seq-ladder-full">' + commonRow + rows + '</div>';
+                name = subject;
+            } else {
+                const byTrack = seqTrackTierCourses(subject);
+                const kList = byTrack[track] || { basic: [], adv1: [], adv2: [] };
+                const rows = SEQ_TIER_DEFS.slice(1).map(td => seqTierRow(td, kList[td.key] || [], false)).join('');
+                body = '<div class="seq-ladder seq-ladder-full">' + commonRow + rows + '</div>';
+                name = track;
+            }
+            return '<div class="pres-seq-header">' +
+                    '<div class="pres-seq-header-left">' +
+                        '<span class="pres-seq-name">' + name + '</span>' +
+                    '</div>' +
+                    seqLegendHTML() +
+                '</div>' +
+                body;
+        }
+
+        // 사회/과학은 트랙(계열)별로 슬라이드를 하나씩 생성
+        function presSeqTrackSlides(subject, duration) {
+            const trackCfg = SEQ_TRACK_CONFIG[subject];
+            if (!trackCfg) return [];
+            const byTrack = seqTrackTierCourses(subject);
+            const tracks = trackCfg.order.filter(t => byTrack[t] &&
+                (byTrack[t].basic.length || byTrack[t].adv1.length || byTrack[t].adv2.length));
+            return tracks.map(t => ({
+                duration: duration, wide: true,
+                build: (el) => { el.innerHTML = presSeqSubjectHTML(subject, t); }
+            }));
+        }
+
+        // AP · 전문 교과 Ⅰ·Ⅱ · R&E 한 번에 모아보기(팝업과 동일 내용)
+        function presQcHTML(kind) {
+            const cfg = QUICK_CATEGORIES[kind];
+            const built = buildQcTableHTML(kind);
+            return '<div class="pres-eyebrow">빠르게 모아보기</div>' +
+                '<h2 class="pres-title">' + cfg.title + ' <span class="pres-title-count">' + built.total + '개</span></h2>' +
+                '<p class="pres-sub">' + cfg.sub + '</p>' +
+                built.html;
+        }
+
+        function presPathwayHTML(idx) {
+            const p = MODEL_PATHWAYS[idx % MODEL_PATHWAYS.length];
+            return '<div class="pres-eyebrow">진로별 교육과정 이수(예시)</div>' +
+                '<h2 class="pres-title">' + p.ic + ' ' + p.key + '</h2>' +
+                '<p class="pres-sub">' + p.desc + '</p>' +
+                buildPathwayTableHTML(p);
+        }
+
+        // 타학교 교육과정 비교: 표 + 그래프를 함께 표시(팝업과 동일 내용)
+        function presCompareHTML(el, subject) {
+            const built = buildXschoolCompareHTML(subject);
+            el.innerHTML =
+                '<div class="pres-eyebrow">타학교 교육과정 비교</div>' +
+                '<h2 class="pres-title">' + subject.replace('.', '·') + '</h2>' +
+                (built ? '<div class="xschool-summary">' + built.summary + '</div>' +
+                    '<div class="xschool-grid-wrap">' + built.table + '</div>' : '') +
+                '<div class="pres-chart-box pres-chart-box-compact"><canvas id="pres-chart-canvas"></canvas></div>';
+            if (!built || typeof Chart === 'undefined') return;
+            const rows = xschoolRows(SCHOOL_COMPARE_DATA[subject] || []);
+            const data = rows.map(r => {
+                const totals = { common: 0, basic: 0, high: 0 };
+                XSCHOOL_SEMESTERS.forEach(sem => {
+                    xschoolUnits(r.sem[sem.key] || []).forEach(u => totals[u]++);
+                });
+                return { name: r.name, totals };
+            });
+            const ctx = document.getElementById('pres-chart-canvas');
+            if (!ctx) return;
+            _presCharts.push(new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.name),
+                    datasets: XSCHOOL_LEVELS.map(lv => ({
+                        label: lv.label,
+                        data: data.map(d => d.totals[lv.key]),
+                        backgroundColor: lv.color
+                    }))
+                },
+                options: {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, ticks: { precision: 0, font: { size: 14 } } },
+                        y: { stacked: true, ticks: { font: { size: 15 } } }
+                    },
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 14 } } } }
+                }
+            }));
+        }
+
+        function presStrengthHTML() {
+            const all = Object.values(SUBJECT_CATALOG).reduce((a, l) => a.concat(l), []);
+            const statVals = {
+                total: all.length,
+                ap: all.filter(s => /^AP/.test(s.name)).length,
+                t2: all.filter(s => s.level === '400전문II').length,
+                t1: all.filter(s => s.level === '300전문I').length,
+                sci: (SUBJECT_CATALOG['과학'] || []).length + (SUBJECT_CATALOG['사회'] || []).length,
+                lang: (SUBJECT_CATALOG['제2외국어'] || []).length
+            };
+            return '<div class="pres-eyebrow">민사고 교육과정 특징</div>' +
+                '<h2 class="pres-title">숫자로 보는 민사고 교육과정</h2>' +
+                '<div class="pres-strength-banner">' +
+                    '<span>2022 개정 교육과정 기준 · 개설 과목 분석</span>' +
+                    '<strong>' + statVals.total + '개 과목 · ' + statVals.ap + '개 AP · ' + statVals.t2 + '개 전문Ⅱ</strong>' +
+                '</div>' +
+                '<div class="info-stat-grid">' +
+                INFO_STAT_META.map(m =>
+                    '<div class="info-stat' + (m.hi ? ' hi' : '') + '">' +
+                        '<span class="info-stat-ic">' + m.ic + '</span>' +
+                        '<strong>' + statVals[m.key] + '</strong>' +
+                        '<span class="info-stat-label">' + m.label + '</span>' +
+                    '</div>').join('') +
+                '</div>' +
+                '<div class="info-feature-grid" style="margin-top:20px;">' +
+                INFO_FEATURES.map(f =>
+                    '<div class="info-feature"><span class="info-feature-ic">' + f.ic + '</span>' +
+                    '<div><b>' + f.t + '</b><span>' + f.d + '</span></div></div>').join('') +
+                '</div>';
+        }
+
+        const PRESENTATION_SLIDES = [
+            { duration: 6500, build: (el) => {
+                el.innerHTML = '<div class="pres-hero pres-hero-intro">' +
+                    '<div class="pres-hero-logo-wrap"><img src="https://i.imgur.com/Mo4ogKc.png" class="pres-hero-logo pres-hero-logo-big" alt="KMLA"></div>' +
+                    '<span class="pres-hero-badge">Since 1996 · 고교학점제의 원조</span>' +
+                    '<h1 class="pres-hero-title-big">민족사관고등학교</h1>' +
+                    '<p>교육과정으로 보는 민사고 교육의 깊이와 넓이</p></div>';
+            } },
+            { duration: 13000, build: (el) => { el.innerHTML = presTierLadderHTML(); } },
+            { duration: 12000, wide: true, build: (el) => { el.innerHTML = presSeqSubjectHTML('국어'); } },
+            { duration: 12000, wide: true, build: (el) => { el.innerHTML = presSeqSubjectHTML('영어'); } },
+            { duration: 12000, wide: true, build: (el) => { el.innerHTML = presSeqSubjectHTML('수학'); } },
+            ...presSeqTrackSlides('사회', 10000),
+            ...presSeqTrackSlides('과학', 10000),
+            { duration: 12000, wide: true, build: (el) => { el.innerHTML = presQcHTML('ap'); } },
+            { duration: 12000, wide: true, build: (el) => { el.innerHTML = presQcHTML('adv1'); } },
+            { duration: 12000, wide: true, build: (el) => { el.innerHTML = presQcHTML('adv2'); } },
+            { duration: 10000, wide: true, build: (el) => { el.innerHTML = presQcHTML('re'); } },
+            { duration: 13000, wide: true, build: (el) => { el.innerHTML = presPathwayHTML(0); } },
+            { duration: 13000, wide: true, build: (el) => { el.innerHTML = presPathwayHTML(1); } },
+            { duration: 13000, wide: true, build: (el) => { el.innerHTML = presPathwayHTML(2); } },
+            { duration: 13000, wide: true, build: (el) => { el.innerHTML = presPathwayHTML(3); } },
+            { duration: 13000, wide: true, build: (el) => { el.innerHTML = presPathwayHTML(4); } },
+            { duration: 13000, wide: true, build: (el) => { el.innerHTML = presPathwayHTML(5); } },
+            { duration: 11000, wide: true, build: (el) => { presCompareHTML(el, '수학'); } },
+            { duration: 11000, wide: true, build: (el) => { presCompareHTML(el, '물리'); } },
+            { duration: 13000, build: (el) => { el.innerHTML = presStrengthHTML(); } },
+            { duration: 7000, build: (el) => {
+                el.innerHTML = '<div class="pres-hero"><h1>직접 설계해 보세요</h1>' +
+                    '<p>화면을 터치하면 나만의 3년 교육과정을 만들어볼 수 있습니다.</p></div>';
+            } }
+        ];
+
+        function presRenderDots() {
+            const wrap = document.getElementById('pres-dots');
+            if (!wrap) return;
+            wrap.innerHTML = PRESENTATION_SLIDES.map((_, i) =>
+                '<button type="button" class="pres-dot' + (i === _presIndex ? ' active' : '') + '"' +
+                ' aria-label="' + (i + 1) + '번째 화면으로 이동"' +
+                ' onclick="event.stopPropagation(); presGoToSlide(' + i + ');"></button>').join('');
+        }
+
+        // 하단 점(dot)을 눌러 원하는 화면으로 바로 이동
+        function presGoToSlide(i) {
+            if (!_presActive) return;
+            _presIndex = ((i % PRESENTATION_SLIDES.length) + PRESENTATION_SLIDES.length) % PRESENTATION_SLIDES.length;
+            presShowSlide();
+        }
+
+        function presShowSlide() {
+            presDestroyCharts();
+            const el = document.getElementById('pres-slide');
+            if (!el) return;
+            const slide = PRESENTATION_SLIDES[_presIndex];
+            el.classList.remove('pres-in');
+            el.classList.toggle('pres-wide', !!slide.wide);
+            void el.offsetWidth;
+            slide.build(el);
+            presFitSlide(el);
+            el.classList.add('pres-in');
+            presRenderDots();
+            clearTimeout(_presTimer);
+            if (!_presPaused) _presTimer = setTimeout(presNextSlide, slide.duration / _presSpeed);
+        }
+
+        function presNextSlide() {
+            _presIndex = (_presIndex + 1) % PRESENTATION_SLIDES.length;
+            presShowSlide();
+        }
+
+        function presTogglePause() {
+            if (!_presActive) return;
+            _presPaused = !_presPaused;
+            const overlay = document.getElementById('presentation-overlay');
+            if (overlay) overlay.classList.toggle('paused', _presPaused);
+            if (_presPaused) {
+                clearTimeout(_presTimer);
+            } else {
+                const slide = PRESENTATION_SLIDES[_presIndex];
+                clearTimeout(_presTimer);
+                _presTimer = setTimeout(presNextSlide, slide.duration / _presSpeed);
+            }
+        }
+
+        function presExit() {
+            clearTimeout(_presClickTimer);
+            _presClickCount = 0;
+            stopPresentationLoop();
+        }
+
+        function presHandleOverlayClick(e) {
+            if (e.target.closest('.pres-exit-btn') || e.target.closest('.pres-speed-ctrl')) return;
+            _presClickCount++;
+            if (_presClickCount === 1) {
+                _presClickTimer = setTimeout(() => {
+                    presTogglePause();
+                    _presClickCount = 0;
+                }, 320);
+            } else {
+                clearTimeout(_presClickTimer);
+                _presClickCount = 0;
+                presExit();
+            }
+        }
+
+        function startPresentationLoop() {
+            if (_presActive) return;
+            _presActive = true;
+            _presIndex = 0;
+            _presPaused = false;
+            _presClickCount = 0;
+            const overlay = document.getElementById('presentation-overlay');
+            if (overlay) {
+                overlay.classList.add('open');
+                overlay.classList.remove('paused');
+                if (!_presOverlayClickBound) {
+                    overlay.addEventListener('click', presHandleOverlayClick);
+                    _presOverlayClickBound = true;
+                }
+            }
+            presShowSlide();
+        }
+
+        function stopPresentationLoop() {
+            if (!_presActive) return;
+            _presActive = false;
+            _presPaused = false;
+            clearTimeout(_presTimer);
+            clearTimeout(_presClickTimer);
+            presDestroyCharts();
+            const overlay = document.getElementById('presentation-overlay');
+            if (overlay) overlay.classList.remove('open', 'paused');
+        }
+
         function applyDisplayMode(mode, opts) {
             opts = opts || {};
             document.documentElement.classList.remove('present-mode', 'kiosk-mode');
             teardownKioskExtras();
+            stopPresentationLoop();
 
             if (mode === 'present' || mode === 'kiosk') {
                 document.documentElement.classList.add('present-mode');
@@ -6836,9 +8271,10 @@
             // 방문자 전환 대비: 진입 시 진행 내용 초기화
             try { clearUserProgress(); resetBuilder(); showPage('home-page'); } catch (e) {}
 
-            // 일정 시간 미조작 시 홈으로 자동 복귀
+            // 일정 시간 미조작 시 홈으로 자동 복귀 + 자동 프레젠테이션 재시작
             const idleSec = Math.min(600, Math.max(20, parseInt(opts.idle || '90', 10) || 90));
             const goHome = () => {
+                if (_presActive && _presPaused) { presTogglePause(); return; }
                 try { closeSubjectCatalog(); } catch (e) {}
                 try { closeSchoolCompare(); } catch (e) {}
                 try { closeInfoModal(); } catch (e) {}
@@ -6846,14 +8282,23 @@
                 try { clearUserProgress(); resetBuilder(); } catch (e) {}
                 try { showPage('home-page'); } catch (e) {}
                 window.scrollTo(0, 0);
+                startPresentationLoop();
             };
-            _kioskBumpHandler = () => {
+            _kioskBumpHandler = (e) => {
+                const overlay = document.getElementById('presentation-overlay');
+                const insideOverlay = overlay && e && e.target && overlay.contains(e.target);
+                // 프레젠테이션 화면 안에서의 탭은 자체 일시정지/종료 로직이 처리하므로
+                // 여기서는 화면을 강제로 닫지 않는다.
+                if (_presActive && !insideOverlay) stopPresentationLoop();
                 clearTimeout(_kioskIdleTimer);
                 _kioskIdleTimer = setTimeout(goHome, idleSec * 1000);
             };
             ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(ev =>
                 document.addEventListener(ev, _kioskBumpHandler, { passive: true }));
             _kioskBumpHandler();
+
+            // 키오스크 진입 즉시 자동 프레젠테이션 시작
+            startPresentationLoop();
         }
 
         function setDisplayMode(mode) {
