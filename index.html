@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap');
 
@@ -2815,6 +2816,111 @@
                 min-width: 0;
             }
         }
+
+        /* ===== 발표자 / 키오스크 모드 (?present=1 / ?kiosk=1) ===== */
+        html.present-mode {
+            font-size: 116%;
+            --tab-bar-height: 90px;
+        }
+        html.present-mode .app-container,
+        html.present-mode .app-tab-bar {
+            max-width: min(1400px, 96vw);
+        }
+        html.present-mode .tab-item { font-size: 0.92rem; padding: 12px 22px; }
+        html.present-mode .tab-item svg { width: 26px; height: 26px; }
+        html.present-mode .app-header-title { font-size: 1.15rem; }
+        html.present-mode .app-header-subtitle { font-size: 0.85rem; }
+        html.present-mode #header-admin-btn,
+        html.present-mode .app-header-badge { display: none; }
+        html.present-mode .start-button { font-size: 1.15rem; padding: 18px; }
+        html.present-mode .info-launch-btn { font-size: 0.92rem; }
+        html.present-mode .subject-catalog-btn { font-size: 0.92rem; padding: 13px 8px; }
+
+        html.kiosk-mode {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        html.kiosk-mode #header-admin-btn,
+        html.kiosk-mode #header-display-btn { display: none !important; }
+
+        .qr-modal { max-width: 380px; }
+        .qr-modal-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+            padding: 22px 20px 26px;
+        }
+        .qr-code {
+            padding: 14px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            line-height: 0;
+        }
+        .qr-code img, .qr-code canvas { display: block; }
+        .qr-url {
+            margin: 0;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: #1d4ed8;
+            word-break: break-all;
+        }
+        .qr-hint {
+            margin: 0;
+            font-size: 0.76rem;
+            color: var(--muted-color);
+            line-height: 1.5;
+        }
+        html.present-mode #header-qr-btn { display: inline-flex !important; }
+        html.present-mode #header-qr-btn span { display: inline; }
+
+        .kiosk-flag {
+            position: fixed;
+            left: 12px;
+            bottom: calc(var(--tab-bar-height) + 14px);
+            z-index: 300;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.65);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: inherit;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+        }
+        .kiosk-flag:active { background: rgba(15, 23, 42, 0.85); }
+
+        .display-mode-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0 10px;
+        }
+        .display-mode-btn {
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: #334155;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .display-mode-btn.active {
+            background: #0f172a;
+            border-color: #0f172a;
+            color: #ffffff;
+        }
+        .display-mode-hint {
+            margin: 0;
+            font-size: 0.78rem;
+            color: var(--muted-color);
+            line-height: 1.55;
+        }
     </style>
 </head>
 <body>
@@ -2831,6 +2937,14 @@
             </div>
             <div class="app-header-actions">
                 <div class="app-header-badge">Curriculum Studio</div>
+                <button type="button" id="header-display-btn" class="header-admin-btn" onclick="openDisplayModeModal()" title="화면 모드 (발표자·키오스크)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
+                    <span>화면 모드</span>
+                </button>
+                <button type="button" id="header-qr-btn" class="header-admin-btn" onclick="openQrModal()" title="이 페이지 QR 코드">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" /></svg>
+                    <span>QR</span>
+                </button>
                 <button type="button" id="header-admin-btn" class="header-admin-btn" onclick="showPage('admin-page')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 1115 0 7.5 7.5 0 01-15 0zm7.5-4.5v3m0 3v.008h.008V13.5H12zm6.364-7.864l-1.06 1.06m-10.608 0l-1.06-1.06m12.728 17.728l-1.06-1.06m-10.608 0l-1.06 1.06" /></svg>
                     <span>관리자 설정</span>
@@ -3243,6 +3357,17 @@
                     <div id="admin-groups" class="admin-groups"></div>
                 </section>
 
+                <section class="admin-section-card surface-card">
+                    <h3>화면 모드 <span class="info-h4-sub">설명회 현장용</span></h3>
+                    <p>발표 화면이나 태블릿 키오스크로 쓸 때 전환하세요. 이 브라우저에 저장되어 새로고침해도 유지됩니다.</p>
+                    <div class="display-mode-row">
+                        <button type="button" class="display-mode-btn" data-mode="normal" onclick="setDisplayMode('normal')">일반</button>
+                        <button type="button" class="display-mode-btn" data-mode="present" onclick="setDisplayMode('present')">발표자 모드</button>
+                        <button type="button" class="display-mode-btn" data-mode="kiosk" onclick="setDisplayMode('kiosk')">키오스크 모드</button>
+                    </div>
+                    <p class="display-mode-hint">발표자 모드: 글자·여백 확대, 관리자 버튼 숨김. 키오스크 모드: 위 효과 + 진행 내용 초기화 + 미조작 90초 후 자동으로 홈 복귀. 화면 좌하단 배지를 탭하면 언제든 종료할 수 있습니다.</p>
+                </section>
+
                 <section class="admin-account-grid">
                     <section class="admin-section-card admin-account-card surface-card">
                         <h3>관리자 계정 설정</h3>
@@ -3287,7 +3412,9 @@
                 <span>결과 분석</span>
             </div>
         </nav>
+    </div>
 
+    <!-- 팝업은 app-container 밖에 배치 (backdrop-filter의 fixed 컨테이닝 블록 회피 → 모바일 위치 문제 해결) -->
         <!-- 교과별 개설 과목 팝업 -->
         <div id="subject-modal-overlay" class="subject-modal-overlay" onclick="closeSubjectCatalog(event)">
             <div class="subject-modal surface-card" role="dialog" aria-modal="true" aria-labelledby="subject-modal-title">
@@ -3329,7 +3456,44 @@
                 <div id="info-modal-body" class="subject-modal-body"></div>
             </div>
         </div>
-    </div>
+
+        <!-- QR 코드 팝업 -->
+        <div id="qr-modal-overlay" class="subject-modal-overlay" onclick="closeQrModal(event)">
+            <div class="subject-modal qr-modal surface-card" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+                <div class="subject-modal-head">
+                    <div>
+                        <h3 id="qr-modal-title" class="subject-modal-title">휴대폰으로 열기</h3>
+                        <p class="subject-modal-sub">카메라로 QR 코드를 비추면 이 페이지가 열립니다</p>
+                    </div>
+                    <button type="button" class="subject-modal-close" onclick="closeQrModal()" aria-label="닫기">✕</button>
+                </div>
+                <div class="subject-modal-body qr-modal-body">
+                    <div id="qr-code" class="qr-code"></div>
+                    <p id="qr-url" class="qr-url"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 화면 모드 팝업 -->
+        <div id="display-mode-modal-overlay" class="subject-modal-overlay" onclick="closeDisplayModeModal(event)">
+            <div class="subject-modal qr-modal surface-card" role="dialog" aria-modal="true" aria-labelledby="display-mode-modal-title">
+                <div class="subject-modal-head">
+                    <div>
+                        <h3 id="display-mode-modal-title" class="subject-modal-title">화면 모드</h3>
+                        <p class="subject-modal-sub">설명회 현장용 — 발표 화면·키오스크 전환</p>
+                    </div>
+                    <button type="button" class="subject-modal-close" onclick="closeDisplayModeModal()" aria-label="닫기">✕</button>
+                </div>
+                <div class="subject-modal-body">
+                    <div class="display-mode-row">
+                        <button type="button" class="display-mode-btn" data-mode="normal" onclick="setDisplayMode('normal')">일반</button>
+                        <button type="button" class="display-mode-btn" data-mode="present" onclick="setDisplayMode('present')">발표자 모드</button>
+                        <button type="button" class="display-mode-btn" data-mode="kiosk" onclick="setDisplayMode('kiosk')">키오스크 모드</button>
+                    </div>
+                    <p class="display-mode-hint">발표자 모드: 글자·여백 확대, 관리자 버튼 숨김. 키오스크 모드: 위 효과 + 진행 내용 초기화 + 미조작 90초 후 자동으로 홈 복귀. 화면 좌하단 배지를 탭하면 언제든 종료할 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
 
     <script>
         // --- DATA (기존 데이터 유지) ---
@@ -5529,8 +5693,6 @@
             { key: 'lang', ic: '🗣️', label: '제2외국어 · 한문', hi: false }
         ];
         const INFO_GLOSSARY = [
-            { t: '고교학점제', d: '대학처럼 원하는 과목을 골라 듣고, 필요한 학점을 채우면 졸업하는 제도. 민사고는 1996년 개교 때부터 학생 스스로 과목을 설계하는 방식을 운영해 왔습니다.' },
-            { t: '학점', d: '한 과목을 이수했을 때 받는 단위. 3년 동안 정해진 학점 이상을 채워야 졸업합니다.' },
             { t: 'AP', d: 'Advanced Placement. 대학 과목 선이수제로, 대학 1~2학년 수준의 내용을 고교에서 배우고 평가받습니다.' },
             { t: 'R&E', d: 'Research & Education. 교수·전문가의 지도 아래 진행하는 소논문·탐구 프로젝트 과목.' },
             { t: '전문 교과 Ⅰ·Ⅱ', d: '특정 학문 분야를 깊이 배우는 심화 과목. 전문Ⅱ는 대학 전공 기초 수준에 해당합니다.' },
@@ -5606,7 +5768,7 @@
 
             if (kind === 'system') {
                 titleEl.textContent = '고교학점제와 과목 위계 이해하기';
-                subEl.textContent = '고교학점제 · 과목의 4단계 위계 · 자주 나오는 용어';
+                subEl.textContent = '과목의 4단계 위계와 용어';
                 body.innerHTML =
                     '<div class="info-callout">' +
                         '<span class="info-callout-ic">🎓</span>' +
@@ -5630,7 +5792,6 @@
                         '<div class="info-ladder-cap end">대학 1~2학년 수준 · 가장 심화</div>' +
                     '</section>' +
                     '<section class="info-section">' +
-                        '<h4>자주 나오는 용어</h4>' +
                         '<div class="info-glossary">' +
                         INFO_GLOSSARY.map(g => '<div class="info-gl"><b>' + g.t + '</b><span>' + g.d + '</span></div>').join('') +
                         '</div>' +
@@ -5739,6 +5900,53 @@
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') closeInfoModal();
+        });
+
+        /* ===== QR 코드로 열기 ===== */
+        let _qrGenerated = false;
+        const QR_TARGET_URL = 'https://kmla-curriculum.netlify.app/';
+        function openQrModal() {
+            const url = QR_TARGET_URL;
+            document.getElementById('qr-url').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            const box = document.getElementById('qr-code');
+            if (!_qrGenerated) {
+                box.innerHTML = '';
+                try {
+                    if (typeof QRCode === 'undefined') throw new Error('lib not loaded');
+                    new QRCode(box, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+                } catch (e) {
+                    const img = document.createElement('img');
+                    img.width = 220; img.height = 220; img.alt = 'QR 코드';
+                    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(url);
+                    box.appendChild(img);
+                }
+                _qrGenerated = true;
+            }
+            document.getElementById('qr-modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeQrModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('qr-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        /* ===== 화면 모드 팝업 (헤더 버튼, 로그인 불필요) ===== */
+        function openDisplayModeModal() {
+            updateDisplayModeUI();
+            document.getElementById('display-mode-modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeDisplayModeModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('display-mode-modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeQrModal();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeDisplayModeModal();
         });
 
         function xschoolCourseName(c) { return typeof c === 'string' ? c : (c && c.n) || ''; }
@@ -6580,6 +6788,103 @@
         }
         
         // --- INITIALIZATION ---
+        /* ===== 화면 모드: 일반 / 발표자 / 키오스크 ===== */
+        const DISPLAY_MODE_KEY = 'kmlaDisplayMode';
+        let _kioskBumpHandler = null;
+        let _kioskIdleTimer = null;
+
+        function getStoredDisplayMode() {
+            try { return localStorage.getItem(DISPLAY_MODE_KEY) || 'normal'; } catch (e) { return 'normal'; }
+        }
+
+        function teardownKioskExtras() {
+            if (_kioskBumpHandler) {
+                ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(ev =>
+                    document.removeEventListener(ev, _kioskBumpHandler));
+                _kioskBumpHandler = null;
+            }
+            clearTimeout(_kioskIdleTimer);
+            const flag = document.getElementById('kiosk-flag');
+            if (flag) flag.remove();
+        }
+
+        function applyDisplayMode(mode, opts) {
+            opts = opts || {};
+            document.documentElement.classList.remove('present-mode', 'kiosk-mode');
+            teardownKioskExtras();
+
+            if (mode === 'present' || mode === 'kiosk') {
+                document.documentElement.classList.add('present-mode');
+            }
+            if (mode !== 'kiosk') return;
+
+            document.documentElement.classList.add('kiosk-mode');
+
+            const flag = document.createElement('button');
+            flag.type = 'button';
+            flag.id = 'kiosk-flag';
+            flag.className = 'kiosk-flag';
+            flag.textContent = '키오스크 모드 · 탭하여 종료';
+            flag.onclick = () => {
+                if (confirm('키오스크 모드를 종료할까요?')) {
+                    setDisplayMode('normal');
+                    try { showPage('home-page'); } catch (e) {}
+                }
+            };
+            document.body.appendChild(flag);
+
+            // 방문자 전환 대비: 진입 시 진행 내용 초기화
+            try { clearUserProgress(); resetBuilder(); showPage('home-page'); } catch (e) {}
+
+            // 일정 시간 미조작 시 홈으로 자동 복귀
+            const idleSec = Math.min(600, Math.max(20, parseInt(opts.idle || '90', 10) || 90));
+            const goHome = () => {
+                try { closeSubjectCatalog(); } catch (e) {}
+                try { closeSchoolCompare(); } catch (e) {}
+                try { closeInfoModal(); } catch (e) {}
+                try { closeQrModal(); } catch (e) {}
+                try { clearUserProgress(); resetBuilder(); } catch (e) {}
+                try { showPage('home-page'); } catch (e) {}
+                window.scrollTo(0, 0);
+            };
+            _kioskBumpHandler = () => {
+                clearTimeout(_kioskIdleTimer);
+                _kioskIdleTimer = setTimeout(goHome, idleSec * 1000);
+            };
+            ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(ev =>
+                document.addEventListener(ev, _kioskBumpHandler, { passive: true }));
+            _kioskBumpHandler();
+        }
+
+        function setDisplayMode(mode) {
+            try { localStorage.setItem(DISPLAY_MODE_KEY, mode); } catch (e) {}
+            applyDisplayMode(mode);
+            updateDisplayModeUI();
+            closeDisplayModeModal();
+        }
+
+        function updateDisplayModeUI() {
+            const mode = getStoredDisplayMode();
+            document.querySelectorAll('.display-mode-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.mode === mode);
+            });
+        }
+
+        function initPresentationMode() {
+            const params = new URLSearchParams(location.search);
+            const urlKiosk = params.has('kiosk');
+            const urlPresent = urlKiosk || params.has('present');
+
+            if (urlPresent) {
+                const mode = urlKiosk ? 'kiosk' : 'present';
+                try { localStorage.setItem(DISPLAY_MODE_KEY, mode); } catch (e) {}
+                applyDisplayMode(mode, { idle: params.get('idle') });
+            } else {
+                applyDisplayMode(getStoredDisplayMode());
+            }
+            updateDisplayModeUI();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             loadAdminOverrides();
             loadAdminAuth();
@@ -6691,6 +6996,7 @@
             updateHeaderAdminState();
             restoreUserProgress();
             updateBuilderChrome();
+            initPresentationMode();
         });
     </script>
 </body>
