@@ -705,20 +705,42 @@
         }
 
         .subject-modal-headtext { flex: 1; min-width: 0; }
-        .subject-modal-back { order: -1; }
+        .subject-modal-back-btn {
+            order: -1;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            flex-shrink: 0;
+            border: none;
+            background: #eef2ff;
+            color: #1d4ed8;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .subject-modal-back-btn:hover { background: #e0e7ff; }
+        .subject-modal-back-btn:active { background: #c7d2fe; }
 
         .subject-modal-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 1px solid var(--border-color);
             background: #ffffff;
             color: var(--muted-color);
             width: 34px;
             height: 34px;
+            padding: 0;
             border-radius: 10px;
             font-size: 0.9rem;
+            line-height: 1;
             cursor: pointer;
             flex-shrink: 0;
         }
-
         .subject-modal-body {
             padding: 16px 20px 22px;
             overflow-y: auto;
@@ -1045,7 +1067,15 @@
             border: none;
             box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(99, 102, 241, 0.18);
             font-weight: 700;
+            white-space: nowrap;
             word-break: keep-all;
+        }
+        /* 이름이 길어 두 줄이 될 수밖에 없는 과목만 줄바꿈 허용 + 가운데 정렬 */
+        .xschool-table .lvl.lvl-wrap {
+            white-space: normal;
+            text-align: center;
+            border-radius: 14px;
+            line-height: 1.3;
         }
         .xschool-table .lvl.mid { background: #fef3c7; color: #92400e; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(245, 158, 11, 0.28); }
         .xschool-table .lvl.adv { background: #fee2e2; color: #991b1b; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(239, 68, 68, 0.3); }
@@ -1225,16 +1255,38 @@
             gap: 8px;
         }
         .qc-btn {
-            border: 1px solid rgba(147, 197, 253, 0.6);
-            background: #ffffff;
-            color: #1d4ed8;
-            padding: 9px 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            background: linear-gradient(135deg, #3b82f6, #4338ca);
+            color: #ffffff;
+            padding: 9px 14px 9px 16px;
             border-radius: 999px;
             font-size: 0.86rem;
             font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+            transition: transform 0.15s, box-shadow 0.15s;
         }
-        .qc-btn:hover { background: #eff6ff; }
+        .qc-btn::after {
+            content: '›';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            font-weight: 900;
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+        .qc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
+        }
+        .qc-btn:active { transform: translateY(0); }
 
         .qc-group { margin-bottom: 18px; }
         .qc-group:last-child { margin-bottom: 0; }
@@ -1435,6 +1487,19 @@
         .t2 .info-ladder-tag { background: #dbeafe; color: #1e40af; }
         .t3 .info-ladder-tag { background: #fef3c7; color: #b45309; }
         .t4 .info-ladder-tag { background: #fee2e2; color: #b91c1c; }
+        .info-ladder-tap-hint {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.1);
+            color: #1d4ed8;
+            white-space: nowrap;
+        }
 
         .info-tier-line { display: block; font-size: 0.84rem; color: #334155; margin: 4px 0 2px; line-height: 1.5; }
         .info-tier-ex { font-size: 0.76rem; color: #94a3b8; }
@@ -3483,7 +3548,7 @@
         .pres-slide.pres-wide .pw-table td { min-width: 0; }
         .pres-slide.pres-wide .xschool-tracklabel,
         .pres-slide.pres-wide .xschool-name { white-space: normal; width: auto; }
-        .pres-slide.pres-wide .xschool-table .lvl { word-break: break-all; }
+        .pres-slide.pres-wide .xschool-table .lvl { white-space: normal; word-break: break-all; }
         .pres-slide.pres-wide .qc-table th.qc-row-head { width: 92px; white-space: normal; }
         .pres-slide.pres-wide .qc-chip-list,
         .pres-slide.pres-wide .seq-chip-list { flex-direction: row; flex-wrap: wrap; white-space: normal; max-width: 100%; }
@@ -3627,7 +3692,7 @@
                         <div class="info-launch-grid">
                             <button type="button" class="info-launch-btn" onclick="openInfoModal('system')">
                                 <span class="info-launch-icon">🎓</span>
-                                <span class="info-launch-label">고교학점제와<br>과목 위계 이해하기</span>
+                                <span class="info-launch-label">고교 학점제와<br>민사고 교과목 체계</span>
                             </button>
                             <button type="button" class="info-launch-btn" onclick="openInfoModal('pathways')">
                                 <span class="info-launch-icon">🧭</span>
@@ -3689,7 +3754,7 @@
                         <button type="button" onclick="setCareerGoal('자율 전공')">자율 전공</button>
                     </div>
                     <div class="subject-catalog-menu catalog-tone-a">
-                        <span class="subject-catalog-title">교과별 개설 과목 확인하기</span>
+                        <span class="subject-catalog-title">교과별 개설 과목(계열화) 확인하기</span>
                         <p class="subject-catalog-caption">2022 개정 교육과정 기준 개설 과목입니다. 교과를 누르면 학년별 과목 목록을 확인할 수 있습니다.</p>
                         <div class="subject-catalog-grid">
                             <button type="button" class="subject-catalog-btn" onclick="openSubjectCatalog('국어')">국어</button>
@@ -3715,17 +3780,6 @@
                             <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('역사')">역사</button>
                             <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('철학')">철학</button>
                             <button type="button" class="subject-catalog-btn" onclick="openSchoolCompare('심리학')">심리학</button>
-                        </div>
-                    </div>
-                    <div class="subject-catalog-menu catalog-tone-c">
-                        <span class="subject-catalog-title">교과목 계열화 비교</span>
-                        <p class="subject-catalog-caption">국어·영어·수학·사회·과학 과목을 공통→선택→전문Ⅰ→전문Ⅱ 순으로 수직 계열화하고, 일반고 편성과 나란히 비교합니다.</p>
-                        <div class="subject-catalog-grid">
-                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('국어')">국어</button>
-                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('영어')">영어</button>
-                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('수학')">수학</button>
-                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('사회')">사회</button>
-                            <button type="button" class="subject-catalog-btn" onclick="openSeqModal('과학')">과학</button>
                         </div>
                     </div>
                     <div class="navigation">
@@ -4136,7 +4190,7 @@
         <div id="seq-modal-overlay" class="subject-modal-overlay" onclick="closeSeqModal(event)">
             <div class="subject-modal xschool-modal surface-card" role="dialog" aria-modal="true" aria-labelledby="seq-modal-title">
                 <div class="subject-modal-head">
-                    <button type="button" id="seq-modal-back" class="subject-modal-close subject-modal-back" style="display:none" onclick="seqGoBack()" aria-label="뒤로">←</button>
+                    <button type="button" id="seq-modal-back" class="subject-modal-back-btn" style="display:none" onclick="seqGoBack()" aria-label="뒤로가기">‹ 뒤로가기</button>
                     <div class="subject-modal-headtext">
                         <h3 id="seq-modal-title" class="subject-modal-title">교과 계열화 비교</h3>
                         <p id="seq-modal-sub" class="subject-modal-sub">공통 → 선택 → 전문Ⅰ → 전문Ⅱ 순 수직 계열화</p>
@@ -5984,22 +6038,16 @@
 
         let subjectModalState = { category: null, groups: null, config: null, track: null };
 
+        // 교과목 계열화 비교와 동일한 방식(공통→선택→전문Ⅰ→전문Ⅱ 세로 계열 + 과목명 칩)으로 표시
         function renderSubjectColumns(list) {
-            const cols = SUBJECT_LEVEL_COLUMNS.map(col => {
-                const courses = list
+            const rows = SUBJECT_LEVEL_COLUMNS.map((col, i) => {
+                const names = list
                     .filter(s => s.level === col.key)
-                    .sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-                if (!courses.length) return '';
-                const items = courses
-                    .map(s => '<span class="subject-col-item">' + s.name + '</span>')
-                    .join('');
-                return '<div class="subject-column subject-col-' + col.idx + '">' +
-                    '<div class="subject-column-head">' + col.label + '<em>' + courses.length + '</em></div>' +
-                    items +
-                '</div>';
-            }).filter(Boolean).join('');
-            if (!cols) return '<p class="subject-empty">등록된 과목이 없습니다.</p>';
-            return '<div class="subject-columns">' + cols + '</div>';
+                    .map(s => s.name)
+                    .sort((a, b) => a.localeCompare(b, 'ko'));
+                return seqTierRow(SEQ_TIER_DEFS[i], names, false);
+            }).join('');
+            return '<div class="seq-ladder seq-ladder-full">' + rows + '</div>';
         }
 
         /* ===== 교과 계열화 비교 (국어·영어·수학·사회·과학, 민사고 전용 과목 표시) ===== */
@@ -6402,6 +6450,12 @@
         });
 
         function openSubjectCatalog(category) {
+            // 국어·영어·수학·사회·과학은 "교과 계열화" 팝업과 완전히 동일한 형식(공통을 항상
+            // 상단에 고정 표시하고, 세부 영역은 탭으로 선택)으로 통일해 그 팝업을 그대로 재사용한다.
+            if (SEQ_SUBJECTS.includes(category)) {
+                openSeqModal(category);
+                return;
+            }
             const subjects = SUBJECT_CATALOG[category] || [];
 
             const config = SUBJECT_TRACK_CONFIG[category] || null;
@@ -6447,11 +6501,12 @@
                         ' (' + groups[t].length + ')</button>')
                     .join('');
                 body.innerHTML = '<div class="subject-track-tabs">' + tabs + '</div>' +
+                    seqLegendHTML() +
                     renderSubjectColumns(groups[track] || []);
                 return;
             }
 
-            body.innerHTML = renderSubjectColumns(subjects);
+            body.innerHTML = seqLegendHTML() + renderSubjectColumns(subjects);
         }
 
         function closeSubjectCatalog(event) {
@@ -6836,7 +6891,7 @@
             const body = document.getElementById('info-modal-body');
 
             if (kind === 'system') {
-                titleEl.textContent = '고교학점제와 과목 위계 이해하기';
+                titleEl.textContent = '고교 학점제와 민사고 교과목 체계';
                 subEl.textContent = '과목의 4단계 위계와 용어';
                 body.innerHTML =
                     '<div class="info-callout">' +
@@ -6845,14 +6900,15 @@
                         '민사고는 <b>30년 가까이</b> 이 방식으로 학생 한 명 한 명의 교육과정을 설계해 왔습니다.</p>' +
                     '</div>' +
                     '<section class="info-section">' +
-                        '<h4>과목의 4단계 위계 <span class="info-h4-sub">쉬운 것부터 대학 수준까지 · 눌러서 실제 과목 구조 보기</span></h4>' +
+                        '<h4>과목의 4단계 위계 <span class="info-h4-sub">쉬운 것부터 대학 수준까지</span></h4>' +
                         '<div class="info-ladder-cap start">가장 기초 · 전원 이수</div>' +
                         '<div class="info-ladder">' +
                         INFO_TIERS.map(t =>
                             '<div class="info-ladder-step ' + t.cls + '" onclick="openSeqFromInfo()" role="button" tabindex="0">' +
                                 '<span class="info-ladder-num">' + t.step + '</span>' +
                                 '<div class="info-ladder-body">' +
-                                    '<div class="info-ladder-head"><b>' + t.name + '</b><span class="info-ladder-tag">' + t.tag + '</span></div>' +
+                                    '<div class="info-ladder-head"><b>' + t.name + '</b><span class="info-ladder-tag">' + t.tag + '</span>' +
+                                        '<span class="info-ladder-tap-hint">👆 탭하여 보기</span></div>' +
                                     '<span class="info-tier-line">' + t.line + '</span>' +
                                     '<span class="info-tier-ex">예) ' + t.ex + '</span>' +
                                 '</div>' +
@@ -7081,6 +7137,8 @@
 
         function xschoolCourseName(c) { return typeof c === 'string' ? c : (c && c.n) || ''; }
         function xschoolCourseLv(c) { return (c && typeof c === 'object' && c.lv) ? c.lv : ''; }
+        // 이름이 길어 두 줄 표기가 불가피한 과목만 줄바꿈 허용(가운데 정렬), 나머지는 한 줄 유지
+        const XSCHOOL_ALLOW_WRAP = new Set(['탄소의 화학 기초(유기화학1)', '탄소의 화학 심화(유기화학2)']);
         // 학교를 트랙 배열로 정규화 (단일 과정은 label 없는 트랙 1개)
         function xschoolTracks(sc) {
             if (Array.isArray(sc.tracks) && sc.tracks.length) return sc.tracks;
@@ -7282,8 +7340,10 @@
                 return list.map(c => {
                         if (c && typeof c === 'object' && c.or) return '<span class="xschool-or">or</span>';
                         const lv = xschoolCourseLv(c);
-                        return '<span class="lvl ' + (lv === 'adv' ? 'adv' : (lv === 'mid' ? 'mid' : '')) + '">' +
-                            xschoolCourseName(c) + '</span>';
+                        const name = xschoolCourseName(c);
+                        const wrapCls = XSCHOOL_ALLOW_WRAP.has(name) ? ' lvl-wrap' : '';
+                        return '<span class="lvl ' + (lv === 'adv' ? 'adv' : (lv === 'mid' ? 'mid' : '')) + wrapCls + '">' +
+                            name + '</span>';
                     }).join('');
             };
 
