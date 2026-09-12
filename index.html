@@ -1258,25 +1258,33 @@
         }
         .qc-chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
         .qc-chip {
-            padding: 7px 13px;
-            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 14px;
+            border-radius: 999px;
             font-size: 0.84rem;
             font-weight: 700;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1), inset 0 0 0 1px rgba(15, 23, 42, 0.06);
         }
 
-        /* 과목명 칩 다색 팔레트 (교과 영역 라벨은 아래에서 통일) */
-        .qc-c0  { background: #fecaca; color: #7f1d1d; }
-        .qc-c1  { background: #fed7aa; color: #7c2d12; }
-        .qc-c2  { background: #fde68a; color: #78350f; }
-        .qc-c3  { background: #bbf7d0; color: #14532d; }
-        .qc-c4  { background: #99f6e4; color: #134e4a; }
-        .qc-c5  { background: #a5f3fc; color: #164e63; }
-        .qc-c6  { background: #bfdbfe; color: #1e3a8a; }
-        .qc-c7  { background: #c7d2fe; color: #3730a3; }
-        .qc-c8  { background: #ddd6fe; color: #4c1d95; }
-        .qc-c9  { background: #f5d0fe; color: #701a75; }
-        .qc-c10 { background: #fbcfe8; color: #831843; }
-        .qc-c11 { background: #e2e8f0; color: #334155; }
+        /* 과목명 칩 색상 — 교과 영역별로 하나의 색으로 통일 (더이상 무작위 순환 배색 아님) */
+        .qc-area-kor   { background: #ffe4e6; color: #9f1239; }
+        .qc-area-eng   { background: #dbeafe; color: #1e40af; }
+        .qc-area-math  { background: #dcfce7; color: #166534; }
+        .qc-area-lang2 { background: #fae8ff; color: #86198f; }
+        .qc-area-cs    { background: #cffafe; color: #155e75; }
+        .qc-area-etc   { background: #e2e8f0; color: #334155; }
+        /* 사회 세부 영역 — 같은(warm) 톤 계열 안에서 영역별로 다른 색조 */
+        .qc-area-soc-1 { background: hsl(0, 82%, 92%);  color: hsl(0, 70%, 32%); }   /* 정치사회 */
+        .qc-area-soc-2 { background: hsl(18, 88%, 90%); color: hsl(18, 75%, 30%); }  /* 지리 */
+        .qc-area-soc-3 { background: hsl(32, 88%, 88%); color: hsl(30, 72%, 28%); }  /* 철학 */
+        .qc-area-soc-4 { background: hsl(45, 85%, 85%); color: hsl(40, 65%, 26%); }  /* 역사 */
+        .qc-area-soc-5 { background: hsl(58, 80%, 83%); color: hsl(48, 60%, 24%); }  /* 심리학 */
+        /* 과학 세부 영역 — 같은(cool/violet) 톤 계열 안에서 영역별로 다른 색조 */
+        .qc-area-sci-1 { background: hsl(268, 85%, 94%); color: hsl(268, 55%, 38%); } /* 물리 */
+        .qc-area-sci-2 { background: hsl(285, 80%, 93%); color: hsl(285, 50%, 36%); } /* 화학 */
+        .qc-area-sci-3 { background: hsl(250, 85%, 94%); color: hsl(250, 55%, 40%); } /* 생명과학 */
+        .qc-area-sci-4 { background: hsl(200, 80%, 92%); color: hsl(200, 60%, 30%); } /* 지구과학 */
 
         .qc-table { min-width: 0; }
         .qc-row-head {
@@ -6170,12 +6178,22 @@
             }
         };
         const QUICK_CATEGORY_ORDER = ['국어', '영어', '수학', '사회', '과학', '제2외국어', '정보', '교양'];
-        // 과목 칩에 순환 적용할 다색 팔레트 (교과 영역 라벨은 통일, 과목명 칩만 다양한 색으로 구분)
-        const QC_CHIP_PALETTE_SIZE = 12;
         // 행(교과 영역) 배경색 — 표 안에서 영역별 구간이 옅은 색으로 구분되도록
         const QC_AREA_STYLE = {
             '국어': 'kor', '영어': 'eng', '수학': 'math', '사회': 'soc',
             '과학': 'sci', '제2외국어': 'lang2', '정보': 'cs', '교양': 'etc'
+        };
+        // 과목명 칩 색상 — 교과 영역별로 한 가지 색으로 통일(더이상 무작위 순환 아님)
+        const QC_CHIP_AREA_CLASS = {
+            '국어': 'qc-area-kor', '영어': 'qc-area-eng', '수학': 'qc-area-math',
+            '제2외국어': 'qc-area-lang2', '정보': 'qc-area-cs', '교양': 'qc-area-etc'
+        };
+        // 사회/과학 세부 영역(트랙)별 색 — 같은 톤 계열 안에서 트랙마다 다른 색
+        const QC_CHIP_TRACK_CLASS = {
+            '정치사회': 'qc-area-soc-1', '지리': 'qc-area-soc-2', '철학': 'qc-area-soc-3',
+            '역사': 'qc-area-soc-4', '심리학': 'qc-area-soc-5',
+            '물리': 'qc-area-sci-1', '화학': 'qc-area-sci-2',
+            '생명과학': 'qc-area-sci-3', '지구과학': 'qc-area-sci-4'
         };
         // 사회·과학은 섞어서 나열하지 않고 세부 영역별로 가로 행을 나눔
         const QC_TRACK_CONFIG = {
@@ -6241,13 +6259,10 @@
             const cats = QUICK_CATEGORY_ORDER.filter(c => groups[c] && groups[c].length);
             const total = cats.reduce((n, c) => n + groups[c].length, 0);
 
-            let chipIndex = 0;
-            const rowHtml = (label, areaCls, list) => {
-                const chips = list.map(s => {
-                    const cls = 'qc-c' + (chipIndex % QC_CHIP_PALETTE_SIZE);
-                    chipIndex++;
-                    return '<span class="qc-chip ' + cls + '">' + s.name + '</span>';
-                }).join('');
+            const rowHtml = (label, areaCls, chipCls, list) => {
+                const chips = list.map(s =>
+                    '<span class="qc-chip ' + chipCls + '">' + s.name + '</span>'
+                ).join('');
                 return '<tr class="' + areaCls + '">' +
                     '<th class="qc-row-head">' + label + '</th>' +
                     '<td class="qc-row-cell"><div class="qc-chip-list">' + chips + '</div></td>' +
@@ -6259,7 +6274,7 @@
                 const trackCfg = QC_TRACK_CONFIG[c];
                 if (!trackCfg) {
                     const list = groups[c].slice().sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-                    return rowHtml(c, areaCls, list);
+                    return rowHtml(c, areaCls, QC_CHIP_AREA_CLASS[c] || 'qc-area-etc', list);
                 }
                 const byTrack = {};
                 trackCfg.order.forEach(t => { byTrack[t] = []; });
@@ -6269,7 +6284,8 @@
                 });
                 return trackCfg.order
                     .filter(t => byTrack[t] && byTrack[t].length)
-                    .map(t => rowHtml(t, areaCls, byTrack[t].slice().sort((a, b) => a.name.localeCompare(b.name, 'ko'))))
+                    .map(t => rowHtml(t, areaCls, QC_CHIP_TRACK_CLASS[t] || 'qc-area-etc',
+                        byTrack[t].slice().sort((a, b) => a.name.localeCompare(b.name, 'ko'))))
                     .join('');
             }).join('');
 
@@ -6294,7 +6310,11 @@
 
         function seqChips(list, tierCls) {
             if (!list.length) return '<span class="seq-none">개설 과목 없음</span>';
-            return list.map(n => {
+            // 일반고에도 있는 과목을 앞에, 민사고 전용 과목을 뒤에 배치해 구분하기 쉽게 함
+            const sorted = list.slice().sort((a, b) =>
+                (KMLA_EXCLUSIVE_COURSES.has(a) ? 1 : 0) - (KMLA_EXCLUSIVE_COURSES.has(b) ? 1 : 0)
+            );
+            return sorted.map(n => {
                 const isExclusive = KMLA_EXCLUSIVE_COURSES.has(n);
                 return '<span class="seq-chip ' + tierCls + (isExclusive ? ' seq-chip-exclusive' : '') + '">' +
                     n + (isExclusive ? '<span class="seq-star">*</span>' : '') +
@@ -6317,6 +6337,8 @@
             return '<div class="seq-legend">' +
                     '<div class="seq-legend-item">' +
                         '<span class="seq-chip t2 seq-chip-exclusive">과목명<span class="seq-star">*</span></span>' +
+                        '<span class="seq-chip t3 seq-chip-exclusive">과목명<span class="seq-star">*</span></span>' +
+                        '<span class="seq-chip t4 seq-chip-exclusive">과목명<span class="seq-star">*</span></span>' +
                         '<span class="seq-legend-copy-text"><b class="seq-legend-highlight">민사고</b> 개설 과목</span>' +
                     '</div>' +
                     '<div class="seq-legend-item">' +
@@ -6953,6 +6975,13 @@
             '정치': 'eng', '사회문화': 'soc', '정보': 'cs', '철학': 'lang2',
             '역사': 'kor', '심리학': 'etc'
         };
+        // 교과 영역 → 과목명 칩 색(영역별 통일 색상)
+        const PATHWAY_AREA_CHIP_CLASS = {
+            '수학': 'qc-area-math', '경제': 'qc-area-lang2', '생명과학': 'qc-area-sci-3',
+            '물리': 'qc-area-sci-1', '화학': 'qc-area-sci-2', '정치': 'qc-area-eng',
+            '사회문화': 'qc-area-soc-1', '정보': 'qc-area-cs', '철학': 'qc-area-soc-3',
+            '역사': 'qc-area-soc-4', '심리학': 'qc-area-soc-5'
+        };
 
         // 진로 이수 표(교과 영역 × 학기) HTML — 팝업과 키오스크 프레젠테이션이 함께 재사용
         function buildPathwayTableHTML(p) {
@@ -6970,17 +6999,15 @@
             const headRow = '<th class="xschool-name">교과 영역</th>' +
                 semKeys.map(k => '<th>' + k + '</th>').join('');
 
-            let chipIndex = 0;
             const rows = presentAreas.map(area => {
                 const areaCls = 'qc-row-' + (PATHWAY_AREA_STYLE[area] || 'etc');
+                const chipCls = PATHWAY_AREA_CHIP_CLASS[area] || 'qc-area-etc';
                 const cells = semKeys.map(k => {
                     const list = (areaMap[area] || {})[k] || [];
                     if (!list.length) return '<td class="pw-empty qc-row-cell">–</td>';
-                    const chips = list.map(c => {
-                        const cls = 'qc-c' + (chipIndex % QC_CHIP_PALETTE_SIZE);
-                        chipIndex++;
-                        return '<span class="qc-chip ' + cls + '">' + c + '</span>';
-                    }).join('');
+                    const chips = list.map(c =>
+                        '<span class="qc-chip ' + chipCls + '">' + c + '</span>'
+                    ).join('');
                     return '<td class="qc-row-cell"><div class="qc-chip-list pw-chip-list">' + chips + '</div></td>';
                 }).join('');
                 return '<tr class="' + areaCls + '"><th class="xschool-name qc-row-head">' + area + '</th>' + cells + '</tr>';
