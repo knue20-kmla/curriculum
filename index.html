@@ -1200,6 +1200,48 @@
             gap: 10px;
         }
 
+        .cross-app-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 16px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid #fcd9a8;
+            background: linear-gradient(120deg, #fff7ec 0%, #fdecd3 100%);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .cross-app-link:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(180, 120, 30, 0.16); }
+        .cross-app-link:active { transform: translateY(0); }
+        .cross-app-link-icon {
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #ffffff;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(180, 120, 30, 0.18);
+        }
+        .cross-app-link-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .cross-app-link-text strong { font-size: 0.92rem; color: #8a5a12; }
+        .cross-app-link-text span { font-size: 0.76rem; color: #a4763a; }
+        .cross-app-link-arrow {
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #b4782e;
+            font-size: 0.9rem;
+            font-weight: 900;
+        }
+
         .info-launch-btn {
             display: flex;
             flex-direction: column;
@@ -3704,6 +3746,15 @@
                             </button>
                         </div>
                     </div>
+
+                    <a href="https://knue20-kmla.github.io/minjok-score/" target="_blank" rel="noopener" class="cross-app-link">
+                        <span class="cross-app-link-icon">📝</span>
+                        <span class="cross-app-link-text">
+                            <strong>입학전형</strong>
+                            <span>1단계 교과성적·출결 예상 점수를 계산해보는 웹앱입니다.</span>
+                        </span>
+                        <span class="cross-app-link-arrow">›</span>
+                    </a>
                 </div>
             </div>
 
